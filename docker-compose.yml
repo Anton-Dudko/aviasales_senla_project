@@ -20,7 +20,7 @@ services:
       timeout: 5s
       retries: 5
 
-  userorderservice:
+  userservice:
     container_name: userservice
     build:
       context: ./userservice

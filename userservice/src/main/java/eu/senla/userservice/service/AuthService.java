@@ -10,6 +10,7 @@ import eu.senla.userservice.request.LoginRequest;
 import eu.senla.userservice.request.RefreshJwtRequest;
 import eu.senla.userservice.request.UserRequest;
 import eu.senla.userservice.response.AuthResponse;
+import eu.senla.userservice.security.UserDetailsImpl;
 import eu.senla.userservice.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -76,10 +78,10 @@ public class AuthService {
     }
 
     //    public AuthResponse refresh(RefreshJwtRequest request) {
-//        UserDto dto = getUserDtoFromRefreshToren(request);
-//        String accessToken = jwtProvider.generateAccessToken(dto);
-//        String newRefreshToken = jwtProvider.generateRefreshToken(dto);
-//        refreshStorage.put(dto.getUsername(), newRefreshToken);
+//        User user = getUserFromRefreshToken(request);
+//        String accessToken = jwtProvider.generateAccessToken(user);
+//        String newRefreshToken = jwtProvider.generateRefreshToken(user);
+//        refreshStorage.put(user.getUsername(), newRefreshToken);
 //        return new AuthResponse(accessToken, newRefreshToken);
 //    }
 //
@@ -102,5 +104,15 @@ public class AuthService {
 
     private String generateRefreshToken(User user) {
         return jwtProvider.generateRefreshToken(user);
+    }
+
+    public UserDetails validateAccessToken(String accessToken) {
+        if (jwtProvider.validateAccessToken(accessToken)) {
+            String username = jwtProvider.getLoginFromAccessToken(accessToken);
+            User user = repository.findByUsername(username)
+                    .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
+            return UserDetailsImpl.fromUserToUserDetails(user);
+        }
+        throw new AuthenticatException(ExceptionMessageConstant.INVALID_TOKEN);
     }
 }
