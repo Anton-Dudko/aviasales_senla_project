@@ -1,6 +1,6 @@
 package eu.senla.userservice;
 
-import eu.senla.userservice.entity.Role;
+import eu.senla.common.entity.Role;
 import eu.senla.userservice.repository.UserRepository;
 import eu.senla.userservice.request.LoginRequest;
 import eu.senla.userservice.request.UserRequest;

@@ -1,6 +1,6 @@
 package eu.senla.userservice.mapper;
 
-import eu.senla.userservice.entity.Role;
+import eu.senla.common.entity.Role;
 import eu.senla.userservice.entity.User;
 import eu.senla.userservice.request.UserRequest;
 import eu.senla.userservice.response.UserResponse;

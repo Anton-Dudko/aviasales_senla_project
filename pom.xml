@@ -16,6 +16,7 @@
 
     <modules>
         <module>userservice</module>
+        <module>common</module>
     </modules>
 
     <properties>

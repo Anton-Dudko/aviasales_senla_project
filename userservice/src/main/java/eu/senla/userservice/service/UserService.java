@@ -1,6 +1,6 @@
 package eu.senla.userservice.service;
 
-import eu.senla.userservice.entity.Role;
+import eu.senla.common.entity.Role;
 import eu.senla.userservice.entity.User;
 import eu.senla.userservice.exception.ExceptionMessageConstant;
 import eu.senla.userservice.exception.custom.NotCreatedException;
