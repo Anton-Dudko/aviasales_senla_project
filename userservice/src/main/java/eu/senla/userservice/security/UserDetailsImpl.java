@@ -1,6 +1,7 @@
 package eu.senla.userservice.security;
 
 import eu.senla.userservice.entity.User;
+import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,18 +9,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+@Builder
 public class UserDetailsImpl implements UserDetails {
-
     private String username;
     private String password;
+
     private Collection<? extends GrantedAuthority> grantedAuthorities;
 
     public static UserDetails fromUserToUserDetails(User user) {
-        UserDetailsImpl userDetails = new UserDetailsImpl();
-        userDetails.username = user.getUsername();
-        userDetails.password = user.getPassword();
-        userDetails.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().toString()));
-        return userDetails;
+        return UserDetailsImpl.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .grantedAuthorities(Collections.singletonList(new SimpleGrantedAuthority(user.getRole().toString())))
+                .build();
     }
 
     @Override

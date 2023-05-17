@@ -26,10 +26,9 @@ import static eu.senla.userservice.TestConstant.PASSWORD_FIRST;
 import static eu.senla.userservice.TestConstant.PASSWORD_SECOND;
 import static eu.senla.userservice.TestConstant.ROLE_ADMIN;
 import static eu.senla.userservice.TestConstant.ROLE_USER;
+import static eu.senla.userservice.TestConstant.USERNAME_FIRST;
 import static eu.senla.userservice.TestConstant.USERNAME_SECOND;
 import static io.restassured.RestAssured.given;
-
-import static eu.senla.userservice.TestConstant.USERNAME_FIRST;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -294,7 +293,7 @@ class UserControllerITest extends ContainerTest {
 
         Assertions.assertEquals(userPostRequest.getEmail(), responseGet.getEmail());
         Assertions.assertEquals(idPostUser, responseGet.getUserId());
-        Assertions.assertEquals(sizeBeforeAdd+1, sizeAfterAdd);
+        Assertions.assertEquals(sizeBeforeAdd + 1, sizeAfterAdd);
 
     }
 
@@ -371,7 +370,7 @@ class UserControllerITest extends ContainerTest {
     }
 
     @Test
-    public void givenUserRequest_whenUpdateCorrectRole_thenOK() {
+    public void givenUserRequest_whenUpdateCorrectRoleAdmin_thenOK() {
         User userBefore = userRepository.findById(id).get();
         UserRequest userPutRequest = new UserRequest();
         userPutRequest.setUsername(USERNAME_SECOND);
@@ -398,9 +397,47 @@ class UserControllerITest extends ContainerTest {
     }
 
     @Test
-    public void givenUserRequest_whenUpdateWrongRole_thenFORBIDDEN() {
+    public void givenUserRequest_whenUpdateCorrectRoleUser_thenOK() {
+        userRepository.deleteAll();
+        receiveTokenFromAuthorisateUser(ROLE_USER);
+        User userBefore = userRepository.findById(id).get();
+        UserRequest userPutRequest = new UserRequest();
+        userPutRequest.setUsername(USERNAME_SECOND);
+        userPutRequest.setEmail(userBefore.getEmail());
+        userPutRequest.setPassword(PASSWORD_SECOND);
+
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .pathParam("id", id)
+                .body(userPutRequest)
+                .when()
+                .put("/{id}").then()
+                .statusCode(HttpStatus.OK.value());
+
+        User userAfter = userRepository.findById(id).get();
+
+        Assertions.assertNotEquals(userBefore.getUsername(), userAfter.getUsername());
+        Assertions.assertEquals(userBefore.getEmail(), userAfter.getEmail());
+        Assertions.assertNotEquals(userBefore.getPassword(), userAfter.getPassword());
+        Assertions.assertEquals(userBefore.getId(), userBefore.getId());
+        Assertions.assertEquals(ROLE_USER, userAfter.getRole().name());
+        Assertions.assertEquals(USERNAME_SECOND, userAfter.getUsername());
+    }
+
+    @Test
+    public void givenUserRequest_whenUpdateWrongRoleUser_thenFORBIDDEN() {
         userRepository.deleteAll();
         String wrongToken = receiveTokenFromAuthorisateUser(ROLE_USER);
+
+        UserRequest signupRequest = new UserRequest();
+        signupRequest.setUsername(USERNAME_FIRST + 1);
+        signupRequest.setPassword(PASSWORD_FIRST + 1);
+        signupRequest.setRole(ROLE_USER);
+        signupRequest.setEmail(EMAIL_FIRST + 1);
+        String token = authService.createUser(signupRequest).getAccessToken();
+        id = userRepository.findByEmail(signupRequest.getEmail()).get().getId();
+
         User userBefore = userRepository.findById(id).get();
         UserRequest userPutRequest = new UserRequest();
         userPutRequest.setUsername(USERNAME_SECOND);
@@ -429,7 +466,7 @@ class UserControllerITest extends ContainerTest {
         given()
                 .header("Authorization", "Bearer " + token)
                 .contentType(ContentType.JSON)
-               .pathParam("id", idNotExist)
+                .pathParam("id", idNotExist)
                 .body(userPutRequest)
                 .when()
                 .put("/{id}").then()

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,13 +27,10 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-//@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class UserController {
 
     private final UserService userService;
 
-    //юзер сохраняется через регистрацию с выдачей токена.
-    //админ может добавить другого админа, при этом отобразится инфо с данными созданного админа
     @PostMapping
     @RolesAllowed("ADMIN")
     public UserResponse createAdmin(@Valid @RequestBody UserRequest request) {
@@ -75,7 +73,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @RolesAllowed("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @userSecurity.hasUserId(authentication,#id)")
     public UserResponse update(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
         UserResponse response = userService.update(id, request);
         log.trace("Response with updated user: {}", response);
