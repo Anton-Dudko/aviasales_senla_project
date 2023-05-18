@@ -1,0 +1,66 @@
+server:
+  port: 8080
+
+cloud:
+  eureka-host: localhost
+  test-service-host: test-service
+  userservice-host: userservice
+
+spring:
+  application:
+    name: api-gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: test-service
+          uri: lb://${cloud.test-service-host}:8085
+          predicates:
+            - Path=/finance/**
+          filters:
+            - AuthFilter=false #checking for Admin = false
+
+        - id: test-service
+          uri: lb://${cloud.test-service-host}:8085
+          predicates:
+            - Path=/confident/**
+          filters:
+            - AuthFilter=true #checking for Admin = false
+
+        - id: userservice
+          uri: lb://${cloud.userservice-host}:8086
+          predicates:
+            - Path=/**
+
+
+
+      discovery:
+        locator:
+          enabled: true
+
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka/
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    beans:
+      enabled: true
+
+logging:
+  level:
+    com.netflix: WARN
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
