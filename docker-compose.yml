@@ -1,4 +1,4 @@
-version: '3'
+version: "3.7"
 
 services:
 
@@ -12,6 +12,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://finance_db:5432/postgres
     depends_on:
       - finance_db
+    networks:
+      - backend
 
   finance_db:
     image: postgres
@@ -22,7 +24,13 @@ services:
       POSTGRES_PASSWORD: mysecretpassword
     volumes:
       - finance_data:/var/lib/postgresql/data
+    networks:
+      - backend
 #finance microservice end
 
 volumes:
   finance_data:
+
+networks:
+  backend:
+    driver: bridge
