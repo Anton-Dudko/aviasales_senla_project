@@ -8,7 +8,7 @@ WORKDIR /app
 # Copy the compiled JAR file from the host machine into the container
 COPY target/*.jar /app/app.jar
 
-# Expose port 8080 for the container
+# Expose port 8761 for the container
 EXPOSE 8761
 
 # Set the command to run when the container starts

@@ -9,7 +9,9 @@ cloud:
 spring:
   application:
     name: api-gateway-service
+
   cloud:
+    loadbalancer.ribbon.enabled: false
     gateway:
       routes:
         - id: test-service
@@ -24,7 +26,7 @@ spring:
           predicates:
             - Path=/confident/**
           filters:
-            - AuthFilter=true #checking for Admin = false
+            - AuthFilter=true #checking for Admin = true
 
         - id: userservice
           uri: lb://${cloud.userservice-host}:8086

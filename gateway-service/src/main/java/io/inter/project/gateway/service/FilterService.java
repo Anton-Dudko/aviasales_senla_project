@@ -19,8 +19,7 @@ import java.util.Optional;
 public class FilterService {
 
     public static final String AUTH_TOKEN = "Authorization";
-    private static final String uri = "http://userservice";
-
+    private static final String uri = "http://userservice/auth/validate";
     private final WebClient.Builder webClientBuilder;
 
     @Autowired
@@ -33,7 +32,7 @@ public class FilterService {
         if (requestHeaders.get(AUTH_TOKEN) != null) {
             Optional<String> authRow = Objects.requireNonNull(requestHeaders.get(AUTH_TOKEN)).stream().findFirst();
             if (authRow.isPresent()) {
-                return authRow.get().replace("Bearer", "");
+                return authRow.get().replace("Bearer ", "");
             } else {
                 log.warn("An error occurred while processing token");
                 throw new GatewayServiceException("An error occurred while processing token");
@@ -47,8 +46,9 @@ public class FilterService {
 
     public Mono<UserDto> takeUserDetailsFromToken(String accessToken) {
         log.debug("Token value {}", accessToken);
+
         return webClientBuilder.build().get()
-                .uri(String.format("%s/auth/validate?accessToken=%s", uri, accessToken))
+                .uri(String.format("%s?accessToken=%s", uri, accessToken))
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, response -> {
                     log.warn("Token not found or expired");

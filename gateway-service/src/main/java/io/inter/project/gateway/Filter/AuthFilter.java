@@ -19,15 +19,13 @@ import java.util.List;
 @Component
 public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> {
 
-    private final String uri = "http://userservice";
-    private final WebClient.Builder webClientBuilder;
-
+    public static final String PARAM_HEADER_NAME = "x-auth-user";
+    public static final String ADMIN_PARAM_VALUE = "ROLE_ADMIN";
     private final FilterService filterService;
 
     @Autowired
-    public AuthFilter(WebClient.Builder webClientBuilder, FilterService filterService) {
+    public AuthFilter(FilterService filterService) {
         super(Config.class);
-        this.webClientBuilder = webClientBuilder;
         this.filterService = filterService;
     }
 
@@ -39,21 +37,24 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
     @Override
     public GatewayFilter apply(Config config) {
         log.debug("Start of filtering request");
+
         return (exchange, chain) -> {
             try {
-                String accessToken = filterService.getAuthToken(exchange.getRequest().getHeaders()).trim();
+
+                String accessToken = filterService.getAuthToken(exchange.getRequest().getHeaders());
                 log.debug("Token value {}", accessToken);
 
                 return filterService.takeUserDetailsFromToken(accessToken)
                         .flatMap(userDto -> {
-                            if (config.isAdminCheck() && !userDto.getAuthorities().get(0).getAuthority().contains("ROLE_ADMIN")) {
+                            if (config.isAdminCheck() && !userDto.getAuthorities().get(0).getAuthority().contains(ADMIN_PARAM_VALUE)) {
                                 log.warn("No authorities for this");
                                 return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authorities for this"));
                             }
-                            exchange.getRequest().mutate().header("x-auth-user", String.valueOf(userDto));
+                            exchange.getRequest().mutate().header(PARAM_HEADER_NAME, String.valueOf(userDto));
                             return Mono.just(exchange);
                         })
                         .flatMap(chain::filter);
+
             } catch (GatewayServiceException e) {
                 log.warn("Incorrect auth structure");
                 return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect auth structure"));
