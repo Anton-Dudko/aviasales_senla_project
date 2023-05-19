@@ -34,7 +34,7 @@ public class UserRequestMapperImpl implements UserRequestMapper {
     @Override
     public User requestToEntity(UserRequest request) {
         User user = new User();
-        user.setUsername(request.getPassword());
+        user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         if (request.getRole() != null) {
             user.setRole(Role.valueOf(request.getRole()));

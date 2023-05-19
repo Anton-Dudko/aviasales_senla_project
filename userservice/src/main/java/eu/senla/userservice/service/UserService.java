@@ -68,7 +68,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
         user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         User updatedUser = userRepository.save(user);
         return userMapper.entityToResponse(updatedUser);
     }

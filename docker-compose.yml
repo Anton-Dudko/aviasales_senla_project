@@ -22,10 +22,10 @@ services:
 
   userservice:
     image: oglavdel/userservice
-    #    container_name: userservice
-    build:
-      context: ./userservice
-      dockerfile: Dockerfile
+    container_name: userservice
+    #    build:
+    #      context: ./userservice
+    #      dockerfile: Dockerfile
     environment:
       management.context-path: /userservice
       hostName: userservice

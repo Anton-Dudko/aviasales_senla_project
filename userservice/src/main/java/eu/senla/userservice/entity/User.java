@@ -16,7 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
@@ -45,7 +44,7 @@ public class User {
     @Column
     private String password;
 
-    @Email
+    @Email(regexp = ".+[@].+[\\.].+")
     @NotNull
     @Column
     private String email;
