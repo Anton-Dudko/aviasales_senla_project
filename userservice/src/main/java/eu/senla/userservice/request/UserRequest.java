@@ -17,7 +17,7 @@ public class UserRequest {
     @NonNull
     private String username;
     @NonNull
-    @Email
+    @Email(regexp = ".+[@].+[\\.].+")
     private String email;
     @NonNull
     private String password;

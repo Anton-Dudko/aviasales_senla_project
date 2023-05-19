@@ -14,5 +14,5 @@ spring:
 security:
   access_secret: secret
   refresh_secret: refresh
-  access_time: 10m
+  access_time: 24h
   refresh_time: 30d

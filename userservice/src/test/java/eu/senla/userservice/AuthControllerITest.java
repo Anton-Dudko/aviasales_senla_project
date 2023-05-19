@@ -5,6 +5,7 @@ import eu.senla.userservice.repository.UserRepository;
 import eu.senla.userservice.request.LoginRequest;
 import eu.senla.userservice.request.UserRequest;
 import eu.senla.userservice.response.AuthResponse;
+import eu.senla.userservice.service.AuthService;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
@@ -21,6 +22,8 @@ import static io.restassured.RestAssured.given;
 class AuthControllerITest extends ContainerTest {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AuthService authService;
     private final UserRequest userPostRequest = new UserRequest();
 
     @BeforeEach
@@ -42,6 +45,7 @@ class AuthControllerITest extends ContainerTest {
 
     @Test
     public void givenUserRequestCorrect_whenCreateUser_thenAuthResponse() {
+        int tokenStorageSizeBefore = authService.receiveTokenStorageSize();
         int sizeBefore = userRepository.findAllByRole(null, Role.ROLE_USER).getSize();
 
         AuthResponse response = given()
@@ -54,11 +58,13 @@ class AuthControllerITest extends ContainerTest {
                 .extract().as(AuthResponse.class);
         Long idPostUser = userRepository.findByEmail(userPostRequest.getEmail()).get().getId();
         String emailFact = userRepository.findById(idPostUser).get().getEmail();
+        int tokenStorageSizeAfter = authService.receiveTokenStorageSize();
 
         Assertions.assertNotNull(response.getAccessToken());
         Assertions.assertNotNull(response.getRefreshToken());
 
         Assertions.assertEquals(sizeBefore + 1, userRepository.findAllByRole(null, Role.ROLE_USER).getSize());
+        Assertions.assertEquals(tokenStorageSizeBefore + 1, tokenStorageSizeAfter);
         Assertions.assertEquals(userPostRequest.getEmail(), emailFact);
     }
 
@@ -78,7 +84,7 @@ class AuthControllerITest extends ContainerTest {
                 .body(userPostRequest)
                 .when()
                 .post("/signup").then()
-                .statusCode(HttpStatus.CONFLICT.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
         int sizeAfter = userRepository.findAllByRole(null, Role.ROLE_USER).getSize();
 
         Assertions.assertEquals(sizeBefore, sizeAfter);

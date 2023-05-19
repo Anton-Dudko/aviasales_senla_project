@@ -1,6 +1,7 @@
 package eu.senla.userservice.controller;
 
 import eu.senla.userservice.request.LoginRequest;
+import eu.senla.userservice.request.RefreshJwtRequest;
 import eu.senla.userservice.request.UserRequest;
 import eu.senla.userservice.response.AuthResponse;
 import eu.senla.userservice.service.AuthService;
@@ -35,6 +36,14 @@ public class AuthController {
     public AuthResponse logIn(@Valid @RequestBody LoginRequest request) {
         log.trace("Method logIn");
         AuthResponse response = authService.authenticateUser(request);
+        log.trace("Response authenticate: {}", response);
+        return response;
+    }
+
+    @PostMapping("/refreshtoken")
+    public AuthResponse receiveRefreshToken(@Valid @RequestBody RefreshJwtRequest request) {
+        log.trace("Method getNewRefreshToken");
+        AuthResponse response = authService.receiveRefreshToken(request);
         log.trace("Response authenticate: {}", response);
         return response;
     }

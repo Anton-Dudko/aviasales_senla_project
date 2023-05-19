@@ -29,7 +29,7 @@ public class ProjectExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticatException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponce handleAuthenticatException(AuthenticatException ex) {
         log.warn(ex.getMessage());
         return new ErrorResponce(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());

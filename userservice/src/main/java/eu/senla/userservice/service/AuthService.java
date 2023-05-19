@@ -77,14 +77,14 @@ public class AuthService {
         }
     }
 
-    //    public AuthResponse refresh(RefreshJwtRequest request) {
-//        User user = getUserFromRefreshToken(request);
-//        String accessToken = jwtProvider.generateAccessToken(user);
-//        String newRefreshToken = jwtProvider.generateRefreshToken(user);
-//        refreshStorage.put(user.getUsername(), newRefreshToken);
-//        return new AuthResponse(accessToken, newRefreshToken);
-//    }
-//
+    public AuthResponse receiveRefreshToken(RefreshJwtRequest request) {
+        User user = getUserFromRefreshToken(request);
+        return AuthResponse.builder()
+                .accessToken(generateAccessToken(user))
+                .refreshToken(generateRefreshToken(user))
+                .build();
+    }
+
     private User getUserFromRefreshToken(RefreshJwtRequest request) {
         String refreshToken = request.getRefreshToken();
         if (jwtProvider.validateRefreshToken(refreshToken)) {
@@ -103,7 +103,9 @@ public class AuthService {
     }
 
     private String generateRefreshToken(User user) {
-        return jwtProvider.generateRefreshToken(user);
+        String refreshToken = jwtProvider.generateRefreshToken(user);
+        refreshStorage.put(user.getUsername(), refreshToken);
+        return refreshToken;
     }
 
     public UserDetails validateAccessToken(String accessToken) {
@@ -115,4 +117,22 @@ public class AuthService {
         }
         throw new AuthenticatException(ExceptionMessageConstant.INVALID_TOKEN);
     }
+
+//    public void resetPassword(String email) {
+//        User user = repository.findByEmail(email)
+//                .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
+//        String accessToken = jwtProvider.generateAccessToken(user);
+//        String refreshToken = generateRefreshToken(user);
+//        refreshStorage.put(user.getUsername(), refreshToken);
+//
+//        return new GenericResponse(
+//                messages.getMessage("message.resetPasswordEmail", null,
+//                        request.getLocale()));
+//    }
+
+    public int receiveTokenStorageSize() {
+        return refreshStorage.values().size();
+    }
+
+
 }
