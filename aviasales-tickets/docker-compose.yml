@@ -1,0 +1,40 @@
+version: "3.2"
+
+services:
+  postgredb:
+    image: postgres:13.1-alpine
+    container_name: aviasales
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/app/postgresql:/data
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=aviasales
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  aviasales-tickets:
+    container_name: aviasales-tickets
+    build: .
+    environment:
+      DATABASESERVER_PORT: "5432"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgredb:5432/aviasales
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: 123456
+    depends_on:
+      - postgredb
+    ports:
+      - 8088:8080
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
