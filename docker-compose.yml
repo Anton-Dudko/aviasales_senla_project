@@ -1,44 +1,35 @@
 version: "3.7"
 
 services:
-  postgredb:
-    image: postgres:13.1-alpine
-    container_name: senla-postgredb
-    ports:
-      - 5432:5432
-    volumes:
-      - ~/app/postgresql:/data
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=aviasales
-    networks:
-      - backend
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  userservice:
-    image: oglavdel/userservice
-    container_name: userservice
-    #    build:
-    #      context: ./userservice
-    #      dockerfile: Dockerfile
-    environment:
-      management.context-path: /userservice
-      hostName: userservice
-      DATABASESERVER_PORT: "5432"
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgredb:5432/aviasales
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: admin
-    depends_on:
-      - postgredb
+  #finance microservice start
+  finance:
+    build: ./finance
     ports:
-      - 8086:8086
+      - "8091:8091"
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://finance_db:5432/postgres
+    depends_on:
+      - finance_db
     networks:
       - backend
+
+  finance_db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    volumes:
+      - finance_data:/var/lib/postgresql/data
+    networks:
+      - backend
+#finance microservice end
+
+volumes:
+  finance_data:
 
 networks:
   backend:
