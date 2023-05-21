@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-airplane
+      author: NikitaNasevich
+      changes:
+        - createTable:
+            tableName: airplane
+            columns:
+              - column:
+                  name: airplane_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: model
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number_of_seats
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: socket
+                  type: boolean
+                  defaultValue: false
+              - column:
+                  name: media
+                  type: boolean
+                  defaultValue: false
+              - column:
+                  name: wi_fi
+                  type: boolean
+                  defaultValue: false
+              - column:
+                  name: seat_pith
+                  type: int
+              - column:
+                  name: seat_width
+                  type: int
+              - column:
+                  name: chair_scheme
+                  type: varchar (10)

@@ -1,6 +1,8 @@
 version: "3.7"
 
 services:
+<<<<<<< docker-compose.yml
+=======
 
   #finance microservice start
   finance:
@@ -28,9 +30,45 @@ services:
       - backend
 #finance microservice end
 
+#trip microservice start
+ postgrestripticket:
+    image: postgres:13.1-alpine
+    container_name: trip_ticket
+    ports:
+      - 32768:5432
+    volumes:
+      - ~/app/postgresql:/data
+    environment:
+      - POSTGRES_USER=postgres123
+      - POSTGRES_PASSWORD=postgres123
+      - POSTGRES_DB=trip_ticket_db
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres123 -d trip_ticket_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  tripservice:
+    container_name: tripservice
+    build: tripservice
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgrestripticket:5432/trip_ticket_db
+      SPRING_DATASOURCE_USERNAME: postgres123
+      SPRING_DATASOURCE_PASSWORD: postgres123
+    depends_on:
+      - postgrestripticket
+    ports:
+      - 3000:8080
+    networks:
+      - backend
+#trip microservice end
+
 volumes:
   finance_data:
 
 networks:
   backend:
     driver: bridge
+>>>>>>> docker-compose.yml
