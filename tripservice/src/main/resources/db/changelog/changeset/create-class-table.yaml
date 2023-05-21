@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-class
+      author: NikitaNasevich
+      changes:
+        - createTable:
+            tableName: class
+            columns:
+              - column:
+                  name: class_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: class_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

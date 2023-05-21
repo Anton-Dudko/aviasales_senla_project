@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/create-trips-table.sql
+  - include:
+      file: db/changelog/changeset/create-airplanes-table.sql
+  - include:
+      file: db/changelog/changeset/create-flights-table.sql
+  - include:
+      file: db/changelog/changeset/insert-into-airplanes-table.sql

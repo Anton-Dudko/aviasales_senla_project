@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-ticket
+      author: NikitaNasevich
+      changes:
+        - createTable:
+            tableName: ticket
+            columns:
+              - column:
+                  name: ticket_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: trip_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: ticket_trip_fk
+                    referencedTableName: trip
+                    referencedColumnNames: trip_id
+              - column:
+                  name: class_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: ticket_class_fk
+                    referencedTableName: class
+                    referencedColumnNames: class_id
+              - column:
+                  name: place
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: ticket_status_fk
+                    referencedTableName: status
+                    referencedColumnNames: status_id
+              - column:
+                  name: price
+                  type: double
+                  constraints:
+                    nullable: false
