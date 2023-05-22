@@ -1,6 +1,6 @@
 package eu.senla.aviasales.controller;
 
-import eu.senla.aviasales.dto.CustomEmailDto;
+import eu.senla.aviasales.model.dto.CustomEmailDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;

@@ -1,3 +1,5 @@
+cloud:
+  eureka-host: localhost
 server:
   port: 8087
 spring:
@@ -58,3 +60,12 @@ spring:
     suffix: .html
     mode: HTML5
     encoding: UTF-8
+eureka:
+  instance:
+  preferIpAddress: true
+  client:
+  registerWithEureka: true
+  fetchRegistry: true
+  serviceUrl:
+  defaultZone: http://${cloud.eureka-host}:8761/eureka/ #порт для еврики выбран 8761
+  enabled: false

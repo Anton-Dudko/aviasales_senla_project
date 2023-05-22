@@ -1,5 +1,7 @@
+cloud:
+  eureka-host: localhost
 server:
-  port: 8087
+  port: 8080
 spring:
   application:
     name: notification-service
@@ -37,7 +39,7 @@ spring:
   kafka:
     properties:
       security.protocol: 'PLAINTEXT'
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: localhost:9092
     producer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -58,3 +60,12 @@ spring:
     suffix: .html
     mode: HTML5
     encoding: UTF-8
+eureka:
+  instance:
+  preferIpAddress: true
+  client:
+  registerWithEureka: true
+  fetchRegistry: true
+  serviceUrl:
+  defaultZone: http://${cloud.eureka-host}:8761/eureka/ #порт для еврики выбран 8761
+  enabled: false

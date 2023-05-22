@@ -1,4 +1,4 @@
-package eu.senla.aviasales.dto;
+package eu.senla.aviasales.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,8 +9,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ResetPasswordDto {
+public class UserRegistrationDto {
+    private String username;
     private String email;
-    private String code;
 
 }

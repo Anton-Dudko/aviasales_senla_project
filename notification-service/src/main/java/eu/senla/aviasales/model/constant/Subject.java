@@ -1,4 +1,4 @@
-package eu.senla.aviasales.service.impl.constant;
+package eu.senla.aviasales.model.constant;
 
 /**
  * @author Mikhail.Leonovets

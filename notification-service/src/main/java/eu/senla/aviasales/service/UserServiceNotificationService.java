@@ -1,6 +1,6 @@
 package eu.senla.aviasales.service;
 
-import eu.senla.aviasales.dto.UserRegistrationDto;
+import eu.senla.aviasales.model.dto.UserRegistrationDto;
 import jakarta.mail.MessagingException;
 
 /**

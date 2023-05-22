@@ -1,7 +1,7 @@
 package eu.senla.aviasales.service.impl;
 
-import static eu.senla.aviasales.service.impl.constant.Subject.USER_REGISTERED_SUCCESSFULLY;
-import eu.senla.aviasales.dto.UserRegistrationDto;
+import static eu.senla.aviasales.model.constant.Subject.USER_REGISTERED_SUCCESSFULLY;
+import eu.senla.aviasales.model.dto.UserRegistrationDto;
 import eu.senla.aviasales.service.EmailService;
 import eu.senla.aviasales.service.UserServiceNotificationService;
 import jakarta.mail.MessagingException;
