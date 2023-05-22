@@ -133,8 +133,50 @@ services:
       - eureka-service
   #gateway microservice end
 
+  #notification microservice start
+  notification-service-db:
+    image: postgres:13.1-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1995
+      - POSTGRES_DB=senla_aviasales_notification_service
+    ports:
+      - "5434:5434"
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "8087:8087"
+    restart: always
+    depends_on:
+      - notification-service-db
+  kafka:
+    image: 'bitnami/kafka:2'
+    ports:
+      - '9092:9092'
+    volumes:
+      - 'kafka_data:/bitnami'
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    depends_on:
+      - zookeeper
+  zookeeper:
+    image: 'bitnami/zookeeper:3'
+    ports:
+      - '2181:2181'
+    volumes:
+      - 'zookeeper_data:/bitnami'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  #notification microservice end
+
 volumes:
   finance_data:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
 
 networks:
   backend:
