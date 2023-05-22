@@ -1,8 +1,44 @@
 version: "3.7"
 
 services:
-<<<<<<< docker-compose.yml
-=======
+  userservice_db:
+    image: postgres:13.1-alpine
+    container_name: userservice-postgredb
+    ports:
+      - 32769:5432
+    volumes:
+      - ~/app/postgresql:/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=aviasales
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  userservice:
+    #    image: oglavdel/userservice
+    container_name: userservice
+    build:
+      context: ./userservice
+      dockerfile: Dockerfile
+    environment:
+      management.context-path: /userservice
+      hostName: userservice
+      DATABASESERVER_PORT: "32769:5432"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://userservice_db:5432/aviasales
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+    depends_on:
+      - userservice_db
+    ports:
+      - 8086:8086
+    networks:
+      - backend
 
   #finance microservice start
   finance:
@@ -31,7 +67,7 @@ services:
 #finance microservice end
 
 #trip microservice start
- postgrestripticket:
+  postgrestripticket:
     image: postgres:13.1-alpine
     container_name: trip_ticket
     ports:
@@ -71,4 +107,3 @@ volumes:
 networks:
   backend:
     driver: bridge
->>>>>>> docker-compose.yml
