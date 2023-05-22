@@ -64,9 +64,9 @@ services:
       - finance_data:/var/lib/postgresql/data
     networks:
       - backend
-#finance microservice end
+  #finance microservice end
 
-#trip microservice start
+  #trip microservice start
   postgrestripticket:
     image: postgres:13.1-alpine
     container_name: trip_ticket
@@ -99,7 +99,39 @@ services:
       - 3000:8080
     networks:
       - backend
-#trip microservice end
+  #trip microservice end
+
+  #gateway microservice start
+  eureka-service:
+    container_name: eureka-service
+    build:
+      context: ./eureka-service
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      backend:
+        ipv4_address: 172.31.0.10
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  gateway-service:
+    container_name: gateway-service
+    build:
+      context: ./gateway-service
+      dockerfile: Dockerfile
+    environment:
+      cloud.eureka-host: 172.31.0.10
+    networks:
+      - backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-service
+  #gateway microservice end
 
 volumes:
   finance_data:
@@ -107,3 +139,7 @@ volumes:
 networks:
   backend:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.31.0.0/16
