@@ -5,6 +5,9 @@ server:
 spring:
   application:
     name: notification-service
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   mail:
     host: smtp.gmail.com
     port: 587
@@ -62,10 +65,15 @@ spring:
     encoding: UTF-8
 eureka:
   instance:
-  preferIpAddress: true
+    preferIpAddress: true
   client:
-  registerWithEureka: true
-  fetchRegistry: true
-  serviceUrl:
-  defaultZone: http://${cloud.eureka-host}:8761/eureka/ #порт для еврики выбран 8761
-  enabled: false
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka/ #порт для еврики выбран 8761
+    enabled: false
+springfox:
+  documentation:
+    swagger-ui:
+    enabled: true
+
