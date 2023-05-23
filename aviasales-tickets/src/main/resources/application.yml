@@ -16,3 +16,5 @@ spring:
   sql:
     init:
       platform: postgres
+  liquibase:
+    change-log: classpath:db/changelog/init.xml
