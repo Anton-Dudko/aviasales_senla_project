@@ -2,6 +2,7 @@ package com.aviasalestickets.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "ticket")
 public class Ticket {
@@ -23,6 +25,8 @@ public class Ticket {
     private Long tripId;
 
     private String fio;
+
+    private Integer seatNumber;
 
     @Enumerated(EnumType.STRING)
     private TicketType type;
