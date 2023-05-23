@@ -3,12 +3,14 @@ package com.aviasalestickets.service;
 import com.aviasalestickets.mapper.TicketMapper;
 import com.aviasalestickets.model.Ticket;
 import com.aviasalestickets.model.TicketStatus;
+import com.aviasalestickets.model.dto.GenerateTicketRequest;
 import com.aviasalestickets.model.dto.TicketRequest;
 import com.aviasalestickets.model.dto.TicketResponse;
 import com.aviasalestickets.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,14 +19,16 @@ public class TicketService {
 
     private final TicketMapper ticketMapper;
     private final TicketRepository ticketRepository;
+    private final List<GenerateTicketService> generateTicketServices;
 
-    public String save(TicketRequest request){
+
+    public String save(TicketRequest request) {
         Ticket ticket = ticketMapper.convertDtoToEntity(request);
         ticketRepository.save(ticket);
         return "ticket was save";
     }
 
-    public TicketResponse findById(Long id){
+    public TicketResponse findById(Long id) {
         return ticketMapper.convertEntityToDto(ticketRepository.findById(id).get());
     }
 
@@ -36,40 +40,34 @@ public class TicketService {
         return ticketMapper.convertListEntityToDto(ticketRepository.findAll());
     }
 
-    public String bookTicket(Long id, Long userId) {
+    public void bookTicket(Long id, Long userId) {
         Ticket ticket = ticketRepository.findById(id).get();
         ticket.setUserId(userId);
         ticket.setStatus(TicketStatus.BOOKED);
         ticketRepository.save(ticket);
-        return "ticket successfully booked";
     }
 
-    public String deleteReservation(Long id) {
+    public void deleteReservation(Long id) {
         Ticket ticket = ticketRepository.findById(id).get();
         ticket.setStatus(TicketStatus.FREE);
         ticket.setUserId(null);
         ticketRepository.save(ticket);
-        return "ticket reservation successfully deleted";
     }
 
-    public String payTicket(Long id) {
+    public void payTicket(Long id) {
         Ticket ticket = ticketRepository.findById(id).get();
         ticket.setStatus(TicketStatus.PAID);
         ticketRepository.save(ticket);
-        return "ticket successfully paid";
     }
-    // вывод через критерии
-   // public List<Ticket> findAll(){}
-    // эндпоит генерирования билетов
- //   public void createTickets(Long tripId){}
-    // бронирование билета
-   // public void
-    // удаление брони
 
+    public void generateTickets(GenerateTicketRequest request) {
+        List<Ticket> ticketsToSave = new ArrayList<>();
+        for (GenerateTicketService generateTicketService : generateTicketServices) {
+            ticketsToSave.addAll(generateTicketService.generate(request));
+        }
+        ticketRepository.saveAll(ticketsToSave);
+
+    }
 }
 
-//что должен прнимать и возвращать эндпоинт бронирования
-//наверное нужно на вход бронирования принимать id юзера
-// при отмене бронирования должен меняться статус и очищаться userId
-//должна ли пропадать бронь спустя какоето время
 
