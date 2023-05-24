@@ -1,13 +1,14 @@
 package eu.senla.userservice.service;
 
-import eu.senla.common.entity.Role;
+import eu.senla.userservice.entity.Language;
 import eu.senla.userservice.entity.User;
 import eu.senla.userservice.exception.ExceptionMessageConstant;
 import eu.senla.userservice.exception.custom.NotFoundException;
 import eu.senla.userservice.mapper.UserRequestMapper;
 import eu.senla.userservice.repository.UserRepository;
+import eu.senla.userservice.request.UserFindRequest;
 import eu.senla.userservice.request.UserRequest;
-import eu.senla.userservice.response.UserGetListResponse;
+import eu.senla.userservice.response.UserGetPageResponse;
 import eu.senla.userservice.response.UserResponse;
 import eu.senla.userservice.token.PasswordCoder;
 import lombok.RequiredArgsConstructor;
@@ -27,15 +28,16 @@ public class UserService {
     private final UserRequestMapper userMapper;
 
 
-    public UserGetListResponse findAllByRoleOnPage(Pageable pageable, Role role) {
-        Page<User> pagedResult = userRepository.findAllByRole(pageable, role);
-
+    public UserGetPageResponse findBySpecification(UserFindRequest request, Pageable pageable) {
+        Page<User> pagedResult = userRepository.findAll(new UserSpecification(request), pageable);
         return pagedResult.hasContent()
-                ? UserGetListResponse.builder()
+                ? UserGetPageResponse.builder()
                 .userResponseList(userMapper.listEntityToListResponse(pagedResult.getContent()))
+                .count(pagedResult.getContent().size())
                 .build()
-                : UserGetListResponse.builder()
+                : UserGetPageResponse.builder()
                 .userResponseList(new ArrayList<>())
+                .count(0)
                 .build();
     }
 
@@ -50,7 +52,14 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
         user.setUsername(request.getUsername());
-//        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPassword(PasswordCoder.codingPassword(request.getPassword()));
+        user.setDateBirth(request.getDateBirth() != null
+                ? request.getDateBirth()
+                : user.getDateBirth());
+        user.setLanguage(request.getLanguage() != null
+                ? Language.valueOf(request.getLanguage())
+                : user.getLanguage());
+
         User updatedUser = userRepository.save(user);
         return userMapper.entityToResponse(updatedUser);
     }
