@@ -3,8 +3,9 @@ server:
 
 cloud:
   eureka-host: localhost
-  test-service-host: test-service
+  finance-service-host: finance-service
   userservice-host: userservice
+  ticket-service-host: tickets-service
 
 spring:
   application:
@@ -14,31 +15,38 @@ spring:
     loadbalancer.ribbon.enabled: false
     gateway:
       routes:
-        - id: test-service
-          uri: lb://${cloud.test-service-host}:8085
+        - id: card-service
+          uri: lb://${cloud.finance-service-host}
           predicates:
-            - Path=/finance/**
+            - Path=/card/**
           filters:
-            - AuthFilter=false #checking for Admin = false
+            - AuthFilter=false
 
-        - id: test-service
-          uri: lb://${cloud.test-service-host}:8085
+        - id: payment-service
+          uri: lb://${cloud.finance-service-host}
           predicates:
-            - Path=/confident/**
+            - Path=/payment
           filters:
-            - AuthFilter=true #checking for Admin = true
+            - AuthFilter=false
 
-        - id: userservice
-          uri: lb://${cloud.userservice-host}:8086
+        - id: user-service
+          uri: lb://${cloud.userservice-host}
           predicates:
-            - Path=/**
+            - Path=/users/**
+          filters:
+            - AuthFilter=true
 
+        - id: auth-service
+          uri: lb://${cloud.userservice-host}
+          predicates:
+            - Path=/auth/**
 
-
-      discovery:
-        locator:
-          enabled: true
-
+        - id: ticket-service
+          uri: lb://${cloud.ticket-service-host}
+          predicates:
+            - Path=/tickets/**
+          filters:
+            - AuthFilter=false
 
 eureka:
   instance:
@@ -61,8 +69,18 @@ management:
     beans:
       enabled: true
 
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true
+
 logging:
   level:
     com.netflix: WARN
-    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.gateway: TRACE
     reactor.netty.http.client: DEBUG
+
+
+swagger:
+  config:
+    refreshrate: 10000

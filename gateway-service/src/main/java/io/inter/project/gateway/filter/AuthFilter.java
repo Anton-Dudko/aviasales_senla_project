@@ -1,7 +1,6 @@
-package io.inter.project.gateway.Filter;
+package io.inter.project.gateway.filter;
 
 import io.inter.project.gateway.exception.GatewayServiceException;
-import io.inter.project.gateway.model.UserDto;
 import io.inter.project.gateway.service.FilterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
@@ -36,14 +34,11 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
     @Override
     public GatewayFilter apply(Config config) {
-        log.debug("Start of filtering request");
+        log.info("Start of filtering request");
 
         return (exchange, chain) -> {
             try {
-
                 String accessToken = filterService.getAuthToken(exchange.getRequest().getHeaders());
-                log.debug("Token value {}", accessToken);
-
                 return filterService.takeUserDetailsFromToken(accessToken)
                         .flatMap(userDto -> {
                             if (config.isAdminCheck() && !userDto.getAuthorities().get(0).getAuthority().contains(ADMIN_PARAM_VALUE)) {

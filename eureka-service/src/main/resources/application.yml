@@ -2,15 +2,15 @@
 spring:
   application:
     name: eureka-service
-  boot:
-    admin:
-      context-path: /admin
+
 server:
   port: 8761
 
 eureka:
   instance:
     hostname: localhost
+
+
   client:
     registerWithEureka: false
     fetchRegistry: false
