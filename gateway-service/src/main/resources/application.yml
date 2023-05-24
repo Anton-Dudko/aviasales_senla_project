@@ -20,7 +20,7 @@ spring:
           predicates:
             - Path=/card/**
           filters:
-            - AuthFilter=true
+            - AuthFilter=false
 
         - id: payment-service
           uri: lb://${cloud.finance-service-host}
