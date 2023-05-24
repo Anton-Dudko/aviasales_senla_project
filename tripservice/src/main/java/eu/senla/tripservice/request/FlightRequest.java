@@ -33,4 +33,8 @@ public class FlightRequest {
     private boolean HandLuggage;
 
     private boolean luggage;
+
+    private int firstClassTicketPercent;
+
+    private double ticketPrice;
 }
