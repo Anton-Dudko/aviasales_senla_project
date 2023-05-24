@@ -60,16 +60,23 @@ public class FilterService {
     }
 
     public ServerWebExchange insertUserDetailsInToResponse(ServerWebExchange exchange, UserDetails userDetails) {
-        return exchange.mutate()
+        exchange.mutate()
                 .request(builder -> builder
                         .header("id", userDetails.getUserId().toString())
                         .header("username", userDetails.getUsername())
                         .header("email", userDetails.getEmail())
-                        .header("dateBirth", userDetails.getDateBirth().toString())
-                        .header("language", userDetails.getLanguage())
                         .header("role", userDetails.getRole())
                 )
                 .build();
+        if (userDetails.getDateBirth() != null) {
+            exchange.mutate().request(builder -> builder
+                    .header("dateBirth", userDetails.getDateBirth().toString()).build());
+        }
+        if (userDetails.getLanguage() != null) {
+            exchange.mutate().request(builder -> builder
+                    .header("language", userDetails.getLanguage()));
+        }
+        return exchange;
     }
 
 }
