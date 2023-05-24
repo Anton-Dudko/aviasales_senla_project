@@ -6,7 +6,7 @@ cloud:
   finance-service-host: finance-service
   userservice-host: userservice
   ticket-service-host: tickets-service
-
+  trip-service-host: tripservice-service
 spring:
   application:
     name: api-gateway-service
@@ -20,7 +20,7 @@ spring:
           predicates:
             - Path=/card/**
           filters:
-            - AuthFilter=false
+            - AuthFilter=true
 
         - id: payment-service
           uri: lb://${cloud.finance-service-host}
@@ -29,17 +29,23 @@ spring:
           filters:
             - AuthFilter=false
 
-        - id: user-service
+        - id: admin-user-service
           uri: lb://${cloud.userservice-host}
           predicates:
-            - Path=/users/**
+            - Path=/admin/**, /admin
           filters:
             - AuthFilter=true
 
-        - id: auth-service
+        - id: guest-user-service
           uri: lb://${cloud.userservice-host}
           predicates:
-            - Path=/auth/**
+            - Path=/guest/**, /guest, /auth/**
+
+        - id: user-service
+          uri: lb://${cloud.userservice-host}
+          predicates:
+            - Path=/{id}
+            - Method=PUT
 
         - id: ticket-service
           uri: lb://${cloud.ticket-service-host}
@@ -47,6 +53,30 @@ spring:
             - Path=/tickets/**
           filters:
             - AuthFilter=false
+
+        - id: flight-service-admin
+          uri: lb://${cloud.trip-service-host}
+          predicates:
+              - Path=/flights/admin/**
+          filters:
+              - AuthFilter=true
+
+        - id: flight-service-guest
+          uri: lb://${cloud.trip-service-host}
+          predicates:
+              - Path=/flights/guest/**
+
+        - id: trip-service-admin
+          uri: lb://${cloud.trip-service-host}
+          predicates:
+            - Path=/trips/admin/**
+          filters:
+            - AuthFilter=true
+
+        - id: trip-service-guest
+          uri: lb://${cloud.trip-service-host}
+          predicates:
+            - Path=/trips/guest/**
 
 eureka:
   instance:
