@@ -151,9 +151,7 @@ public class FlightService {
 
         String getTicketsRequestUrl = "https://ticketservice/" + id;
 
-        TicketsResponse ticketsResponse = restTemplate.getForObject(getTicketsRequestUrl, TicketsResponse.class);
-
-        return ticketsResponse;
+        return restTemplate.getForObject(getTicketsRequestUrl, TicketsResponse.class);
     }
 
     private TicketsCreateRequest generateTickets(long flightId) {
@@ -163,7 +161,10 @@ public class FlightService {
         int seatsNumber = airplane.getNumberOfSeats();
         int firstClassSeatsNumber = (int) Math.round(seatsNumber / 3.0);
         int secondClassSeatsNumber = seatsNumber - firstClassSeatsNumber;
-        return new TicketsCreateRequest(flightId, firstClassSeatsNumber, secondClassSeatsNumber);
+        double firstClassPrice = (airplane.getNumberOfSeats() * 4 + airplane.getAirplaneId()) / 2.0;
+        double secondClassPrice = firstClassPrice * 0.8;
+
+        return new TicketsCreateRequest(flightId, firstClassSeatsNumber, secondClassSeatsNumber, firstClassPrice, secondClassPrice);
     }
 
     private boolean isFlightExist(Flight flightToCheck) {
