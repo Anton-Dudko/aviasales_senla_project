@@ -1,6 +1,7 @@
 package eu.senla.userservice.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Email;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class LoginRequest {
     @NonNull
     @Email

@@ -10,16 +10,10 @@ import eu.senla.userservice.request.LoginRequest;
 import eu.senla.userservice.request.RefreshJwtRequest;
 import eu.senla.userservice.request.UserRequest;
 import eu.senla.userservice.response.AuthResponse;
-import eu.senla.userservice.security.UserDetailsImpl;
+import eu.senla.userservice.response.UserResponse;
 import eu.senla.userservice.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -31,22 +25,21 @@ import java.util.Map;
 public class AuthService {
     private final JwtProvider jwtProvider;
     private final UserRequestMapper userRequestMapper;
-    private final AuthenticationManager authenticationManager;
 
     private final UserRepository repository;
 
     private final Map<String, String> refreshStorage = new HashMap<>();
 
-    private final PasswordEncoder passwordEncoder;
-
     public AuthResponse createUser(UserRequest request) {
         if (repository.findByEmail(request.getEmail()).isEmpty()) {
             User user = userRequestMapper.requestToEntity(request);
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setPassword(codingPassword(request.getPassword()));
+            user.setAccessToken(generateAccessToken(user));
+            user.setRefreshToken(generateRefreshToken(user));
             user = repository.save(user);
             return AuthResponse.builder()
-                    .accessToken(generateAccessToken(user))
-                    .refreshToken(generateRefreshToken(user))
+                    .accessToken(user.getAccessToken())
+                    .refreshToken(user.getRefreshToken())
                     .build();
         } else {
             throw new AuthenticatException(ExceptionMessageConstant.USER_EXIST);
@@ -56,24 +49,16 @@ public class AuthService {
     public AuthResponse authenticateUser(LoginRequest request) {
         User user = repository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
-        UsernamePasswordAuthenticationToken authInputToken =
-                new UsernamePasswordAuthenticationToken(user.getUsername(), request.getPassword());
-        Authentication authentication = authenticationManager.authenticate(authInputToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return AuthResponse.builder()
-                .accessToken(generateAccessToken(user))
-                .refreshToken(generateRefreshToken(user))
-                .build();
-    }
-
-    public AuthResponse getAccessToken(RefreshJwtRequest request) {
-        try {
-            User user = getUserFromRefreshToken(request);
-            String accessToken = jwtProvider.generateAccessToken(user);
-            return new AuthResponse(accessToken, null);
-        } catch (AuthenticatException e) {
-            return new AuthResponse(null, null);
+        if (codingPassword(request.getPassword()).equals(user.getPassword())) {
+            user.setAccessToken(generateAccessToken(user));
+            user.setRefreshToken(generateRefreshToken(user));
+            user = repository.save(user);
+            return AuthResponse.builder()
+                    .accessToken(user.getAccessToken())
+                    .refreshToken(user.getRefreshToken())
+                    .build();
+        } else {
+            throw new AuthenticatException(ExceptionMessageConstant.INVALID_PASSWORD);
         }
     }
 
@@ -108,12 +93,17 @@ public class AuthService {
         return refreshToken;
     }
 
-    public UserDetails validateAccessToken(String accessToken) {
+    public UserResponse validateAccessToken(String accessToken) {
         if (jwtProvider.validateAccessToken(accessToken)) {
             String username = jwtProvider.getLoginFromAccessToken(accessToken);
             User user = repository.findByUsername(username)
                     .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
-            return UserDetailsImpl.fromUserToUserDetails(user);
+            return UserResponse.builder()
+                    .userId(user.getId())
+                    .email(user.getEmail())
+                    .username(user.getUsername())
+                    .role(user.getRole().name())
+                    .build();
         }
         throw new AuthenticatException(ExceptionMessageConstant.INVALID_TOKEN);
     }
@@ -130,9 +120,7 @@ public class AuthService {
 //                        request.getLocale()));
 //    }
 
-    public int receiveTokenStorageSize() {
-        return refreshStorage.values().size();
+    private String codingPassword(String password) {
+        return password.hashCode() + "$" + password.toUpperCase().hashCode();
     }
-
-
 }

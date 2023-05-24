@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,13 +25,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserRequestMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
 
     public UserResponse save(UserRequest request) {
         log.trace("Method add");
         try {
             User admin = userMapper.requestToEntity(request);
-            admin.setPassword(passwordEncoder.encode(request.getPassword()));
+//            admin.setPassword(passwordEncoder.encode(request.getPassword()));
             return userMapper.entityToResponse(userRepository.save(admin));
         } catch (Exception e) {
             throw new NotCreatedException(ExceptionMessageConstant.ADMIN_DONT_CREATE);
@@ -68,7 +67,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
         user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+//        user.setPassword(passwordEncoder.encode(request.getPassword()));
         User updatedUser = userRepository.save(user);
         return userMapper.entityToResponse(updatedUser);
     }

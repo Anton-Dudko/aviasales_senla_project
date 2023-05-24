@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,19 +19,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 @Slf4j
 @RestController
-@RequestMapping("/users")
+@RequestMapping
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
-    @RolesAllowed("ADMIN")
+    @PostMapping("/admin/users")
     public UserResponse createAdmin(@Valid @RequestBody UserRequest request) {
         log.trace("Method saveAdmin");
         request.setRole(Role.ROLE_ADMIN.name());
@@ -41,8 +38,7 @@ public class UserController {
         return response;
     }
 
-    @GetMapping("/{id}")
-    @RolesAllowed("ROLE_ADMIN")
+    @GetMapping("/admin/users/{id}")
     public UserResponse findById(@PathVariable Long id) {
         log.trace("Method findById");
         UserResponse response = userService.findById(id);
@@ -50,8 +46,7 @@ public class UserController {
         return response;
     }
 
-    @GetMapping("/page")
-    @RolesAllowed("ROLE_ADMIN")
+    @GetMapping("/admin/userspage")
     public UserGetListResponse findAllUsersInPage(@RequestParam(defaultValue = "0") Integer page,
                                                   @RequestParam(defaultValue = "10") Integer size) {
         log.trace("Method findAllUsersInPage");
@@ -61,8 +56,7 @@ public class UserController {
         return responses;
     }
 
-    @GetMapping("/admin/page")
-    @RolesAllowed("ROLE_ADMIN")
+    @GetMapping("/admin/adminspage")
     public UserGetListResponse findAllAdminInPage(@RequestParam(defaultValue = "0") Integer page,
                                                   @RequestParam(defaultValue = "10") Integer size) {
         log.trace("Method findAllAdminInPage");
@@ -73,15 +67,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or @userSecurity.hasUserId(authentication,#id)")
     public UserResponse update(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
         UserResponse response = userService.update(id, request);
         log.trace("Response with updated user: {}", response);
         return response;
     }
 
-    @DeleteMapping("/{id}")
-    @RolesAllowed("ROLE_ADMIN")
+    @DeleteMapping("/admin/{id}")
     public void deleteById(@PathVariable Long id) {
         log.trace("Delete user:  id {}", id);
         userService.delete(id);
