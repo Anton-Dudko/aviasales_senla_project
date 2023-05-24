@@ -1,4 +1,4 @@
-package eu.senla.userservice.security.jwt;
+package eu.senla.userservice.token.jwt;
 
 
 import eu.senla.userservice.entity.User;
@@ -11,9 +11,5 @@ public interface JwtProvider {
 
     boolean validateAccessToken(String token);
 
-    boolean validateRefreshToken(String token);
-
     String getLoginFromAccessToken(String token);
-
-    String getLoginFromRefreshToken(String token);
 }

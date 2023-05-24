@@ -1,4 +1,4 @@
-package eu.senla.userservice.security.jwt;
+package eu.senla.userservice.token.jwt;
 
 import eu.senla.userservice.entity.User;
 import io.jsonwebtoken.Claims;
@@ -15,7 +15,7 @@ import java.util.Date;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtTokenProvider implements JwtProvider {
+public class JwtProviderImpl implements JwtProvider {
 
     private final JwtSecurityProperties securityProperties;
 
@@ -52,20 +52,9 @@ public class JwtTokenProvider implements JwtProvider {
     }
 
     @Override
-    public boolean validateRefreshToken(String refreshToken) {
-        return validateToken(refreshToken, securityProperties.getRefreshSecret());
-    }
-
-    @Override
     public String getLoginFromAccessToken(String token) {
         log.trace("Method getLoginFromAccessToken");
         return getLoginFromToken(token, securityProperties.getAccessSecret());
-    }
-
-    @Override
-    public String getLoginFromRefreshToken(String token) {
-        log.trace("Method getLoginFromRefreshToken");
-        return getLoginFromToken(token, securityProperties.getRefreshSecret());
     }
 
     private boolean validateToken(String token, String secret) {

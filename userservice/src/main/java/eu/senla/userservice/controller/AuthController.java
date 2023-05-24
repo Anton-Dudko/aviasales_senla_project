@@ -12,28 +12,45 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/guest")
+@RequestMapping
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping
-    public AuthResponse registrations(@Valid @RequestBody UserRequest request) {
-        log.trace("Method signUp");
+    @PostMapping("/guest")
+    public AuthResponse registerUser(@Valid @RequestBody UserRequest request) {
+        log.trace("Method registrations");
         AuthResponse response = authService.createUser(request);
-        log.trace("Response sign in: {}", response);
+        log.trace("Response: {}", response);
         return response;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/guest/login")
     public AuthResponse logIn(@Valid @RequestBody LoginRequest request) {
         log.trace("Method logIn");
         AuthResponse response = authService.authenticateUser(request);
-        log.trace("Response authenticate: {}", response);
+        log.trace("Response: {}", response);
+        return response;
+    }
+
+    @PostMapping("/guest/password")
+    public PasswordResponse generatePassword(@Valid @Email String email) {
+        log.trace("Method generatePassword");
+        PasswordResponse response = authService.generatePassword(email);
+        log.trace("Response : {}", response);
+        return response;
+    }
+
+    @PostMapping("/admin")
+    public AuthResponse registerAdmin(@Valid @RequestBody UserRequest request) {
+        log.trace("Method registerAdmin");
+        AuthResponse response = authService.createAdmin(request);
+        log.trace("Response with created admin: {}", response);
         return response;
     }
 }
