@@ -3,6 +3,7 @@ package eu.senla.userservice.controller;
 import eu.senla.userservice.request.LoginRequest;
 import eu.senla.userservice.request.UserRequest;
 import eu.senla.userservice.response.AuthResponse;
+import eu.senla.userservice.response.PasswordResponse;
 import eu.senla.userservice.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
