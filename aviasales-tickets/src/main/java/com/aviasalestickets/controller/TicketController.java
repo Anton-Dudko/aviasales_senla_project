@@ -1,7 +1,7 @@
 package com.aviasalestickets.controller;
 
-import com.aviasalestickets.model.TicketStatus;
 import com.aviasalestickets.model.dto.BookingRequest;
+import com.aviasalestickets.model.dto.GenerateTicketRequest;
 import com.aviasalestickets.model.dto.TicketRequest;
 import com.aviasalestickets.model.dto.TicketResponse;
 import com.aviasalestickets.service.TicketService;
@@ -23,33 +23,38 @@ public class TicketController {
     }
 
     @GetMapping
-    public List<TicketResponse> findAll(){
+    public List<TicketResponse> findAll() {
         return ticketService.findAll();
     }
 
     @GetMapping("/{id}")
-    public TicketResponse findById(@PathVariable Long id){
+    public TicketResponse findById(@PathVariable Long id) {
         return ticketService.findById(id);
     }
 
     @GetMapping("/findByStatus/{status}")
-    public List<TicketResponse> findByStatus(@PathVariable String status){
+    public List<TicketResponse> findByStatus(@PathVariable String status) {
         return ticketService.findByStatus(status);
     }
 
     @PostMapping("/booking")
-    public String bookingTicket(@RequestBody BookingRequest request){
-        return ticketService.bookTicket(request.getId(), request.getUserId());
+    public void bookingTicket(@RequestBody BookingRequest request) {
+        ticketService.bookTicket(request.getId(), request.getUserId());
     }
 
     @PostMapping("/deleteBook/{id}")
-    public String deleteReservation(@PathVariable Long id){
-        return ticketService.deleteReservation(id);
+    public void deleteReservation(@PathVariable Long id) {
+        ticketService.deleteReservation(id);
     }
 
     @PostMapping("/payTicket/{id}")
-    public String payTicket(@PathVariable Long id){
-            return ticketService.payTicket(id);
+    public void payTicket(@PathVariable Long id) {
+        ticketService.payTicket(id);
+    }
+
+    @PostMapping("/generate")
+    public void generateTickets(@RequestBody GenerateTicketRequest request) {
+        ticketService.generateTickets(request);
     }
 
 }

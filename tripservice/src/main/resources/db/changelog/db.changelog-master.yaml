@@ -7,3 +7,5 @@ databaseChangeLog:
       file: db/changelog/changeset/create-flights-table.sql
   - include:
       file: db/changelog/changeset/insert-into-airplanes-table.sql
+  - include:
+      file: db/changelog/changeset/create-subscriptions-table.sql

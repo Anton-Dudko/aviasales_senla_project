@@ -1,0 +1,60 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: notification-service
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: senla.aviasales.may2023@gmail.com
+    password: oabobnbuvcljfqvz
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: false
+          starttls:
+            enable: true
+        encoding: UTF-8
+        from:
+          email: senla.aviasales.may2023@gmail.com
+  datasource:
+    url: jdbc:postgresql://notification-service-db/senla_aviasales_notification_service
+    username: postgres
+    password: 1995
+    driver-class-name: org.postgresql.Driver
+    jpa:
+      hibernate:
+        ddl-auto: validate
+      properties:
+        hibernate:
+          format_sql: true
+          jdbc:
+            batch_size: 100
+          order_inserts: true
+      show-sql: true
+  kafka:
+    properties:
+      security.protocol: 'PLAINTEXT'
+    bootstrap-servers: kafka:9092
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: notification_service
+      auto-offset-reset: earliest
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+    listener:
+      missing-topics-fatal: false
+  thymeleaf:
+    check-template-location: true
+    prefix: 'classpath:/templates/'
+    suffix: .html
+    mode: HTML5
+    encoding: UTF-8
