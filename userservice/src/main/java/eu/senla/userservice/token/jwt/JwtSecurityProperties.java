@@ -1,4 +1,4 @@
-package eu.senla.userservice.security.jwt;
+package eu.senla.userservice.token.jwt;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import java.time.Duration;
 import java.time.Period;
 
 @Configuration
-@ConfigurationProperties(prefix = "security")
+@ConfigurationProperties(prefix = "token")
 @Setter
 @Getter
 @Valid

@@ -11,7 +11,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/aviasales?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: postgres
 
-security:
+token:
   access_secret: secret
   refresh_secret: refresh
   access_time: 24h

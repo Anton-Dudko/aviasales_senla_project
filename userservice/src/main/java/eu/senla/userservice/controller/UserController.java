@@ -29,15 +29,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/admin/users")
-    public UserResponse createAdmin(@Valid @RequestBody UserRequest request) {
-        log.trace("Method saveAdmin");
-        request.setRole(Role.ROLE_ADMIN.name());
-        UserResponse response = userService.save(request);
-        log.trace("Response with created admin: {}", response);
-        return response;
-    }
-
     @GetMapping("/admin/users/{id}")
     public UserResponse findById(@PathVariable Long id) {
         log.trace("Method findById");
