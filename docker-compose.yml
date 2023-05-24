@@ -5,7 +5,7 @@ services:
     image: postgres:13.1-alpine
     container_name: userservice-postgredb
     ports:
-      - 32769:5432
+      - 32760:5432
     volumes:
       - ~/app/postgresql:/data
     environment:
@@ -29,10 +29,11 @@ services:
     environment:
       management.context-path: /userservice
       hostName: userservice
-      DATABASESERVER_PORT: "32769:5432"
+      DATABASESERVER_PORT: "32760:5432"
       SPRING_DATASOURCE_URL: jdbc:postgresql://userservice_db:5432/aviasales
-      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_USER: postgres
       SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_DATASOURCE_DB: aviasales
     depends_on:
       - userservice_db
     ports:

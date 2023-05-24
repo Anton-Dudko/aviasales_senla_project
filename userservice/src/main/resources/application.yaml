@@ -16,3 +16,16 @@ security:
   refresh_secret: refresh
   access_time: 24h
   refresh_time: 30d
+
+cloud:
+  eureka-host: localhost
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    enabled: false
+    service-url:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka/
