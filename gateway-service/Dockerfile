@@ -1,15 +1,21 @@
-FROM openjdk:jdk-oracle
+FROM maven:3.6.3-openjdk-17-slim AS build
 
 LABEL maintainer="Eugene Budnichenko <thaseugene@gmail.com>"
 
-# Set the working directory to /app
 WORKDIR /app
 
-# Copy the compiled JAR file from the host machine into the container
-COPY target/*.jar /app/app.jar
+# Copy the project files and build the JAR
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Expose port 8080 for the container
+FROM openjdk:17-jdk-slim
+
+WORKDIR /app
+
+# Copy the built JAR from the build container
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
 
-# Set the command to run when the container starts
-ENTRYPOINT ["java", "-Dspring.profiles.active=cloud" ,"-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=cloud", "-jar", "app.jar"]
+
