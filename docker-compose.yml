@@ -96,6 +96,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgrestripticket:5432/trip_ticket_db
       SPRING_DATASOURCE_USERNAME: postgres123
       SPRING_DATASOURCE_PASSWORD: postgres123
+      cloud.eureka-host: 172.31.0.10
     depends_on:
       - postgrestripticket
     ports:
