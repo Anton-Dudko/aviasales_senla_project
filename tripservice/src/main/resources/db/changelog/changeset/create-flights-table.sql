@@ -11,5 +11,6 @@ CREATE TABLE flights
     arrival timestamp NOT NULL,
     meal bool,
     hand_luggage bool,
-    luggage bool
+    luggage bool,
+    canceled bool
 )
