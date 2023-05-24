@@ -40,13 +40,12 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
             try {
                 String accessToken = filterService.getAuthToken(exchange.getRequest().getHeaders());
                 return filterService.takeUserDetailsFromToken(accessToken)
-                        .flatMap(userDto -> {
-                            if (config.isAdminCheck() && !userDto.getAuthorities().get(0).getAuthority().contains(ADMIN_PARAM_VALUE)) {
+                        .flatMap(userDetails -> {
+                            if (config.isAdminCheck() && !userDetails.getRole().equals(ADMIN_PARAM_VALUE)) {
                                 log.warn("No authorities for this");
                                 return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authorities for this"));
                             }
-                            exchange.getRequest().mutate().header(PARAM_HEADER_NAME, String.valueOf(userDto));
-                            return Mono.just(exchange);
+                            return Mono.just(filterService.insertUserDetailsInToResponse(exchange, userDetails));
                         })
                         .flatMap(chain::filter);
 
