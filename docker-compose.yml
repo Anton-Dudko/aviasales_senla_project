@@ -34,8 +34,10 @@ services:
       SPRING_DATASOURCE_USER: postgres
       SPRING_DATASOURCE_PASSWORD: admin
       SPRING_DATASOURCE_DB: aviasales
+      cloud.eureka-host: 172.31.0.10
     depends_on:
       - userservice_db
+      - gateway-service
     ports:
       - 8086:8086
     networks:
