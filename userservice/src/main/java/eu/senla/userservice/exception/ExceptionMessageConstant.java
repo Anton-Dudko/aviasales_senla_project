@@ -7,4 +7,5 @@ public final class ExceptionMessageConstant {
     public static final String INVALID_PASSWORD = "Invalid password.";
     public static final String ADMIN_DONT_CREATE = "Admin don't create.";
     public static final String USER_EXIST = "User with such email exist.";
+    public static final String USER_NOT_REGISTRATE = "User with such email hasn't registration in system.";
 }
