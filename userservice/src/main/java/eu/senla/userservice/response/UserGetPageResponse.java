@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserGetListResponse {
+public class UserGetPageResponse {
+    private Integer count;
     private List<UserResponse> userResponseList;
 }

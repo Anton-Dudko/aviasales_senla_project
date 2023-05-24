@@ -1,8 +1,8 @@
 package eu.senla.userservice.controller;
 
-import eu.senla.common.entity.Role;
+import eu.senla.userservice.request.UserFindRequest;
 import eu.senla.userservice.request.UserRequest;
-import eu.senla.userservice.response.UserGetListResponse;
+import eu.senla.userservice.response.UserGetPageResponse;
 import eu.senla.userservice.response.UserResponse;
 import eu.senla.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,23 +36,14 @@ public class UserController {
         return response;
     }
 
-    @GetMapping("/admin/userspage")
-    public UserGetListResponse findAllUsersInPage(@RequestParam(defaultValue = "0") Integer page,
-                                                  @RequestParam(defaultValue = "10") Integer size) {
-        log.trace("Method findAllUsersInPage");
+    @GetMapping("/admin/search")
+    public UserGetPageResponse findBySpecification(@RequestParam(defaultValue = "0") Integer page,
+                                                   @RequestParam(defaultValue = "10") Integer size,
+                                                   UserFindRequest request) {
+        log.trace("Method findBySpecification");
         Pageable pageable = PageRequest.of(page, size);
-        UserGetListResponse responses = userService.findAllByRoleOnPage(pageable, Role.ROLE_USER);
+        UserGetPageResponse responses = userService.findBySpecification(request, pageable);
         log.trace("Response with users: {}", responses);
-        return responses;
-    }
-
-    @GetMapping("/admin/adminspage")
-    public UserGetListResponse findAllAdminInPage(@RequestParam(defaultValue = "0") Integer page,
-                                                  @RequestParam(defaultValue = "10") Integer size) {
-        log.trace("Method findAllAdminInPage");
-        Pageable pageable = PageRequest.of(page, size);
-        UserGetListResponse responses = userService.findAllByRoleOnPage(pageable, Role.ROLE_ADMIN);
-        log.trace("Response with admins: {}", responses);
         return responses;
     }
 
