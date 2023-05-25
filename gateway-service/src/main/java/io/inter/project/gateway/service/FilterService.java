@@ -66,16 +66,13 @@ public class FilterService {
                         .header("username", userDetails.getUsername())
                         .header("email", userDetails.getEmail())
                         .header("role", userDetails.getRole())
+                        .header("dateBirth", userDetails.getDateBirth() != null ?
+                                userDetails.getDateBirth().toString() : null)
+                        .header("language", userDetails.getLanguage() != null ?
+                                userDetails.getLanguage() : null)
                 )
                 .build();
-        if (userDetails.getDateBirth() != null) {
-            exchange.mutate().request(builder -> builder
-                    .header("dateBirth", userDetails.getDateBirth().toString()).build());
-        }
-        if (userDetails.getLanguage() != null) {
-            exchange.mutate().request(builder -> builder
-                    .header("language", userDetails.getLanguage()));
-        }
+
         return exchange;
     }
 
