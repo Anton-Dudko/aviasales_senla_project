@@ -1,6 +1,6 @@
 package eu.senla.aviasales.service;
 
-import jakarta.mail.MessagingException;
+import javax.mail.MessagingException;
 
 /**
  * @author Mikhail.Leonovets
