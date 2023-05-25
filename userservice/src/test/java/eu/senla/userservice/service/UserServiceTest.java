@@ -71,11 +71,11 @@ class UserServiceTest {
         int countTotal = userRepository.findAll().size();
 
         UserFindRequest userFindRequestUser = UserFindRequest.builder()
-                .role(Role.ROLE_USER)
+                .role(ROLE_USER)
                 .build();
 
         UserFindRequest userFindRequestAdmin = UserFindRequest.builder()
-                .role(Role.ROLE_ADMIN)
+                .role(ROLE_ADMIN)
                 .build();
 
         UserGetPageResponse users = userService.findBySpecification(userFindRequestUser, pageable);
@@ -102,11 +102,11 @@ class UserServiceTest {
         int countTotal = userRepository.findAll().size();
 
         UserFindRequest userFindRequestEn = UserFindRequest.builder()
-                .language(Language.EN)
+                .language(Language.EN.name())
                 .build();
 
         UserFindRequest userFindRequestRu = UserFindRequest.builder()
-                .language(Language.RU)
+                .language(Language.RU.name())
                 .build();
 
         UserGetPageResponse en = userService.findBySpecification(userFindRequestEn, pageable);

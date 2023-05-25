@@ -31,6 +31,7 @@ public class UserRequestMapperImpl implements UserRequestMapper {
                 .email(entity.getEmail())
                 .dateBirth(entity.getDateBirth())
                 .language(entity.getLanguage().name())
+                .role(entity.getRole().name())
                 .build();
     }
 

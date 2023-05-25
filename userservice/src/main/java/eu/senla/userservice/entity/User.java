@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -52,7 +51,6 @@ public class User {
     private String password;
 
     @Column(name = "date_birth")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateBirth;
 
     @Enumerated(EnumType.STRING)

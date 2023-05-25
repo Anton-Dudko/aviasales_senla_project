@@ -20,7 +20,7 @@ public class UserRequest {
     @NonNull
     private String username;
     @NonNull
-    @Email(regexp = ".+[@].+[\\.].+")
+    @Email(regexp = ".+[@].+[\\.].+", message = "Not valid format email")
     private String email;
     @NonNull
     private String password;

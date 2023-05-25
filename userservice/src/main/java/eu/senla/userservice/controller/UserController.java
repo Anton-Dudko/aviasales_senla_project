@@ -39,7 +39,7 @@ public class UserController {
     @GetMapping("/admin/search")
     public UserGetPageResponse findBySpecification(@RequestParam(defaultValue = "0") Integer page,
                                                    @RequestParam(defaultValue = "10") Integer size,
-                                                   UserFindRequest request) {
+                                                   @RequestBody UserFindRequest request) {
         log.trace("Method findBySpecification");
         Pageable pageable = PageRequest.of(page, size);
         UserGetPageResponse responses = userService.findBySpecification(request, pageable);
@@ -47,7 +47,7 @@ public class UserController {
         return responses;
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/users/{id}")
     public UserResponse update(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
         UserResponse response = userService.update(id, request);
         log.trace("Response with updated user: {}", response);
