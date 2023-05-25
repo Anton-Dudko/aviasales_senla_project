@@ -11,5 +11,6 @@ CREATE TABLE airplanes
     wi_fi bool DEFAULT FALSE,
     seat_pitch int,
     seat_width int,
+    has_first_class bool DEFAULT FALSE,
     chair_scheme varchar(10)
 )

@@ -39,6 +39,9 @@ public class Airplane {
     @Column(name = "seat_width")
     private int seatWidth;
 
+    @Column(name = "has_first_class")
+    private boolean hasFirstClass;
+
     @Column(name = "chair_scheme")
     private String chairScheme;
 }
