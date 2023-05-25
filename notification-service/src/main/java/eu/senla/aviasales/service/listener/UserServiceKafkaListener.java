@@ -7,7 +7,7 @@ import eu.senla.aviasales.model.dto.UserRegisteredEventDto;
 import eu.senla.aviasales.model.dto.UserResetPasswordEventDto;
 import eu.senla.aviasales.service.MessageBuilderService;
 import eu.senla.aviasales.service.validator.ValidatorService;
-import jakarta.mail.MessagingException;
+import javax.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class UserKafkaListenerService {
+public class UserServiceKafkaListener {
     private final MessageBuilderService<UserRegisteredEventDto> userRegisteredEventDtoMessageBuilderService;
     private final MessageBuilderService<UserResetPasswordEventDto> userResetPasswordEventDtoMessageBuilderService;
     private final ValidatorService<UserDataDto> userDataDtoValidatorService;

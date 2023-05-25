@@ -140,15 +140,22 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=1995
       - POSTGRES_DB=senla_aviasales_notification_service
+    networks:
+      - backend
     ports:
       - "5434:5434"
   notification-service:
     build: ./notification-service
     ports:
       - "8087:8087"
+    environment:
+      cloud.eureka-host: 172.31.0.10
+    networks:
+      - backend
     restart: always
     depends_on:
       - notification-service-db
+      - kafka
   kafka:
     image: 'bitnami/kafka:2'
     ports:
@@ -161,6 +168,8 @@ services:
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
     depends_on:
       - zookeeper
+    networks:
+      - backend
   zookeeper:
     image: 'bitnami/zookeeper:3'
     ports:
@@ -169,6 +178,8 @@ services:
       - 'zookeeper_data:/bitnami'
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - backend
   #notification microservice end
 
 volumes:
