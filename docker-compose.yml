@@ -1,0 +1,208 @@
+version: "3.7"
+
+services:
+  userservice_db:
+    image: postgres:13.1-alpine
+    container_name: userservice-postgredb
+    ports:
+      - 32760:5432
+    volumes:
+      - ~/app/postgresql:/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=aviasales
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  userservice:
+    #    image: oglavdel/userservice
+    container_name: userservice
+    build:
+      context: ./userservice
+      dockerfile: Dockerfile
+    environment:
+      management.context-path: /userservice
+      hostName: userservice
+      DATABASESERVER_PORT: "32760:5432"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://userservice_db:5432/aviasales
+      SPRING_DATASOURCE_USER: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_DATASOURCE_DB: aviasales
+      cloud.eureka-host: 172.31.0.10
+    depends_on:
+      - userservice_db
+      - gateway-service
+    ports:
+      - 8086:8086
+    networks:
+      - backend
+
+  #finance microservice start
+  finance-service:
+    build: ./finance
+    ports:
+      - "8091:8091"
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://finance_db:5432/postgres
+      cloud.eureka-host: 172.31.0.10
+    depends_on:
+      - finance_db
+    networks:
+      - backend
+
+  finance_db:
+    image: postgres:13.1-alpine
+    ports:
+      - "5678:5432"
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    volumes:
+      - finance_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  #finance microservice end
+
+  #trip microservice start
+  postgrestripticket:
+    image: postgres:13.1-alpine
+    container_name: trip_ticket
+    ports:
+      - 32768:5432
+    volumes:
+      - ~/app/postgresql:/data
+    environment:
+      - POSTGRES_USER=postgres123
+      - POSTGRES_PASSWORD=postgres123
+      - POSTGRES_DB=trip_ticket_db
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres123 -d trip_ticket_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  tripservice:
+    container_name: tripservice
+    build: tripservice
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgrestripticket:5432/trip_ticket_db
+      SPRING_DATASOURCE_USERNAME: postgres123
+      SPRING_DATASOURCE_PASSWORD: postgres123
+      cloud.eureka-host: 172.31.0.10
+    depends_on:
+      - postgrestripticket
+    ports:
+      - 3000:8080
+    networks:
+      - backend
+  #trip microservice end
+
+  #ticket microservice start
+  ticket-service:
+    container_name: ticket-service
+    build: ticket-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgrestripticket:5432/trip_ticket_db
+      SPRING_DATASOURCE_USERNAME: postgres123
+      SPRING_DATASOURCE_PASSWORD: postgres123
+      cloud.eureka-host: 172.31.0.10
+    depends_on:
+      - postgrestripticket
+    ports:
+      - 8088:8080
+    networks:
+      - backend
+  #ticket microservice end
+
+  #gateway microservice start
+  eureka-service:
+    container_name: eureka-service
+    build:
+      context: ./eureka-service
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      backend:
+        ipv4_address: 172.31.0.10
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  gateway-service:
+    container_name: gateway-service
+    build:
+      context: ./gateway-service
+      dockerfile: Dockerfile
+    environment:
+      cloud.eureka-host: 172.31.0.10
+    networks:
+      - backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-service
+  #gateway microservice end
+
+  #notification microservice start
+  notification-service-db:
+    image: postgres:13.1-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1995
+      - POSTGRES_DB=senla_aviasales_notification_service
+    ports:
+      - "5434:5434"
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "8087:8087"
+    restart: always
+    depends_on:
+      - notification-service-db
+  kafka:
+    image: 'bitnami/kafka:2'
+    ports:
+      - '9092:9092'
+    volumes:
+      - 'kafka_data:/bitnami'
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+    depends_on:
+      - zookeeper
+  zookeeper:
+    image: 'bitnami/zookeeper:3'
+    ports:
+      - '2181:2181'
+    volumes:
+      - 'zookeeper_data:/bitnami'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  #notification microservice end
+
+volumes:
+  finance_data:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.31.0.0/16
