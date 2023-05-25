@@ -18,7 +18,7 @@ public class CriteriaTicketService {
     public List<Ticket> findAll(Long userId, String status, Long tripId) {
         return ticketRepository.findAll(
                 where(TicketSpecifications.idEqual(userId)
-                        .and(TicketSpecifications.statusLike(status))
+                        .and(TicketSpecifications.statusEqual(status))
                         .and(TicketSpecifications.tripIdLike(tripId))));
     }
 }

@@ -16,9 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TicketMapper {
 
-    private static final BigDecimal FIRST_CLASS_PRICE = BigDecimal.valueOf(200);
-    private static final BigDecimal SECOND_CLASS_PRICE = BigDecimal.valueOf(100);
-
     public Ticket convertDtoToEntity(TicketRequest request) {
         Ticket ticket = new Ticket();
         ticket.setFio(request.getFio());

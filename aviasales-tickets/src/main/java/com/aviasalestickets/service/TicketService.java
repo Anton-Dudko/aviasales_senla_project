@@ -24,61 +24,49 @@ public class TicketService {
     private final CriteriaTicketService criteriaTicketService;
 
 
-    public String save(TicketRequest request) {
-        Ticket ticket = ticketMapper.convertDtoToEntity(request);
-        ticketRepository.save(ticket);
-        return "ticket was save";
+    public Ticket save(TicketRequest request) {
+        return Optional.ofNullable(request)
+                .map(ticketMapper::convertDtoToEntity)
+                .map(ticketRepository::save)
+                .orElse(null);
     }
 
     public List<TicketResponse> search(TicketRequest request) {
         return Optional.ofNullable(request)
-                .map(req-> criteriaTicketService.findAll(request.getUserId(), request.getStatus(), request.getTripId()))
+                .map(req -> criteriaTicketService.findAll(request.getUserId(), request.getStatus(), request.getTripId()))
                 .map(ticketMapper::convertListEntityToDto)
                 .orElse(null);
     }
 
     public TicketResponse findById(Long id) {
-//        return Optional.ofNullable(id)
-//                .map(ticketRepository::findById)
-//                .map(ticketMapper::convertEntityToDto)
-//                .orElse(null);
-        return ticketMapper.convertEntityToDto(ticketRepository.findById(id).get());
-    }
-
-    public List<TicketResponse> findByStatus(String status) {
-        return Optional.of(status)
-                .map(st -> ticketRepository.findByStatus(TicketStatus.valueOf(st)))
-                .map(ticketMapper::convertListEntityToDto)
+        return Optional.ofNullable(id)
+                .map(ticketRepository::findTicketById)
+                .map(ticketMapper::convertEntityToDto)
                 .orElse(null);
     }
-
-    public List<TicketResponse> findByTripId(Long tripId) {
-        return Optional.of(tripId)
-                .map(ticketRepository::findByTripId)
-                .map(ticketMapper::convertListEntityToDto)
-                .orElse(null);
-    }
-
-    public List<TicketResponse> findAll() {
-        return ticketMapper.convertListEntityToDto(ticketRepository.findAll());
-    }
+    //TODO exceptions
 
     public void bookTicket(Long id, Long userId) {
-        Ticket ticket = ticketRepository.findById(id).get();
-        ticket.setUserId(userId);
-        ticket.setStatus(TicketStatus.BOOKED);
-        ticketRepository.save(ticket);
+        Optional.ofNullable(id)
+                .map(ticketRepository::findTicketById)
+                .map(t -> {
+                    t.setUserId(userId);
+                    t.setStatus(TicketStatus.BOOKED);
+                    return ticketRepository.save(t);
+                })
+                .orElseThrow(RuntimeException::new);
+        //TODO add exception
     }
 
     public void deleteReservation(Long id) {
-        Ticket ticket = ticketRepository.findById(id).get();
+        Ticket ticket = ticketRepository.findTicketById(id);
         ticket.setStatus(TicketStatus.FREE);
         ticket.setUserId(null);
         ticketRepository.save(ticket);
     }
 
     public void payTicket(Long id) {
-        Ticket ticket = ticketRepository.findById(id).get();
+        Ticket ticket = ticketRepository.findTicketById(id);
         ticket.setStatus(TicketStatus.PAID);
         ticketRepository.save(ticket);
     }
