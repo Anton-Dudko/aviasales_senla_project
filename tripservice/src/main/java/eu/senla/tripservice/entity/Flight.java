@@ -43,4 +43,11 @@ public class Flight {
 
     @Column(name = "luggage")
     private boolean luggage;
+
+    @Column(name = "duration")
+    private long duration;
+
+    @Column(name = "canceled")
+    private boolean canceled;
+
 }

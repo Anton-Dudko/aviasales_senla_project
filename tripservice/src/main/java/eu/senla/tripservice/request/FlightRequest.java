@@ -28,6 +28,8 @@ public class FlightRequest {
     @NotNull
     private String arrivalDateTime;
 
+    private boolean canceled;
+
     private boolean meal;
 
     private boolean HandLuggage;

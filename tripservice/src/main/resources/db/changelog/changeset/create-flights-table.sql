@@ -12,5 +12,6 @@ CREATE TABLE flights
     meal bool,
     hand_luggage bool,
     luggage bool,
+    duration bigint,
     canceled bool
 )

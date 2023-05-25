@@ -5,6 +5,7 @@ import eu.senla.tripservice.entity.Flight;
 import eu.senla.tripservice.entity.Trip;
 import eu.senla.tripservice.exeption.flight.FlightAlreadyExistsException;
 import eu.senla.tripservice.exeption.flight.FlightNotFoundException;
+import eu.senla.tripservice.exeption.ticket.TicketsNotCreatedException;
 import eu.senla.tripservice.mapper.Mapper;
 import eu.senla.tripservice.repository.FlightRepository;
 import eu.senla.tripservice.request.FindFlightRequest;
@@ -16,12 +17,14 @@ import eu.senla.tripservice.util.time.TimeFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -55,8 +58,8 @@ public class FlightService {
 
         flightRepository.save(flightToSave);
         log.info("New flight was added, id: " + flightToSave.getFlightId());
-        makeCreateTicketsRequest(generateTickets(flightToSave.getFlightId(),
-                flightRequest.getFirstClassTicketPercent(), flightRequest.getTicketPrice()));
+//        makeCreateTicketsRequest(generateTickets(flightToSave.getFlightId(),
+//                flightRequest.getFirstClassTicketPercent(), flightRequest.getTicketPrice()));
     }
 
     public FlightFullDataResponse findById(long id) {
@@ -129,19 +132,18 @@ public class FlightService {
 
     private void makeCreateTicketsRequest(TicketsCreateRequest ticketsCreateRequest) {
         log.info("FlightService-makeCreateTicketsRequest");
-        System.out.println(ticketsCreateRequest.getFirstClassPrice() + ", " + ticketsCreateRequest.getSecondClassPrice() + ", " + ticketsCreateRequest.getFirstClassTicketsNumber() + ", " + ticketsCreateRequest.getSecondClassTicketsNumber());
-//        RestTemplate restTemplate = new RestTemplate();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        HttpEntity<TicketsCreateRequest> request = new HttpEntity<>(ticketsCreateRequest, headers);
-//        String createTicketsRequestUrl = "https://ticketservice/tickets/generate";
-//
-//        ResponseEntity response = restTemplate.postForObject(createTicketsRequestUrl, request, ResponseEntity.class);
-//
-//        if (Objects.requireNonNull(response).getStatusCodeValue() != HttpStatus.OK.value()) {
-//            throw new TicketsNotCreatedException(response.getStatusCodeValue() + "Ticket not created");
-//        }
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<TicketsCreateRequest> request = new HttpEntity<>(ticketsCreateRequest, headers);
+        String createTicketsRequestUrl = "https://aviasales-tickets/tickets/generate";
+
+        ResponseEntity response = restTemplate.postForObject(createTicketsRequestUrl, request, ResponseEntity.class);
+
+        if (Objects.requireNonNull(response).getStatusCodeValue() != HttpStatus.OK.value()) {
+            throw new TicketsNotCreatedException(response.getStatusCodeValue() + "Ticket not created");
+        }
 
     }
 

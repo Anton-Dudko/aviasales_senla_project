@@ -15,6 +15,9 @@ import eu.senla.tripservice.response.trip.TripResponse;
 import eu.senla.tripservice.util.time.TimeFormatter;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 @Component
 public class Mapper {
     public FlightResponse mapFlightToFlightResponse(Flight flight) {
@@ -50,15 +53,20 @@ public class Mapper {
     }
 
     public Flight mapFlightRequestToFlight(FlightRequest flightRequest, Trip trip, Airplane airplane) {
+        LocalDateTime departureDateTime = TimeFormatter.formatStringToDateTime(flightRequest.getDepartureDateTime());
+        LocalDateTime arrivalDateTime = TimeFormatter.formatStringToDateTime(flightRequest.getArrivalDateTime());
+
         return Flight.builder()
                 .trip(trip)
                 .airplane(airplane)
                 .flightNumber(flightRequest.getFlightNumber())
-                .departureDateTime(TimeFormatter.formatStringToDateTime(flightRequest.getDepartureDateTime()))
-                .arrivalDateTime(TimeFormatter.formatStringToDateTime(flightRequest.getArrivalDateTime()))
+                .departureDateTime(departureDateTime)
+                .arrivalDateTime(arrivalDateTime)
                 .meal(flightRequest.isMeal())
                 .handLuggage(flightRequest.isHandLuggage())
                 .luggage(flightRequest.isLuggage())
+                .duration(Duration.between(departureDateTime, arrivalDateTime).toMinutes())
+                .canceled(flightRequest.isCanceled())
                 .build();
     }
 
