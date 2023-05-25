@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +21,7 @@ public class TicketService {
     private final TicketMapper ticketMapper;
     private final TicketRepository ticketRepository;
     private final List<GenerateTicketService> generateTicketServices;
+    private final CriteriaTicketService criteriaTicketService;
 
 
     public String save(TicketRequest request) {
@@ -28,16 +30,33 @@ public class TicketService {
         return "ticket was save";
     }
 
+    public List<TicketResponse> search(TicketRequest request) {
+        return Optional.ofNullable(request)
+                .map(req-> criteriaTicketService.findAll(request.getUserId(), request.getStatus(), request.getTripId()))
+                .map(ticketMapper::convertListEntityToDto)
+                .orElse(null);
+    }
+
     public TicketResponse findById(Long id) {
+//        return Optional.ofNullable(id)
+//                .map(ticketRepository::findById)
+//                .map(ticketMapper::convertEntityToDto)
+//                .orElse(null);
         return ticketMapper.convertEntityToDto(ticketRepository.findById(id).get());
     }
 
     public List<TicketResponse> findByStatus(String status) {
-        return ticketMapper.convertListEntityToDto(ticketRepository.findByStatus(TicketStatus.valueOf(status)));
+        return Optional.of(status)
+                .map(st -> ticketRepository.findByStatus(TicketStatus.valueOf(st)))
+                .map(ticketMapper::convertListEntityToDto)
+                .orElse(null);
     }
 
     public List<TicketResponse> findByTripId(Long tripId) {
-        return ticketMapper.convertListEntityToDto(ticketRepository.findByTripId(tripId));
+        return Optional.of(tripId)
+                .map(ticketRepository::findByTripId)
+                .map(ticketMapper::convertListEntityToDto)
+                .orElse(null);
     }
 
     public List<TicketResponse> findAll() {
