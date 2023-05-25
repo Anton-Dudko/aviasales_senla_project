@@ -36,6 +36,10 @@ public class TicketService {
         return ticketMapper.convertListEntityToDto(ticketRepository.findByStatus(TicketStatus.valueOf(status)));
     }
 
+    public List<TicketResponse> findByTripId(Long tripId) {
+        return ticketMapper.convertListEntityToDto(ticketRepository.findByTripId(tripId));
+    }
+
     public List<TicketResponse> findAll() {
         return ticketMapper.convertListEntityToDto(ticketRepository.findAll());
     }
@@ -68,6 +72,8 @@ public class TicketService {
         ticketRepository.saveAll(ticketsToSave);
 
     }
+
+
 }
 
 

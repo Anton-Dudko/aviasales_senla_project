@@ -32,6 +32,11 @@ public class TicketController {
         return ticketService.findById(id);
     }
 
+    @GetMapping("/findByTripId/{tripId}")
+    public List<TicketResponse> findByTripId(@PathVariable Long tripId) {
+        return ticketService.findByTripId(tripId);
+    }
+
     @GetMapping("/findByStatus/{status}")
     public List<TicketResponse> findByStatus(@PathVariable String status) {
         return ticketService.findByStatus(status);

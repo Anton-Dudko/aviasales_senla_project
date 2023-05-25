@@ -1,5 +1,6 @@
-
 spring:
+  application:
+    name: ticket-service
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/aviasales
@@ -18,3 +19,16 @@ spring:
       platform: postgres
   liquibase:
     change-log: classpath:db/changelog/init.xml
+
+cloud:
+  eureka-host: localhost
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka/
+    enabled: false
