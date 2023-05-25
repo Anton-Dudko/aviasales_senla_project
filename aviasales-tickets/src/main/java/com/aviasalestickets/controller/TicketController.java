@@ -8,6 +8,7 @@ import com.aviasalestickets.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -27,18 +28,23 @@ public class TicketController {
         return ticketService.findAll();
     }
 
+    @GetMapping("/search")
+    public List<TicketResponse> search(@RequestBody TicketRequest request) {
+            return ticketService.search(request);
+    }
+
     @GetMapping("/{id}")
     public TicketResponse findById(@PathVariable Long id) {
         return ticketService.findById(id);
     }
 
-    @GetMapping("/findByTripId/{tripId}")
-    public List<TicketResponse> findByTripId(@PathVariable Long tripId) {
+    @GetMapping("/findByTrip")
+    public List<TicketResponse> findByTripId(@RequestParam("tripId") Long tripId) {
         return ticketService.findByTripId(tripId);
     }
 
-    @GetMapping("/findByStatus/{status}")
-    public List<TicketResponse> findByStatus(@PathVariable String status) {
+    @GetMapping("/findByStatus")
+    public List<TicketResponse> findByStatus(@RequestParam("status") String status) {
         return ticketService.findByStatus(status);
     }
 
@@ -47,7 +53,7 @@ public class TicketController {
         ticketService.bookTicket(request.getId(), request.getUserId());
     }
 
-    @PostMapping("/deleteBook/{id}")
+    @DeleteMapping("/{id}")
     public void deleteReservation(@PathVariable Long id) {
         ticketService.deleteReservation(id);
     }
