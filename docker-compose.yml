@@ -44,23 +44,23 @@ services:
       - backend
 
   #finance microservice start
-  finance:
+  finance-service:
     build: ./finance
     ports:
       - "8091:8091"
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://finance_db:5432/postgres
+      cloud.eureka-host: 172.31.0.10
     depends_on:
       - finance_db
     networks:
       - backend
 
   finance_db:
-    image: postgres
+    image: postgres:13.1-alpine
     ports:
-      - "5432:5432"
-    restart: always
+      - "5678:5432"
     environment:
       POSTGRES_PASSWORD: mysecretpassword
     volumes:
