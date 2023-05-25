@@ -17,7 +17,6 @@ import java.util.List;
 @Component
 public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> {
 
-    public static final String PARAM_HEADER_NAME = "x-auth-user";
     public static final String ADMIN_PARAM_VALUE = "ROLE_ADMIN";
     private final FilterService filterService;
 
@@ -43,7 +42,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                         .flatMap(userDetails -> {
                             if (config.isAdminCheck() && !userDetails.getRole().equals(ADMIN_PARAM_VALUE)) {
                                 log.warn("No authorities for this");
-                                return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No authorities for this"));
+                                return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied"));
                             }
                             return Mono.just(filterService.insertUserDetailsInToResponse(exchange, userDetails));
                         })

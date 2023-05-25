@@ -18,9 +18,9 @@ spring:
         - id: card-service
           uri: lb://${cloud.finance-service-host}
           predicates:
-            - Path=/card/**
+            - Path=/admin/cards/**
           filters:
-            - AuthFilter=false
+            - AuthFilter=true
 
         - id: payment-service
           uri: lb://${cloud.finance-service-host}
@@ -44,8 +44,9 @@ spring:
         - id: user-service
           uri: lb://${cloud.userservice-host}
           predicates:
-            - Path=/{id}
-            - Method=PUT
+            - Path=/users/{id}
+          filters:
+            - UserIdFilter
 
         - id: ticket-service
           uri: lb://${cloud.ticket-service-host}
