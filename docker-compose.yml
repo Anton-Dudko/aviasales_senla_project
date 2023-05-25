@@ -105,6 +105,23 @@ services:
       - backend
   #trip microservice end
 
+  #ticket microservice start
+  ticket-service:
+    container_name: ticket-service
+    build: ./aviasales-tickets
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgrestripticket:5432/trip_ticket_db
+      SPRING_DATASOURCE_USERNAME: postgres123
+      SPRING_DATASOURCE_PASSWORD: postgres123
+      cloud.eureka-host: 172.31.0.10
+    depends_on:
+      - postgrestripticket
+    ports:
+      - 8088:8080
+    networks:
+      - backend
+  #ticket microservice end
+
   #gateway microservice start
   eureka-service:
     container_name: eureka-service
