@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ValidationException;
+
 @Slf4j
 @RestControllerAdvice
 public class ProjectExceptionHandler extends ResponseEntityExceptionHandler {
@@ -34,4 +36,17 @@ public class ProjectExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn(ex.getMessage());
         return new ErrorResponce(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
     }
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponce handleValidationException(ValidationException ex) {
+        log.warn(ex.getMessage());
+        return new ErrorResponce(HttpStatus.BAD_REQUEST.value(), ex.getMessage().split("propertyPath=")[1].split(",")[0] + " " + ex.getMessage().split("interpolatedMessage='")[1].split("'")[0]);
+    }
+
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ErrorResponce handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+//        return new ErrorResponce(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+//    }
 }
