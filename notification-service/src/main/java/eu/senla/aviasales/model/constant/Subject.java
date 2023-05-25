@@ -6,4 +6,8 @@ package eu.senla.aviasales.model.constant;
  */
 public interface Subject {
     String USER_REGISTERED_SUCCESSFULLY = "Aviasales registration";
+    String USER_RESET_PASSWORD = "Aviasales reset password";
+    String PAYMENT_SUCCESS = "Aviasales payment success";
+
+    String PAYMENT_ERROR = "Aviasales payment error";
 }
