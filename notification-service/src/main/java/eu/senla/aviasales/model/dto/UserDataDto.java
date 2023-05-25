@@ -1,4 +1,4 @@
-package eu.senla.aviasales.dto;
+package eu.senla.aviasales.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +9,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CustomEmailDto {
-    private String topic;
-    private String body;
+public class UserDataDto {
+    private String userLanguage;
     private String email;
+    private String userName;
 
 }
