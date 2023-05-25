@@ -1,45 +1,62 @@
 package com.aviasales.finance.controller;
 
+import com.aviasales.finance.dto.FieldsErrorResponse;
 import com.aviasales.finance.dto.PaymentDto;
-import com.aviasales.finance.external.controller.PaymentExternalSystem;
+import com.aviasales.finance.dto.SimpleResponse;
+import com.aviasales.finance.dto.TicketInfoDto;
+import com.aviasales.finance.service.BlockingCardService;
+import com.aviasales.finance.service.PaymentSystemService;
+import com.aviasales.finance.service.external.TicketService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.stream.Collectors;
 
 @RestController
 public class PaymentController {
-    private PaymentExternalSystem paymentExternalSystem;
+    private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
+    private final PaymentSystemService paymentSystemService;
+    private final BlockingCardService blockingCardService;
+    private final TicketService ticketService;
+
+    @Autowired
+    public PaymentController(PaymentSystemService paymentSystemService,
+                             BlockingCardService blockingCardService, TicketService ticketService) {
+        this.paymentSystemService = paymentSystemService;
+        this.blockingCardService = blockingCardService;
+        this.ticketService = ticketService;
+    }
 
     @PostMapping("/payment")
-    public ResponseEntity<?> createPayment(@Valid @RequestBody PaymentDto paymentDto, BindingResult bindingResult) {
+    public ResponseEntity<?> createPayment(@RequestBody @Valid PaymentDto paymentDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(bindingResult.getAllErrors().stream()
-                    .filter(error -> error instanceof FieldError)
-                    .map(error -> (FieldError) error)
-                    .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new FieldsErrorResponse(bindingResult), HttpStatus.BAD_REQUEST);
         }
 
-        //toDo add card fields validataion
-        //ToDo Check if ticket exists and available using tickets endpoint
-        //ToDo add check that ticket was booked by others person
-//        boolean result = ticketService.ch(paymentDto.getTicketId());
+        try {
+            logger.info("Checking card details");
+            blockingCardService.validateCardDetails(paymentDto.getCardNumber());
 
+            logger.info("Checking ticked");
+            TicketInfoDto ticketInfoDto = ticketService.getTicketInfo(paymentDto.getTicketId());
+            ticketService.checkTicketNotPaid(ticketInfoDto);
 
-//        if (!result) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//                    .body("Ticket with the following id not available for paying - " + paymentDto.getTicketId());
-//        }
+            logger.info("sending to payment system");
+            paymentSystemService.sendPaymentToExternalPaymentSystem(paymentDto, ticketInfoDto);
+            ticketService.updateTicketToPaid(ticketInfoDto.getTicketId());
+        } catch (RuntimeException e) {
+            logger.info("Send failure message to KAFKA");
+            throw e;
+        }
 
-
-
-        //Что насчет цены тикета?
-        return ResponseEntity.status(HttpStatus.OK).build();
+        logger.info("Send success message to KAFKA");
+        return ResponseEntity.status(HttpStatus.OK).body(new SimpleResponse("Ticked paid. Id - " + paymentDto.getTicketId()));
     }
 }

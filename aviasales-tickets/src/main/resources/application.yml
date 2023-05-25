@@ -1,5 +1,9 @@
-
 spring:
+  application:
+    name: ticket-service
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/aviasales
@@ -16,3 +20,24 @@ spring:
   sql:
     init:
       platform: postgres
+  liquibase:
+    change-log: classpath:db/changelog/init.xml
+
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true
+
+
+cloud:
+  eureka-host: localhost
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka/
+    enabled: false

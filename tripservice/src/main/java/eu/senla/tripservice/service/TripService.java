@@ -1,20 +1,21 @@
 package eu.senla.tripservice.service;
 
 import eu.senla.tripservice.entity.Trip;
-import eu.senla.tripservice.exeption.trip.TripAlreadyExistException;
+import eu.senla.tripservice.exeption.trip.TripAlreadyExistsException;
 import eu.senla.tripservice.exeption.trip.TripNotFoundException;
+import eu.senla.tripservice.mapper.Mapper;
 import eu.senla.tripservice.repository.TripRepository;
 import eu.senla.tripservice.request.TripRequest;
-import eu.senla.tripservice.response.AllTripsResponse;
-import eu.senla.tripservice.response.TripResponse;
+import eu.senla.tripservice.response.trip.ListTripsFullDataResponse;
+import eu.senla.tripservice.response.trip.ListTripsResponse;
+import eu.senla.tripservice.response.trip.TripFullDataResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,33 +23,34 @@ import java.util.Optional;
 public class TripService {
 
     private final TripRepository tripRepository;
-    private final ModelMapper modelMapper;
+    private final Mapper mapper;
 
     @Autowired
-    public TripService(TripRepository tripRepository, ModelMapper modelMapper) {
+    public TripService(TripRepository tripRepository, Mapper mapper) {
         this.tripRepository = tripRepository;
-        this.modelMapper = modelMapper;
+        this.mapper = mapper;
     }
 
     @Transactional
     public void save(TripRequest tripRequest) {
         log.info("TripService-save");
-        Trip tripToSave = convertToTrip(tripRequest);
+        Trip tripToSave = mapper.mapTripRequestToTrip(tripRequest);
 
         if (isTripExist(tripToSave.getDepartureCity(), tripToSave.getArrivalCity()))
-            throw new TripAlreadyExistException("Trip " + tripToSave.getDepartureCity()
+            throw new TripAlreadyExistsException("Trip " + tripToSave.getDepartureCity()
                     + " - " + tripToSave.getArrivalCity() + " is already exist");
 
-        tripRepository.save(convertToTrip(tripRequest));
-        log.info("New trip was added: " + tripRequest);
+        tripRepository.save(tripToSave);
+        log.info("New trip was added: " + tripToSave);
     }
 
-    public Optional<Trip> findByDepartureCityAndArrivalCity(String departureCity, String arivalCity) {
-        return tripRepository.findByDepartureCityAndArrivalCity(departureCity, arivalCity);
+    public Trip findByDepartureCityAndArrivalCity(String departureCity, String arivalCity) {
+        return tripRepository.findByDepartureCityAndArrivalCity(departureCity, arivalCity).orElseThrow(() ->
+                new TripNotFoundException("Trip " + departureCity + " - " + arivalCity + " not found"));
     }
 
-    public TripResponse findById(long id) {
-        return convertToTripResponse(findTripById(id));
+    public TripFullDataResponse findById(long id) {
+        return mapper.mapTripToTripFullDataResponse(findTripById(id));
     }
 
     public Trip findTripById(long id) {
@@ -57,19 +59,33 @@ public class TripService {
                 .orElseThrow(() -> new TripNotFoundException("Trip with id = " + id + " not found"));
     }
 
-    public AllTripsResponse findAll(PageRequest pageRequest) {
+    public ListTripsFullDataResponse findAllTrips(PageRequest pageRequest) {
         log.info("TripService-findAll");
-        AllTripsResponse allTripsResponse = new AllTripsResponse();
-        allTripsResponse.setTripResponseList(tripRepository.findAll(pageRequest).getContent());
-        allTripsResponse.setCount(tripRepository.count());
-        return allTripsResponse;
+        ListTripsFullDataResponse listTripsFullDataResponse = new ListTripsFullDataResponse();
+        listTripsFullDataResponse.setTripFullDataResponseList(tripRepository.findAll(pageRequest)
+                .stream()
+                .map(mapper::mapTripToTripFullDataResponse)
+                .collect(Collectors.toList()));
+        listTripsFullDataResponse.setTotal(tripRepository.count());
+        return listTripsFullDataResponse;
+    }
+
+    public ListTripsResponse findAll(PageRequest pageRequest) {
+        log.info("TripService-findAll");
+        ListTripsResponse listTripsResponse = new ListTripsResponse();
+        listTripsResponse.setTripFullDataResponseList(tripRepository.findAll(pageRequest)
+                .stream()
+                .map(mapper::mapTripToTripResponse)
+                .collect(Collectors.toList()));
+        listTripsResponse.setTotal(tripRepository.count());
+        return listTripsResponse;
     }
 
     @Transactional
     public void update(long id, TripRequest tripRequest) {
         log.info("TripService-update");
         if (isTripExist(tripRequest.getDepartureCity(), tripRequest.getArrivalCity()))
-            throw new TripAlreadyExistException("Trip " + tripRequest.getDepartureCity()
+            throw new TripAlreadyExistsException("Trip " + tripRequest.getDepartureCity()
                     + " - " + tripRequest.getArrivalCity() + " is already exist");
 
         Trip tripToUpdate = findTripById(id);
@@ -81,19 +97,11 @@ public class TripService {
     }
 
     @Transactional
-    public void deleteById(long id) {
+    public void delete(long id) {
         log.info("TripService-deleteById: " + id);
         findTripById(id);
         tripRepository.deleteById(id);
         log.info("Trip with id: " + id + " was deleted");
-    }
-
-    private Trip convertToTrip(TripRequest tripRequest) {
-        return modelMapper.map(tripRequest, Trip.class);
-    }
-
-    private TripResponse convertToTripResponse(Trip trip) {
-        return modelMapper.map(trip, TripResponse.class);
     }
 
     private boolean isTripExist(String departureCity, String arrivalCity) {

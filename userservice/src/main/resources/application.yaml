@@ -11,8 +11,30 @@ spring:
     url: jdbc:postgresql://localhost:5432/aviasales?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: postgres
 
-security:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+token:
   access_secret: secret
   refresh_secret: refresh
   access_time: 24h
   refresh_time: 30d
+
+cloud:
+  eureka-host: localhost
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    enabled: false
+    service-url:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka/
+
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true

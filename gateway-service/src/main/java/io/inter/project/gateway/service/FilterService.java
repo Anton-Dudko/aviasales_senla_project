@@ -1,7 +1,8 @@
 package io.inter.project.gateway.service;
 
 import io.inter.project.gateway.exception.GatewayServiceException;
-import io.inter.project.gateway.model.UserDto;
+
+import io.inter.project.gateway.request.UserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Objects;
@@ -44,7 +46,7 @@ public class FilterService {
         }
     }
 
-    public Mono<UserDto> takeUserDetailsFromToken(String accessToken) {
+    public Mono<UserDetails> takeUserDetailsFromToken(String accessToken) {
         log.debug("Token value {}", accessToken);
 
         return webClientBuilder.build().get()
@@ -54,7 +56,24 @@ public class FilterService {
                     log.warn("Token not found or expired");
                     return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token not found or expired"));
                 })
-                .bodyToMono(UserDto.class);
+                .bodyToMono(UserDetails.class);
+    }
+
+    public ServerWebExchange insertUserDetailsInToResponse(ServerWebExchange exchange, UserDetails userDetails) {
+        exchange.mutate()
+                .request(builder -> builder
+                        .header("id", userDetails.getUserId().toString())
+                        .header("username", userDetails.getUsername())
+                        .header("email", userDetails.getEmail())
+                        .header("role", userDetails.getRole())
+                        .header("dateBirth", userDetails.getDateBirth() != null ?
+                                userDetails.getDateBirth().toString() : null)
+                        .header("language", userDetails.getLanguage() != null ?
+                                userDetails.getLanguage() : null)
+                )
+                .build();
+
+        return exchange;
     }
 
 }

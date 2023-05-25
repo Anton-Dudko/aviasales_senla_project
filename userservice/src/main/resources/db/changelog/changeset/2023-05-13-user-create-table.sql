@@ -3,10 +3,15 @@
 
 CREATE TABLE users
 (
-    id       bigserial NOT NULL,
-    username varchar   NOT NULL,
-    email    varchar   NOT NULL UNIQUE,
-    password varchar   NOT NULL,
-    role     role      NOT NULL,
+    id            bigserial NOT NULL,
+    username      varchar   NOT NULL UNIQUE,
+    email         varchar   NOT NULL UNIQUE,
+    password      varchar   NOT NULL,
+    date_birth    date,
+    language      language,
+    role          role      NOT NULL,
+    refresh_token varchar   NOT NULL,
+    access_token  varchar   NOT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (id)
 );
+

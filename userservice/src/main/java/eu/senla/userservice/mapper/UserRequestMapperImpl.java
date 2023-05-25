@@ -1,6 +1,7 @@
 package eu.senla.userservice.mapper;
 
 import eu.senla.common.entity.Role;
+import eu.senla.userservice.entity.Language;
 import eu.senla.userservice.entity.User;
 import eu.senla.userservice.request.UserRequest;
 import eu.senla.userservice.response.UserResponse;
@@ -28,6 +29,9 @@ public class UserRequestMapperImpl implements UserRequestMapper {
                 .userId(entity.getId())
                 .username(entity.getUsername())
                 .email(entity.getEmail())
+                .dateBirth(entity.getDateBirth())
+                .language(entity.getLanguage().name())
+                .role(entity.getRole().name())
                 .build();
     }
 
@@ -36,11 +40,13 @@ public class UserRequestMapperImpl implements UserRequestMapper {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        if (request.getRole() != null) {
-            user.setRole(Role.valueOf(request.getRole()));
-        } else {
-            user.setRole(Role.valueOf("ROLE_USER"));
-        }
+        user.setDateBirth(request.getDateBirth());
+        user.setLanguage(request.getLanguage() != null
+                ? Language.valueOf(request.getLanguage())
+                : Language.EN);
+        user.setRole(request.getRole() != null
+                ? Role.valueOf(request.getRole())
+                : Role.valueOf("ROLE_USER"));
         return user;
     }
 

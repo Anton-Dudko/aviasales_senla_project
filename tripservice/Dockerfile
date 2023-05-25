@@ -9,6 +9,6 @@ FROM openjdk:17-jdk-slim
 
 COPY --from=build /app/target/aviasales-0.0.1-SNAPSHOT.jar /app/tripservice.jar
 
-CMD ["java", "-jar", "/app/tripservice.jar"]
+CMD ["java", "-Dspring.profiles.active=cloud", "-jar", "/app/tripservice.jar"]
 
 EXPOSE 3000

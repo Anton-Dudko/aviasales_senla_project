@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -40,20 +41,36 @@ public class User {
     @Column
     private String username;
 
-    @NotNull
-    @Column
-    private String password;
-
     @Email(regexp = ".+[@].+[\\.].+")
     @NotNull
     @Column
     private String email;
+
+    @NotNull
+    @Column
+    private String password;
+
+    @Column(name = "date_birth")
+    private LocalDate dateBirth;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "language")
+    @Type(type = "pgsql_enum")
+    private Language language;
 
     @Enumerated(EnumType.STRING)
     @NotNull
     @Column(columnDefinition = "role")
     @Type(type = "pgsql_enum")
     private Role role;
+
+    @Column(name = "refresh_token")
+    @NotNull
+    private String refreshToken;
+
+    @Column(name = "access_token")
+    @NotNull
+    private String accessToken;
 
     @Override
     public boolean equals(Object o) {

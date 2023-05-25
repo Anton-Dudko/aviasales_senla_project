@@ -20,8 +20,8 @@ services:
       timeout: 5s
       retries: 5
 
-  aviasales-tickets:
-    container_name: aviasales-tickets
+  ticket-service:
+    container_name: ticket-service
     build: .
     environment:
       DATABASESERVER_PORT: "5432"

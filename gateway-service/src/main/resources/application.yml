@@ -3,9 +3,10 @@ server:
 
 cloud:
   eureka-host: localhost
-  test-service-host: test-service
+  finance-service-host: finance-service
   userservice-host: userservice
-
+  ticket-service-host: tickets-service
+  trip-service-host: tripservice-service
 spring:
   application:
     name: api-gateway-service
@@ -14,31 +15,69 @@ spring:
     loadbalancer.ribbon.enabled: false
     gateway:
       routes:
-        - id: test-service
-          uri: lb://${cloud.test-service-host}:8085
+        - id: card-service
+          uri: lb://${cloud.finance-service-host}
           predicates:
-            - Path=/finance/**
+            - Path=/admin/cards/**
           filters:
-            - AuthFilter=false #checking for Admin = false
+            - AuthFilter=true
 
-        - id: test-service
-          uri: lb://${cloud.test-service-host}:8085
+        - id: payment-service
+          uri: lb://${cloud.finance-service-host}
           predicates:
-            - Path=/confident/**
+            - Path=/payment
           filters:
-            - AuthFilter=true #checking for Admin = true
+            - AuthFilter=false
 
-        - id: userservice
-          uri: lb://${cloud.userservice-host}:8086
+        - id: admin-user-service
+          uri: lb://${cloud.userservice-host}
           predicates:
-            - Path=/**
+            - Path=/admin/**, /admin
+          filters:
+            - AuthFilter=true
 
+        - id: guest-user-service
+          uri: lb://${cloud.userservice-host}
+          predicates:
+            - Path=/guest/**, /guest, /auth/**
 
+        - id: user-service
+          uri: lb://${cloud.userservice-host}
+          predicates:
+            - Path=/users/{id}
+          filters:
+            - UserIdFilter
 
-      discovery:
-        locator:
-          enabled: true
+        - id: ticket-service
+          uri: lb://${cloud.ticket-service-host}
+          predicates:
+            - Path=/tickets/**
+          filters:
+            - AuthFilter=false
 
+        - id: flight-service-admin
+          uri: lb://${cloud.trip-service-host}
+          predicates:
+              - Path=/flights/admin/**
+          filters:
+              - AuthFilter=true
+
+        - id: flight-service-guest
+          uri: lb://${cloud.trip-service-host}
+          predicates:
+              - Path=/flights/guest/**
+
+        - id: trip-service-admin
+          uri: lb://${cloud.trip-service-host}
+          predicates:
+            - Path=/trips/admin/**
+          filters:
+            - AuthFilter=true
+
+        - id: trip-service-guest
+          uri: lb://${cloud.trip-service-host}
+          predicates:
+            - Path=/trips/guest/**
 
 eureka:
   instance:
@@ -61,8 +100,18 @@ management:
     beans:
       enabled: true
 
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true
+
 logging:
   level:
     com.netflix: WARN
-    org.springframework.cloud.gateway: DEBUG
+    org.springframework.cloud.gateway: TRACE
     reactor.netty.http.client: DEBUG
+
+
+swagger:
+  config:
+    refreshrate: 10000

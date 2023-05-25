@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: tripservice-service
+  mvc:
+    pathmatch:
+     matching-strategy: ant_path_matcher
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1:32768/trip_ticket_db
+    password: postgres123
+    username: postgres123
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+cloud:
+  eureka-host: localhost
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${cloud.eureka-host}:8761/eureka/
+    enabled: false
+
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true
