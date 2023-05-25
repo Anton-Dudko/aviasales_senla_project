@@ -9,8 +9,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ResetPasswordDto {
-    private String email;
-    private String code;
+public class NewTripEventDto extends UserDataDto {
+    private String from;
+    private String to;
+    private String tripDate;
+    private String price;
 
 }

@@ -9,8 +9,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class UserRegistrationDto {
-    private String username;
-    private String email;
+public class UserRegisteredEventDto extends UserDataDto {
 
 }

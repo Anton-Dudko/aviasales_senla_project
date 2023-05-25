@@ -1,4 +1,4 @@
-package eu.senla.aviasales.exception.constant;
+package eu.senla.aviasales.model.constant.message;
 
 /**
  * @author Mikhail.Leonovets

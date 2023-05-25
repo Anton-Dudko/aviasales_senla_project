@@ -22,6 +22,7 @@ import java.util.Date;
 @RequestMapping("/api/admin")
 @RestController
 public class AdminController {
+
     @GetMapping("/email")
     public ResponseEntity<?> getEmailsByParams(@RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy")
                                                Date startDate,
