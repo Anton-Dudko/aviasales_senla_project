@@ -1,5 +1,7 @@
 package eu.senla.userservice.service;
 
+import eu.senla.common.entity.Role;
+import eu.senla.userservice.entity.Language;
 import eu.senla.userservice.entity.User;
 import eu.senla.userservice.request.UserFindRequest;
 import lombok.AllArgsConstructor;
@@ -20,10 +22,10 @@ public class UserSpecification implements Specification<User> {
     public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
         if (request.getRole() != null) {
-            predicates.add(criteriaBuilder.equal(root.get("role"), request.getRole()));
+            predicates.add(criteriaBuilder.equal(root.get("role"), Role.valueOf(request.getRole())));
         }
         if (request.getLanguage() != null) {
-            predicates.add(criteriaBuilder.equal(root.get("language"), request.getLanguage()));
+            predicates.add(criteriaBuilder.equal(root.get("language"), Language.valueOf(request.getLanguage())));
         }
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     }
