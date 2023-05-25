@@ -1,6 +1,6 @@
 package eu.senla.aviasales.controller;
 
-import eu.senla.aviasales.dto.CustomEmailDto;
+import eu.senla.aviasales.model.dto.CustomEmailDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +22,7 @@ import java.util.Date;
 @RequestMapping("/api/admin")
 @RestController
 public class AdminController {
+
     @GetMapping("/email")
     public ResponseEntity<?> getEmailsByParams(@RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "dd-MM-yyyy")
                                                Date startDate,

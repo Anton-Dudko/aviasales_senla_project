@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  */
 @RequiredArgsConstructor
 @Service
-public class GoogleSmtpEmailService implements EmailService {
+public class SmtpEmailService implements EmailService {
     private final JavaMailSender javaMailSender;
 
     @Override
