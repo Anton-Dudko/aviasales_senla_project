@@ -3,10 +3,14 @@ package eu.senla.tripservice.controller;
 import eu.senla.tripservice.exeption.trip.TripNotCreatedException;
 import eu.senla.tripservice.request.FindFlightRequest;
 import eu.senla.tripservice.request.FlightRequest;
-import eu.senla.tripservice.response.flight.*;
+import eu.senla.tripservice.response.flight.FlightFullDataResponse;
+import eu.senla.tripservice.response.flight.FlightInfo;
+import eu.senla.tripservice.response.flight.ListFlightsFullDataResponse;
+import eu.senla.tripservice.response.flight.ListFlightsResponse;
 import eu.senla.tripservice.service.FlightService;
 import eu.senla.tripservice.util.error.ErrorUtil;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -45,8 +49,11 @@ public class FlightController {
     }
 
     @GetMapping("/guest/find")
-    public ListFlightsResponse findByTripAndDate(@RequestBody FindFlightRequest flightRequest) {
-        return flightService.find(flightRequest);
+    public ListFlightsResponse findBySpec(@RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "20") int size,
+                                          @RequestBody FindFlightRequest flightRequest) {
+        Pageable pageable = PageRequest.of(page, size);
+        return flightService.find(flightRequest, pageable);
     }
 
     @GetMapping("/guest/info/{id}")
@@ -68,7 +75,6 @@ public class FlightController {
         flightService.delete(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
-
 
     private void validate(BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

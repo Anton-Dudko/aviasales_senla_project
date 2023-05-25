@@ -11,19 +11,22 @@ import eu.senla.tripservice.repository.FlightRepository;
 import eu.senla.tripservice.request.FindFlightRequest;
 import eu.senla.tripservice.request.FlightRequest;
 import eu.senla.tripservice.request.TicketsCreateRequest;
-import eu.senla.tripservice.response.flight.*;
+import eu.senla.tripservice.response.flight.FlightFullDataResponse;
+import eu.senla.tripservice.response.flight.FlightInfo;
+import eu.senla.tripservice.response.flight.ListFlightsFullDataResponse;
+import eu.senla.tripservice.response.flight.ListFlightsResponse;
 import eu.senla.tripservice.response.ticket.TicketsResponse;
-import eu.senla.tripservice.util.time.TimeFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -58,8 +61,8 @@ public class FlightService {
 
         flightRepository.save(flightToSave);
         log.info("New flight was added, id: " + flightToSave.getFlightId());
-//        makeCreateTicketsRequest(generateTickets(flightToSave.getFlightId(),
-//                flightRequest.getFirstClassTicketPercent(), flightRequest.getTicketPrice()));
+        makeCreateTicketsRequest(generateTickets(flightToSave.getFlightId(),
+                flightRequest.getFirstClassTicketPercent(), flightRequest.getTicketPrice()));
     }
 
     public FlightFullDataResponse findById(long id) {
@@ -83,23 +86,19 @@ public class FlightService {
         return listFlightsFullDataResponse;
     }
 
-    public ListFlightsResponse find(FindFlightRequest findFlightRequest) {
+    public ListFlightsResponse find(FindFlightRequest findFlightRequest, Pageable pageable) {
         log.info("FlightService-find");
-        Trip trip = tripService.findByDepartureCityAndArrivalCity(findFlightRequest.getDepartureCity(),
-                findFlightRequest.getArrivalCity());
 
-        LocalDateTime localDateTimeFrom = TimeFormatter.formatStringToDateTime(findFlightRequest.getDateFrom());
-        LocalDateTime localDateTimeTo = TimeFormatter.formatStringToDateTime(findFlightRequest.getDateTo());
-
-        List<FlightResponse> flightList = flightRepository.findAllByTripAndDepartureDateTimeBetween(trip, localDateTimeFrom, localDateTimeTo)
-                .stream()
-                .map(mapper::mapFlightToFlightResponse)
-                .collect(Collectors.toList());
-
+        Page<Flight> flights = flightRepository.findAll(new FlightSpecification(findFlightRequest), pageable);
         ListFlightsResponse listFlightsResponse = new ListFlightsResponse();
-        listFlightsResponse.setFlights(flightList);
-        listFlightsResponse.setTotal(flightList.size());
 
+        if (flights.hasContent()) {
+            listFlightsResponse.setFlights(flights.getContent().stream().map(mapper::mapFlightToFlightResponse).collect(Collectors.toList()));
+            listFlightsResponse.setTotal(flights.getContent().size());
+        } else {
+            listFlightsResponse.setFlights(new ArrayList<>());
+            listFlightsResponse.setTotal(0);
+        }
         return listFlightsResponse;
     }
 
