@@ -1,6 +1,5 @@
 package eu.senla.tripservice.repository;
 
-import com.sun.source.tree.OpensTree;
 import eu.senla.tripservice.entity.Subscription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
