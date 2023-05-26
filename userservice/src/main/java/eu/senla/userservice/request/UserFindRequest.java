@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,4 +16,6 @@ import lombok.Setter;
 public class UserFindRequest {
     private String language;
     private String role;
+    private LocalDate dateBirthFrom;
+    private LocalDate dateBirthTo;
 }
