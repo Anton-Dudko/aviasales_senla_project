@@ -27,6 +27,15 @@ public class UserSpecification implements Specification<User> {
         if (request.getLanguage() != null) {
             predicates.add(criteriaBuilder.equal(root.get("language"), Language.valueOf(request.getLanguage())));
         }
+        if (request.getDateBirthFrom() != null && request.getDateBirthTo() == null) {
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("dateBirth"), request.getDateBirthFrom()));
+        }
+        if (request.getDateBirthFrom() == null && request.getDateBirthTo() != null) {
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("dateBirth"), request.getDateBirthTo()));
+        }
+        if (request.getDateBirthFrom() != null && request.getDateBirthTo() != null) {
+            predicates.add(criteriaBuilder.between(root.get("dateBirth"), request.getDateBirthFrom(), request.getDateBirthTo().plusDays(1L)));
+        }
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     }
 }
