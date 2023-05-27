@@ -5,12 +5,12 @@ import com.aviasalestickets.model.TicketStatus;
 import com.aviasalestickets.model.TicketType;
 import com.aviasalestickets.model.dto.TicketRequest;
 import com.aviasalestickets.model.dto.TicketResponse;
+import com.aviasalestickets.model.dto.TicketResponseWithCount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -45,6 +45,16 @@ public class TicketMapper {
             list.add(convertEntityToDto(t));
         }
         return list;
+    }
+
+    public TicketResponseWithCount convertListEntityToDtoWithCount(List<Ticket> entityList) {
+        TicketResponseWithCount ticketResponseWithCount = new TicketResponseWithCount(0, new ArrayList<>());
+
+        for (Ticket t : entityList) {
+            ticketResponseWithCount.getList().add(convertEntityToDto(t));
+        }
+        ticketResponseWithCount.setCount(ticketResponseWithCount.getList().size());
+        return ticketResponseWithCount;
     }
 
     public Ticket buildTicket(BigDecimal price, int seatNumber, Long tripId, TicketType ticketType) {
