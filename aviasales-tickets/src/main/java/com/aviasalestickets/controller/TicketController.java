@@ -1,10 +1,7 @@
 package com.aviasalestickets.controller;
 
 import com.aviasalestickets.model.Ticket;
-import com.aviasalestickets.model.dto.BookingRequest;
-import com.aviasalestickets.model.dto.GenerateTicketRequest;
-import com.aviasalestickets.model.dto.TicketRequest;
-import com.aviasalestickets.model.dto.TicketResponse;
+import com.aviasalestickets.model.dto.*;
 import com.aviasalestickets.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +21,7 @@ public class TicketController {
     }
 
     @GetMapping
-    public List<TicketResponse> search(TicketRequest request) {
+    public TicketResponseWithCount search(TicketRequest request) {
         return ticketService.search(request);
     }
 

@@ -6,8 +6,10 @@ import com.aviasalestickets.model.TicketStatus;
 import com.aviasalestickets.model.dto.GenerateTicketRequest;
 import com.aviasalestickets.model.dto.TicketRequest;
 import com.aviasalestickets.model.dto.TicketResponse;
+import com.aviasalestickets.model.dto.TicketResponseWithCount;
 import com.aviasalestickets.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TicketService {
 
     private final TicketMapper ticketMapper;
@@ -31,10 +34,11 @@ public class TicketService {
                 .orElse(null);
     }
 
-    public List<TicketResponse> search(TicketRequest request) {
+    public TicketResponseWithCount search(TicketRequest request) {
+        log.info(request.toString());
         return Optional.ofNullable(request)
                 .map(req -> criteriaTicketService.findAll(request.getUserId(), request.getStatus(), request.getTripId()))
-                .map(ticketMapper::convertListEntityToDto)
+                .map(ticketMapper::convertListEntityToDtoWithCount)
                 .orElse(null);
     }
 
