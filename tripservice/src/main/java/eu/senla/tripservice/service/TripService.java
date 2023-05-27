@@ -32,7 +32,7 @@ public class TripService {
     }
 
     @Transactional
-    public void save(TripRequest tripRequest) {
+    public Trip save(TripRequest tripRequest) {
         log.info("TripService-save");
         Trip tripToSave = mapper.mapTripRequestToTrip(tripRequest);
 
@@ -42,6 +42,7 @@ public class TripService {
 
         tripRepository.save(tripToSave);
         log.info("New trip was added: " + tripToSave);
+        return tripToSave;
     }
 
     public Trip findByDepartureCityAndArrivalCity(String departureCity, String arivalCity) {
@@ -82,7 +83,7 @@ public class TripService {
     }
 
     @Transactional
-    public void update(long id, TripRequest tripRequest) {
+    public Trip update(long id, TripRequest tripRequest) {
         log.info("TripService-update");
         if (isTripExist(tripRequest.getDepartureCity(), tripRequest.getArrivalCity()))
             throw new TripAlreadyExistsException("Trip " + tripRequest.getDepartureCity()
@@ -94,6 +95,7 @@ public class TripService {
         tripRepository.save(tripToUpdate);
 
         log.info("Updated trip was saved, new values: " + tripToUpdate);
+        return tripToUpdate;
     }
 
     @Transactional

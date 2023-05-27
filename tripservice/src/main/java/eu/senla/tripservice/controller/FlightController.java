@@ -1,5 +1,6 @@
 package eu.senla.tripservice.controller;
 
+import eu.senla.tripservice.entity.Flight;
 import eu.senla.tripservice.exeption.trip.TripNotCreatedException;
 import eu.senla.tripservice.request.FindFlightRequest;
 import eu.senla.tripservice.request.FlightRequest;
@@ -28,20 +29,18 @@ public class FlightController {
     }
 
     @PostMapping("/admin/create")
-    public ResponseEntity<HttpStatus> create(@RequestBody @Valid FlightRequest flightRequest,
-                                             BindingResult bindingResult) {
+    public ResponseEntity<Flight> create(@RequestBody @Valid FlightRequest flightRequest,
+                                         BindingResult bindingResult) {
         validate(bindingResult);
-        flightService.create(flightRequest);
-
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(flightService.create(flightRequest));
     }
 
-    @GetMapping("/admin/{id}")
+    @GetMapping("/admin/find/{id}")
     public FlightFullDataResponse findById(@PathVariable("id") long id) {
         return flightService.findById(id);
     }
 
-    @GetMapping("/admin/all")
+    @GetMapping("/admin/find/all")
     public ListFlightsFullDataResponse findAll(@RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "20") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -62,12 +61,11 @@ public class FlightController {
     }
 
     @PutMapping("/admin/update/{id}")
-    public ResponseEntity<HttpStatus> update(@PathVariable("id") long id,
+    public ResponseEntity<Flight> update(@PathVariable("id") long id,
                                              @Valid @RequestBody FlightRequest flightRequest,
                                              BindingResult bindingResult) {
         validate(bindingResult);
-        flightService.update(id, flightRequest);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(flightService.update(id, flightRequest));
     }
 
     @DeleteMapping("/admin/delete/{id}")
