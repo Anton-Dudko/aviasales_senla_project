@@ -1,5 +1,6 @@
 package eu.senla.tripservice.controller;
 
+import eu.senla.tripservice.entity.Trip;
 import eu.senla.tripservice.exeption.trip.TripNotCreatedException;
 import eu.senla.tripservice.request.TripRequest;
 import eu.senla.tripservice.response.trip.ListTripsFullDataResponse;
@@ -27,10 +28,9 @@ public class TripController {
     }
 
     @PostMapping("/admin/create")
-    public ResponseEntity<HttpStatus> create(@RequestBody @Valid TripRequest tripRequest, BindingResult bindingResult) {
+    public ResponseEntity<Trip> create(@RequestBody @Valid TripRequest tripRequest, BindingResult bindingResult) {
         validate(bindingResult);
-        tripService.save(tripRequest);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(tripService.save(tripRequest));
     }
 
     @GetMapping("/admin/find/{id}")
@@ -38,14 +38,14 @@ public class TripController {
         return tripService.findById(id);
     }
 
-    @GetMapping("/admin/all")
+    @GetMapping("/admin/find-all")
     public ListTripsFullDataResponse findAllTrips(@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "20") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         return tripService.findAllTrips(pageRequest);
     }
 
-    @GetMapping("/guest/all")
+    @GetMapping("/guest/find-all")
     public ListTripsResponse findAll(@RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "20") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -53,12 +53,11 @@ public class TripController {
     }
 
     @PutMapping("/admin/update/{id}")
-    public ResponseEntity<HttpStatus> update(@PathVariable("id") long id,
+    public ResponseEntity<Trip> update(@PathVariable("id") long id,
                                              @Valid @RequestBody TripRequest tripRequest,
                                              BindingResult bindingResult) {
         validate(bindingResult);
-        tripService.update(id, tripRequest);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(tripService.update(id, tripRequest));
     }
 
     @DeleteMapping("/admin/delete/{id}")

@@ -50,7 +50,7 @@ public class FlightService {
     }
 
     @Transactional
-    public void create(FlightRequest flightRequest) {
+    public Flight create(FlightRequest flightRequest) {
         log.info("FlightService-create");
 
         Trip trip = tripService.findTripById(flightRequest.getTripId());
@@ -65,6 +65,7 @@ public class FlightService {
         log.info("New flight was added, id: " + flightToSave.getFlightId());
         makeCreateTicketsRequest(generateTickets(flightToSave.getFlightId(),
                 flightRequest.getFirstClassTicketPercent(), flightRequest.getTicketPrice()));
+        return flightToSave;
     }
 
     public FlightFullDataResponse findById(long id) {
@@ -105,7 +106,7 @@ public class FlightService {
     }
 
     @Transactional
-    public void update(long id, FlightRequest flightRequest) {
+    public Flight update(long id, FlightRequest flightRequest) {
         log.info("FlightService-update");
         findFlightById(id);
         Trip trip = tripService.findTripById(flightRequest.getTripId());
@@ -114,6 +115,7 @@ public class FlightService {
         updatedFlight.setFlightId(id);
         flightRepository.save(updatedFlight);
         log.info("Flight with id: " + id + " was updated");
+        return updatedFlight;
     }
 
     @Transactional
@@ -138,7 +140,7 @@ public class FlightService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<TicketsCreateRequest> request = new HttpEntity<>(ticketsCreateRequest, headers);
-        String createTicketsRequestUrl = "http://ticket-service/tickets/generate";
+        String createTicketsRequestUrl = "http://ticket-service:8080/tickets/generate";
 
         try {
             restTemplate.postForObject(createTicketsRequestUrl, request, ResponseEntity.class);
