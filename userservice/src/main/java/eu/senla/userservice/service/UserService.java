@@ -29,6 +29,7 @@ public class UserService {
 
 
     public UserGetPageResponse findBySpecification(UserFindRequest request, Pageable pageable) {
+        log.info("Method findBySpecification");
         Page<User> pagedResult = userRepository.findAll(new UserSpecification(request), pageable);
         return pagedResult.hasContent()
                 ? UserGetPageResponse.builder()
@@ -42,13 +43,13 @@ public class UserService {
     }
 
     public UserResponse findById(Long id) {
-        log.trace("Method findById");
+        log.info("Method findById");
         return userMapper.entityToResponse(userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER)));
     }
 
     public UserResponse update(Long id, UserRequest request) {
-        log.trace("Method update");
+        log.info("Method update");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
         user.setUsername(request.getUsername());
@@ -66,7 +67,7 @@ public class UserService {
 
 
     public void delete(Long id) {
-        log.trace("Method delete");
+        log.info("Method delete");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
         userRepository.delete(user);

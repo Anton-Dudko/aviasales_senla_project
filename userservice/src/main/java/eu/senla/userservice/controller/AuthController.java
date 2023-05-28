@@ -23,35 +23,35 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/guest")
+    @PostMapping("/guest/registration")
     public AuthResponse registerUser(@Valid @RequestBody UserRequest request) {
-        log.trace("Method registrations");
+        log.info("Method registrations");
         AuthResponse response = authService.createUser(request);
-        log.trace("Response: {}", response);
+        log.info("Response: {}", response);
         return response;
     }
 
     @PostMapping("/guest/login")
     public AuthResponse logIn(@Valid @RequestBody LoginRequest request) {
-        log.trace("Method logIn");
+        log.info("Method logIn");
         AuthResponse response = authService.authenticateUser(request);
-        log.trace("Response: {}", response);
+        log.info("Response: {}", response);
         return response;
     }
 
-    @PostMapping("/guest/password")
+    @PostMapping("/guest/new-password")
     public PasswordResponse generatePassword(@Valid @Email String email) {
-        log.trace("Method generatePassword");
+        log.info("Method generatePassword");
         PasswordResponse response = authService.generatePassword(email);
-        log.trace("Response : {}", response);
+        log.info("Response : {}", response);
         return response;
     }
 
-    @PostMapping("/admin")
+    @PostMapping("/admin/registration")
     public AuthResponse registerAdmin(@Valid @RequestBody UserRequest request) {
-        log.trace("Method registerAdmin");
+        log.info("Method registerAdmin");
         AuthResponse response = authService.createAdmin(request);
-        log.trace("Response with created admin: {}", response);
+        log.info("Response with created admin: {}", response);
         return response;
     }
 }
