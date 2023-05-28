@@ -66,6 +66,6 @@ public class ProjectExceptionHandler extends ResponseEntityExceptionHandler {
         for (String str : validationList) {
             message = message + " " + str;
         }
-        return new ResponseEntity<>(message, status);
+        return new ResponseEntity<>(new ErrorResponce(status.value(), message), status);
     }
 }

@@ -21,7 +21,7 @@ public class JwtProviderImpl implements JwtProvider {
 
     @Override
     public String generateAccessToken(User user) {
-        log.trace("Method generateAccessToken");
+        log.info("Method generateAccessToken");
         Date date = Date.from(LocalDateTime.now()
                 .plusMinutes(securityProperties.getAccessTime().toMinutes())
                 .atZone(ZoneId.systemDefault()).toInstant());
@@ -35,7 +35,7 @@ public class JwtProviderImpl implements JwtProvider {
 
     @Override
     public String generateRefreshToken(User user) {
-        log.trace("Method generateRefreshToken");
+        log.info("Method generateRefreshToken");
         Date date = Date.from(LocalDateTime.now()
                 .plusDays(securityProperties.getRefreshTime().getDays())
                 .atZone(ZoneId.systemDefault()).toInstant());
@@ -53,25 +53,25 @@ public class JwtProviderImpl implements JwtProvider {
 
     @Override
     public String getLoginFromAccessToken(String token) {
-        log.trace("Method getLoginFromAccessToken");
+        log.info("Method getLoginFromAccessToken");
         return getLoginFromToken(token, securityProperties.getAccessSecret());
     }
 
     private boolean validateToken(String token, String secret) {
-        log.trace("Method validateToken");
+        log.info("Method validateToken");
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-            log.trace("Return true");
+            log.info("Return true");
             return true;
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        log.trace("Return false");
+        log.info("Return false");
         return false;
     }
 
     private String getLoginFromToken(String token, String secret) {
-        log.trace("Method getLoginFromToken");
+        log.info("Method getLoginFromToken");
         Claims claims = Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)

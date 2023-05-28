@@ -1,5 +1,6 @@
 package eu.senla.userservice.request;
 
+import eu.senla.userservice.exception.ExceptionMessageConstant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class UserRequest {
     @NonNull
     private String username;
     @NonNull
-    @Email(regexp = ".+[@].+[\\.].+", message = "Not valid format email")
+    @Email(regexp = ".+[@].+[\\.].+", message = ExceptionMessageConstant.NOT_VALID_EMAIL)
     private String email;
     @NonNull
     private String password;
