@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class UserIdFilter extends AbstractGatewayFilterFactory<UserIdFilter.Config> {
 
+    public static final String ADMIN_PARAM_VALUE = "ROLE_ADMIN";
     private final FilterService filterService;
 
     @Autowired
@@ -32,10 +33,11 @@ public class UserIdFilter extends AbstractGatewayFilterFactory<UserIdFilter.Conf
                 String accessToken = filterService.getAuthToken(exchange.getRequest().getHeaders());
                 return filterService.takeUserDetailsFromToken(accessToken).flatMap(userDetails -> {
                     int incomingRequestId = extractRequestIdFromPath(exchange.getRequest().getPath().toString());
-                    if (incomingRequestId != userDetails.getUserId()) {
+                    if (incomingRequestId == userDetails.getUserId() || userDetails.getRole().equals(ADMIN_PARAM_VALUE)) {
+                        return Mono.just(filterService.insertUserDetailsInToResponse(exchange, userDetails));
+                    } else {
                         return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied"));
                     }
-                    return Mono.just(filterService.insertUserDetailsInToResponse(exchange, userDetails));
                 }).flatMap(chain::filter);
 
             } catch (GatewayServiceException e) {
@@ -52,5 +54,6 @@ public class UserIdFilter extends AbstractGatewayFilterFactory<UserIdFilter.Conf
         return Integer.parseInt(segments[segments.length - 1]);
     }
 
-    public static class Config {}
+    public static class Config {
+    }
 }
