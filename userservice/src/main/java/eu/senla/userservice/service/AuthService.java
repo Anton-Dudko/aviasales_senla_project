@@ -5,6 +5,7 @@ import eu.senla.userservice.entity.User;
 import eu.senla.userservice.exception.ExceptionMessageConstant;
 import eu.senla.userservice.exception.custom.AuthenticatException;
 import eu.senla.userservice.exception.custom.NotFoundException;
+import eu.senla.userservice.kafka.UserEvent;
 import eu.senla.userservice.mapper.UserRequestMapper;
 import eu.senla.userservice.repository.UserRepository;
 import eu.senla.userservice.request.LoginRequest;
@@ -17,6 +18,8 @@ import eu.senla.userservice.token.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -27,6 +30,11 @@ public class AuthService {
     private final UserRequestMapper userRequestMapper;
     private final UserRepository repository;
 
+    private final Producer<String, UserEvent> producer;
+
+    private final String registrTopic = "user_registered_event";
+    private final String passwordResetTopic = "user_reset_password_event";
+
     public AuthResponse createUser(UserRequest request) {
         if (repository.findByEmail(request.getEmail()).isEmpty()) {
             User user = userRequestMapper.requestToEntity(request);
@@ -34,6 +42,18 @@ public class AuthService {
             user.setAccessToken(generateAccessToken(user));
             user.setRefreshToken(generateRefreshToken(user));
             user = repository.save(user);
+
+            UserEvent event = UserEvent.builder()
+                    .username(user.getUsername())
+                    .language(user.getLanguage().name())
+                    .email(user.getEmail())
+                    .build();
+
+            ProducerRecord<String, UserEvent> producerRecord = new ProducerRecord<>(registrTopic, event);
+            producer.send(producerRecord);
+            producer.close();
+            log.info("Sending message ... {}", producerRecord);
+
             return AuthResponse.builder()
                     .accessToken(user.getAccessToken())
                     .refreshToken(user.getRefreshToken())
@@ -91,6 +111,19 @@ public class AuthService {
         String password = RandomStringUtils.randomAscii(email.length());
         user.setPassword(PasswordCoder.codingPassword(password));
         user = repository.save(user);
+
+        UserEvent event = UserEvent.builder()
+                .username(user.getUsername())
+                .language(user.getLanguage().name())
+                .email(user.getEmail())
+                .password(password)
+                .build();
+
+        ProducerRecord<String, UserEvent> producerRecord = new ProducerRecord<>(passwordResetTopic, event);
+        producer.send(producerRecord);
+        producer.close();
+        log.info("Sending message ... {}", producerRecord);
+
         return PasswordResponse.builder()
                 .password(password)
                 .email(user.getEmail())
