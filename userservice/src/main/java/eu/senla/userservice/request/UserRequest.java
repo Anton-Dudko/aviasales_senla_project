@@ -9,7 +9,7 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
-import java.time.LocalDate;
+import javax.validation.constraints.Pattern;
 
 
 @Setter
@@ -25,8 +25,10 @@ public class UserRequest {
     private String email;
     @NonNull
     private String password;
-
-    private LocalDate dateBirth;
+    @NonNull
+    @Pattern(regexp = "(19|20)\\d\\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])",
+            message = ExceptionMessageConstant.NOT_VALID_DATE_FORMAT)
+    private String dateBirth;
     private String language;
     private String role;
 }

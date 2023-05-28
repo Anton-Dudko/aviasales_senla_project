@@ -1,6 +1,7 @@
 package eu.senla.userservice.entity;
 
 import eu.senla.common.entity.Role;
+import eu.senla.userservice.exception.ExceptionMessageConstant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -41,7 +43,7 @@ public class User {
     @Column
     private String username;
 
-    @Email(regexp = ".+[@].+[\\.].+")
+    @Email(regexp = ".+[@].+[\\.].+", message = ExceptionMessageConstant.NOT_VALID_EMAIL)
     @NotNull
     @Column
     private String email;
@@ -50,6 +52,8 @@ public class User {
     @Column
     private String password;
 
+    @Past(message = ExceptionMessageConstant.NOT_VALID_DATE)
+    @NotNull
     @Column(name = "date_birth")
     private LocalDate dateBirth;
 

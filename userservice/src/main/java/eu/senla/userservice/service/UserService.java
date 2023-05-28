@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Slf4j
@@ -54,9 +55,7 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
         user.setUsername(request.getUsername());
         user.setPassword(PasswordCoder.codingPassword(request.getPassword()));
-        user.setDateBirth(request.getDateBirth() != null
-                ? request.getDateBirth()
-                : user.getDateBirth());
+        user.setDateBirth(LocalDate.parse(request.getDateBirth()));
         user.setLanguage(request.getLanguage() != null
                 ? Language.valueOf(request.getLanguage())
                 : user.getLanguage());

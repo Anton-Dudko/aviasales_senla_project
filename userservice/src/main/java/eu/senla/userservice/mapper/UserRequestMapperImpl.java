@@ -8,6 +8,7 @@ import eu.senla.userservice.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class UserRequestMapperImpl implements UserRequestMapper {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setDateBirth(request.getDateBirth());
+        user.setDateBirth(LocalDate.parse(request.getDateBirth()));
         user.setLanguage(request.getLanguage() != null
                 ? Language.valueOf(request.getLanguage())
                 : Language.EN);

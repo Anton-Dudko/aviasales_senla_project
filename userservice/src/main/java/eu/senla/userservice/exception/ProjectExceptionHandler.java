@@ -54,13 +54,13 @@ public class ProjectExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponce handleValidationException(ValidationException ex) {
         log.warn(ex.getMessage());
-        return new ErrorResponce(HttpStatus.BAD_REQUEST.value(), ex.getMessage().split("propertyPath=")[1].split(",")[0] + " " + ex.getMessage().split("interpolatedMessage='")[1].split("'")[0]);
+        return new ErrorResponce(HttpStatus.BAD_REQUEST.value(), ex.getMessage().split("propertyPath=")[1].split(",")[0]
+                + " " + ex.getMessage().split("interpolatedMessage='")[1].split("'")[0]);
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String errorMessage = ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
         List<String> validationList = ex.getBindingResult().getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).collect(Collectors.toList());
         String message = "";
         for (String str : validationList) {
