@@ -14,6 +14,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class UserFindRequest {
+    private String username;
+    private String email;
     private String language;
     private String role;
     private LocalDate dateBirthFrom;

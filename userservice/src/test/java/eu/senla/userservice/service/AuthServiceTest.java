@@ -20,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -41,7 +39,7 @@ class AuthServiceTest {
     private final String ROLE_ADMIN = Role.ROLE_ADMIN.name();
     private final String ROLE_USER = Role.ROLE_USER.name();
     private final String LANGUAGE = Language.EN.name();
-    private final LocalDate DATE_BIRTH = LocalDate.of(2000, 12, 30);
+    private final String DATE_BIRTH = "2000-12-12";
 
     UserRequest userRequest = UserRequest.builder()
             .username(USERNAME)

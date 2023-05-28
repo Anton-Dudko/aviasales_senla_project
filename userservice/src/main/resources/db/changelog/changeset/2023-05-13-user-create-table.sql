@@ -7,7 +7,7 @@ CREATE TABLE users
     username      varchar   NOT NULL UNIQUE,
     email         varchar   NOT NULL UNIQUE,
     password      varchar   NOT NULL,
-    date_birth    date,
+    date_birth    date      NOT NULL,
     language      language,
     role          role      NOT NULL,
     refresh_token varchar   NOT NULL,

@@ -21,6 +21,14 @@ public class UserSpecification implements Specification<User> {
     @Override
     public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
+        if (request.getEmail() != null && !request.getEmail().isEmpty()) {
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("email")),
+                    "%" + request.getEmail().toLowerCase() + "%"));
+        }
+        if (request.getUsername() != null && !request.getUsername().isEmpty()) {
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("username")),
+                    "%" + request.getUsername().toLowerCase() + "%"));
+        }
         if (request.getRole() != null) {
             predicates.add(criteriaBuilder.equal(root.get("role"), Role.valueOf(request.getRole())));
         }
