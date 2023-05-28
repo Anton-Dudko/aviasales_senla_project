@@ -85,6 +85,21 @@ public class TicketService {
     }
 
 
+    public String payTickets(List<Long> ticketsId) {
+        List<Ticket> tickets = ticketRepository.findAllById(ticketsId);
+
+        for(Ticket ticket : tickets){
+            if (!ticket.getStatus().equals(TicketStatus.FREE)){
+                return "not available";
+            }
+        }
+
+        for(Ticket ticket : tickets){
+            ticket.setStatus(TicketStatus.PAID);
+            ticketRepository.save(ticket);
+        }
+        return "tickets were paid";
+    }
 }
 
 

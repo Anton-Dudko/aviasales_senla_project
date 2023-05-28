@@ -6,9 +6,9 @@ spring:
       matching-strategy: ant_path_matcher
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/aviasales
-    username: user
-    password: 123456
+    url: jdbc:postgresql://localhost:32768/trip_ticket_db
+    username: postgres123
+    password: postgres123
   jpa:
     hibernate:
       ddl-auto: none
@@ -22,6 +22,11 @@ spring:
       platform: postgres
   liquibase:
     change-log: classpath:db/changelog/init.xml
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 springfox:
   documentation:

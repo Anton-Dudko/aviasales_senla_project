@@ -4,10 +4,12 @@ import com.aviasalestickets.model.Ticket;
 import com.aviasalestickets.model.dto.*;
 import com.aviasalestickets.service.TicketService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tickets")
@@ -33,6 +35,11 @@ public class TicketController {
     @PostMapping("/booking")
     public void bookingTicket(@RequestBody BookingRequest request) {
         ticketService.bookTicket(request.getId(), request.getUserId());
+    }
+
+    @GetMapping("/pay-tickets")
+    public String bookTickets(@RequestParam List<Long> ticketsId) {
+        return ticketService.payTickets(ticketsId);
     }
 
     @DeleteMapping("/{id}")
