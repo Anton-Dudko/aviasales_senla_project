@@ -1,12 +1,10 @@
 package eu.senla.tripservice.response.flight;
 
-import eu.senla.tripservice.dto.TicketDTO;
+import eu.senla.tripservice.response.ticket.TicketsResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Setter
 @Getter
@@ -14,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class FlightInfo {
     private long flightId;
-    private List<TicketDTO> tickets;
+    private TicketsResponse tickets;
     private String departureCity;
     private String arrivalCity;
     private String flightNumber;

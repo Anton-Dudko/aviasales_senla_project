@@ -5,7 +5,7 @@ import eu.senla.tripservice.entity.Flight;
 import eu.senla.tripservice.entity.Trip;
 import eu.senla.tripservice.exeption.flight.FlightAlreadyExistsException;
 import eu.senla.tripservice.exeption.flight.FlightNotFoundException;
-import eu.senla.tripservice.exeption.ticket.TicketsNotCreatedException;
+import eu.senla.tripservice.exeption.ticket.TicketsRequestException;
 import eu.senla.tripservice.mapper.Mapper;
 import eu.senla.tripservice.repository.FlightRepository;
 import eu.senla.tripservice.request.FindFlightRequest;
@@ -127,9 +127,9 @@ public class FlightService {
     }
 
     public FlightInfo info(long id) {
-        log.info("FlightService-info, id:" + id);
+        log.info("FlightService-info, id: " + id);
         FlightInfo flightInfo = mapper.mapFlightToFlightInfo(findFlightById(id));
-        flightInfo.setTickets(makeGetTicketsRequest(id).getTickets());
+        flightInfo.setTickets(makeGetTicketsRequest(id));
         return flightInfo;
     }
 
@@ -145,7 +145,7 @@ public class FlightService {
         try {
             restTemplate.postForObject(createTicketsRequestUrl, request, ResponseEntity.class);
         } catch (Exception e) {
-            throw new TicketsNotCreatedException("Ticket not created: " + e.getMessage());
+            throw new TicketsRequestException("Ticket not created: " + e.getMessage());
         }
 
     }
@@ -154,9 +154,21 @@ public class FlightService {
         log.info("Flight-service-makeGetTicketsRequest");
         RestTemplate restTemplate = new RestTemplate();
 
-        String getTicketsRequestUrl = "https://ticket-service/" + id;
+        String getTicketsRequestUrl = "http://ticket-service:8080/tickets?tripId=" + id;
 
-        return restTemplate.getForObject(getTicketsRequestUrl, TicketsResponse.class);
+        TicketsResponse response;
+
+        try {
+           response = restTemplate.getForObject(getTicketsRequestUrl, TicketsResponse.class);
+        } catch (Exception e) {
+            throw new TicketsRequestException("Error occurred while GET request to: " + getTicketsRequestUrl);
+        }
+
+        if (response == null || response.getTickets().isEmpty()) {
+            response = new TicketsResponse();
+            response.setMessage("Tickets not received");
+        }
+        return response;
     }
 
     private TicketsCreateRequest generateTickets(long flightId, int ticketPercent, double ticketPrice) {
