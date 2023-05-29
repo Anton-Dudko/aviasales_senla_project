@@ -1,11 +1,11 @@
-package eu.senla.aviasales.service.listener;
+package eu.senla.aviasales.listener;
 
 import static eu.senla.aviasales.model.constant.Topic.USER_REGISTERED_EVENT;
 import static eu.senla.aviasales.model.constant.Topic.USER_RESET_PASSWORD_EVENT;
 import eu.senla.aviasales.model.dto.UserDataDto;
-import eu.senla.aviasales.model.dto.UserRegisteredEventDto;
 import eu.senla.aviasales.model.dto.UserResetPasswordEventDto;
 import eu.senla.aviasales.service.MessageBuilderService;
+import eu.senla.aviasales.service.impl.UserRegisteredMessageBuilderService;
 import eu.senla.aviasales.service.validator.ValidatorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +13,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import javax.mail.MessagingException;
 
 /**
@@ -23,14 +24,14 @@ import javax.mail.MessagingException;
 @RequiredArgsConstructor
 @Service
 public class UserServiceKafkaListener {
-    private final MessageBuilderService<UserRegisteredEventDto> userRegisteredEventDtoMessageBuilderService;
+    private final UserRegisteredMessageBuilderService userRegisteredEventDtoMessageBuilderService;
     private final MessageBuilderService<UserResetPasswordEventDto> userResetPasswordEventDtoMessageBuilderService;
     private final ValidatorService<UserDataDto> userDataDtoValidatorService;
 
     @KafkaListener(topicPattern = USER_REGISTERED_EVENT, autoStartup = "true")
-    public void userRegisteredListener(ConsumerRecord<String, UserRegisteredEventDto> record) throws Exception {
-        UserRegisteredEventDto value = record.value();
-        userDataDtoValidatorService.validate(value);
+    public void userRegisteredListener(ConsumerRecord<String, Map<String, Object>> record) throws Exception {
+        Map<String, Object> value = record.value();
+        //userDataDtoValidatorService.validate(value);
         try {
             userRegisteredEventDtoMessageBuilderService.buildAndSend(value);
         } catch (MessagingException e) {

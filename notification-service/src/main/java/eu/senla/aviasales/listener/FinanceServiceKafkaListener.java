@@ -1,4 +1,4 @@
-package eu.senla.aviasales.service.listener;
+package eu.senla.aviasales.listener;
 
 import static eu.senla.aviasales.model.constant.Topic.PAYMENT_ERROR_EVENT;
 import static eu.senla.aviasales.model.constant.Topic.PAYMENT_SUCCESS_EVENT;

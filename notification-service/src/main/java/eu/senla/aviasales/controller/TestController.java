@@ -2,6 +2,7 @@ package eu.senla.aviasales.controller;
 
 import static eu.senla.aviasales.model.constant.Topic.PAYMENT_ERROR_EVENT;
 import static eu.senla.aviasales.model.constant.Topic.PAYMENT_SUCCESS_EVENT;
+import static eu.senla.aviasales.model.constant.Topic.USER_REGISTERED_EVENT;
 import eu.senla.aviasales.model.dto.PaymentErrorEventDto;
 import eu.senla.aviasales.model.dto.PaymentSuccessEventDto;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * @author Mikhail.Leonovets
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     private final KafkaTemplate<String, PaymentSuccessEventDto> paymentSuccessEventDtoKafkaTemplate;
     private final KafkaTemplate<String, PaymentErrorEventDto> paymentErrorEventDtoKafkaTemplate;
+    private final KafkaTemplate<String, Map<String, Object>> usReg;
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/payment-success")
@@ -36,6 +40,12 @@ public class TestController {
     @PostMapping("/payment-error")
     public void testPaymentError(@RequestBody PaymentErrorEventDto dto) {
         paymentErrorEventDtoKafkaTemplate.send(PAYMENT_ERROR_EVENT, dto);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/us-reg")
+    public void testUserReg(@RequestBody Map<String, Object> dto) {
+        usReg.send(USER_REGISTERED_EVENT, dto);
     }
 
 }
