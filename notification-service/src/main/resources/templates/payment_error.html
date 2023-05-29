@@ -16,12 +16,12 @@
             <div style="border-bottom: 1px solid #EDEDED;"></div>
             <div style="margin-bottom: 24px;"></div>
             <div style="margin: 20px 0px; font-size: 17px; line-height: 36px; text-align:left">
-                Aviasales статус оплаты:
+                <em th:text="${description}"></em>
             </div>
             <div style="margin-bottom: 24px;"></div>
             <div style="margin-bottom: 30px;"></div>
-            Уважаемый, <em th:text="${name}"></em>!<p>
-            Вы успешно выполнили платеж <em th:text="${paymentInfo}"></em> <br aria-hidden=true>
+            <em th:text="${appeal}"></em> <em th:text="${userName}"></em>!<p>
+            <em th:text="${description2}"></em><em th:text="${paymentInfo}"></em> <br aria-hidden=true>
             <br aria-hidden=true>
         </div>
         <div style="text-align: center;">
@@ -32,7 +32,7 @@
  margin-left: 25px">
             <span style="display: inline-block; vertical-align: middle; padding-left:10px; padding-right: 10px; text-align: center; font-size: 14px;
             line-height: 21px; color: #616161;">
- </span>ОПИСАНИЕ
+ </span><em th:text="${description3}"></em>
             <hr width=30% style="display:inline-block; vertical-align: middle; min-height: 2px; background: #CBCBCB; border: none;">
         </div>
         <table role=presentation align=center cellspacing=3D10px style="font-size: 14px; line-height: 21px; min-width: 250px;
@@ -40,21 +40,21 @@
             <tr>
                 <td align=right style=font-weight:bold;>
                 <span dir=ltr>
-                Оплачено: <em th:text="${amountPayable}"></em>
+                <em th:text="${amountDescription}"></em><em th:text="${amountPayable}"></em>
                 </span>
                 </td>
             </tr>
             <tr>
                 <td align=right style=font-weight:bold;>
                 <span dir=ltr>
-                Дата: <em th:text="${paymentDate}"></em>
+                <em th:text="${dateDescription}"></em><em th:text="${paymentDate}"></em>
                 </span>
                 </td>
             </tr>
         </table>
         <div align=center>
                 <span dir=ltr>
-                    <p><br aria-hidden=true>Спасибо!</p>
+                    <p><br aria-hidden=true><em th:text="${grateful}"></em></p>
                 </span>
         </div>
 

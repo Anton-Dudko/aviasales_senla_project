@@ -1,0 +1,10 @@
+{
+  "appeal": "Dear",
+  "description": "Wow! You successfully reserved the ticket!",
+  "ticketDescriptionData1": "The ticket is from ",
+  "ticketDescriptionData2": "to",
+  "dateDescription": "Date: ",
+  "tripPriceDescription": "Ticket price: ",
+  "emailGeneratedAutomatically": "This email was generated automatically. Please, do not respond.",
+  "supportTeam": "The Aviasales Support Team"
+}

@@ -1,0 +1,10 @@
+{
+  "appeal": "Dear",
+  "description": "We have a new trip you have been searching recently!",
+  "ticketDescriptionData1": "A new trip is from ",
+  "ticketDescriptionData2": " to ",
+  "dateDescription": "Date: ",
+  "tripPriceDescription": "Trip price: ",
+  "emailGeneratedAutomatically": "This email was generated automatically. Please, do not respond.",
+  "supportTeam": "The Aviasales Support Team"
+}

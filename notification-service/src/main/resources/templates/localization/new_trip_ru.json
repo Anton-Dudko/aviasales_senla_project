@@ -1,0 +1,10 @@
+{
+  "appeal": "Уважаемый",
+  "description": "У нас есть новый рейс, который вы недавно искали!",
+  "ticketDescriptionData1": "Новый рейс из ",
+  "ticketDescriptionData2": " в ",
+  "dateDescription": "Дата: ",
+  "tripPriceDescription": "Цена: ",
+  "emailGeneratedAutomatically": "Это письмо сгенерировано автоматически. Пожалуйста, не отвечайте на него.",
+  "supportTeam": "Служба поддержки Aviasales"
+}

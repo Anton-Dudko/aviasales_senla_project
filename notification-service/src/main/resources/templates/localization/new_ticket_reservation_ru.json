@@ -1,0 +1,10 @@
+{
+  "appeal": "Уважаемый",
+  "description": "Вау! Вы успешно забронировали билет!",
+  "ticketDescriptionData1": "Билет из ",
+  "ticketDescriptionData2": "в",
+  "dateDescription": "Дата: ",
+  "tripPriceDescription": "Цена билета: ",
+  "emailGeneratedAutomatically": "Это письмо сгенерировано автоматически. Пожалуйста, не отвечайте на него.",
+  "supportTeam": "Служба поддержки Aviasales"
+}
