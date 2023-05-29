@@ -1,9 +1,11 @@
 package eu.senla.userservice.kafka;
 
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@EnableKafka
 public class KafkaConfig {
 
     public Map<String, Object> producerConfigs() {
@@ -26,6 +29,11 @@ public class KafkaConfig {
     @Bean
     public ProducerFactory<String, UserEvent> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+
+    @Bean
+    public Producer<String, UserEvent> producer() {
+        return producerFactory().createProducer();
     }
 
     @Bean

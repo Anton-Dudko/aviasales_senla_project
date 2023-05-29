@@ -5,6 +5,7 @@ import eu.senla.userservice.entity.User;
 import eu.senla.userservice.exception.ExceptionMessageConstant;
 import eu.senla.userservice.exception.custom.AuthenticatException;
 import eu.senla.userservice.exception.custom.NotFoundException;
+import eu.senla.userservice.kafka.KafkaConstant;
 import eu.senla.userservice.kafka.UserEvent;
 import eu.senla.userservice.mapper.UserRequestMapper;
 import eu.senla.userservice.repository.UserRepository;
@@ -32,9 +33,6 @@ public class AuthService {
 
     private final Producer<String, UserEvent> producer;
 
-    private final String registrTopic = "user_registered_event";
-    private final String passwordResetTopic = "user_reset_password_event";
-
     public AuthResponse createUser(UserRequest request) {
         if (repository.findByEmail(request.getEmail()).isEmpty()) {
             User user = userRequestMapper.requestToEntity(request);
@@ -49,9 +47,8 @@ public class AuthService {
                     .email(user.getEmail())
                     .build();
 
-            ProducerRecord<String, UserEvent> producerRecord = new ProducerRecord<>(registrTopic, event);
+            ProducerRecord<String, UserEvent> producerRecord = new ProducerRecord<>(KafkaConstant.REGISTERED_EVENT, event);
             producer.send(producerRecord);
-            producer.close();
             log.info("Sending message ... {}", producerRecord);
 
             return AuthResponse.builder()
@@ -112,17 +109,17 @@ public class AuthService {
         user.setPassword(PasswordCoder.codingPassword(password));
         user = repository.save(user);
 
-        UserEvent event = UserEvent.builder()
-                .username(user.getUsername())
-                .language(user.getLanguage().name())
-                .email(user.getEmail())
-                .password(password)
-                .build();
-
-        ProducerRecord<String, UserEvent> producerRecord = new ProducerRecord<>(passwordResetTopic, event);
-        producer.send(producerRecord);
-        producer.close();
-        log.info("Sending message ... {}", producerRecord);
+//        UserEvent event = UserEvent.builder()
+//                .username(user.getUsername())
+//                .language(user.getLanguage().name())
+//                .email(user.getEmail())
+//                .password(password)
+//                .build();
+//
+//        ProducerRecord<String, UserEvent> producerRecord = new ProducerRecord<>(KafkaConstant.RESET_PASSWORD_EVENT, event);
+//        producer.send(producerRecord);
+//        producer.close();
+//        log.info("Sending message ... {}", producerRecord);
 
         return PasswordResponse.builder()
                 .password(password)
