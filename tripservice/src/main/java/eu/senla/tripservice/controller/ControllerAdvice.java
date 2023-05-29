@@ -4,7 +4,7 @@ import eu.senla.tripservice.exeption.ErrorResponse;
 import eu.senla.tripservice.exeption.ParseException;
 import eu.senla.tripservice.exeption.airplane.AirplaneNotFoundException;
 import eu.senla.tripservice.exeption.flight.FlightAlreadyExistsException;
-import eu.senla.tripservice.exeption.flight.FlightNotCreatedException;
+import eu.senla.tripservice.exeption.flight.FlightValidationException;
 import eu.senla.tripservice.exeption.flight.FlightNotFoundException;
 import eu.senla.tripservice.exeption.subscription.SubscriptionAlreadyExistsException;
 import eu.senla.tripservice.exeption.ticket.TicketsRequestException;
@@ -55,12 +55,12 @@ public class ControllerAdvice {
         return new ErrorResponse(airplaneNotFoundException.getMessage(), LocalDateTime.now());
     }
 
-    @ExceptionHandler(FlightNotCreatedException.class)
+    @ExceptionHandler(FlightValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ErrorResponse handleFlightNotCreatedException(FlightNotCreatedException flightNotCreatedException) {
-        log.error(flightNotCreatedException.getMessage());
-        return new ErrorResponse(flightNotCreatedException.getMessage(), LocalDateTime.now());
+    public ErrorResponse handleFlightNotCreatedException(FlightValidationException flightValidationException) {
+        log.error(flightValidationException.getMessage());
+        return new ErrorResponse(flightValidationException.getMessage(), LocalDateTime.now());
     }
 
     @ExceptionHandler(FlightNotFoundException.class)
