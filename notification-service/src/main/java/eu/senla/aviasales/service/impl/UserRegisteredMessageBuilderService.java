@@ -1,15 +1,14 @@
 package eu.senla.aviasales.service.impl;
 
 import static eu.senla.aviasales.model.constant.Subject.USER_REGISTERED_SUCCESSFULLY;
-import eu.senla.aviasales.model.dto.UserRegisteredEventDto;
 import eu.senla.aviasales.service.EmailService;
-import eu.senla.aviasales.service.MessageBuilderService;
 import eu.senla.aviasales.service.util.UserDtoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import java.util.Map;
 import javax.mail.MessagingException;
 
 /**
@@ -18,17 +17,14 @@ import javax.mail.MessagingException;
  */
 @RequiredArgsConstructor
 @Service
-public class UserRegisteredMessageBuilderService implements MessageBuilderService<UserRegisteredEventDto> {
+public class UserRegisteredMessageBuilderService {
     private final SpringTemplateEngine templateEngine;
     private final EmailService emailService;
-    private final UserDtoUtil userDtoUtil;
 
-    @Override
-    public void buildAndSend(final UserRegisteredEventDto userRegistrationDto) throws MessagingException {
-        userDtoUtil.setMissedLanguageField(userRegistrationDto);
+    public void buildAndSend(final Map<String, Object> stringObjectMap) throws MessagingException {
         Context context = new Context();
-        context.setVariable("name", userRegistrationDto.getUserName());
-        String html = templateEngine.process("user_registered_" + userRegistrationDto.getUserLanguage(), context);
-        emailService.sendEmail(userRegistrationDto.getEmail(), USER_REGISTERED_SUCCESSFULLY, html);
+        context.setVariables(stringObjectMap);
+        String html = templateEngine.process("user_registered_" + stringObjectMap.get("userLanguage"), context);
+        emailService.sendEmail((String) stringObjectMap.get("email"), USER_REGISTERED_SUCCESSFULLY, html);
     }
 }
