@@ -5,11 +5,12 @@ import eu.senla.aviasales.model.dto.UserRegisteredEventDto;
 import eu.senla.aviasales.service.EmailService;
 import eu.senla.aviasales.service.MessageBuilderService;
 import eu.senla.aviasales.service.util.UserDtoUtil;
-import javax.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
+
+import javax.mail.MessagingException;
 
 /**
  * @author Mikhail.Leonovets

@@ -7,6 +7,7 @@ cloud:
   userservice-host: userservice
   ticket-service-host: tickets-service
   trip-service-host: tripservice-service
+  notification-service-host: notification-service
 spring:
   application:
     name: api-gateway-service
@@ -78,6 +79,13 @@ spring:
           uri: lb://${cloud.trip-service-host}
           predicates:
             - Path=/trips/guest/**
+
+        - id: notification-service
+          uri: lb://${cloud.notification-service-host}
+          predicates:
+            - Path=/api/admin/**
+          filters:
+            - AuthFilter=true
 
 eureka:
   instance:

@@ -14,10 +14,10 @@ import javax.validation.constraints.NotNull;
 public class FlightRequest {
 
     @NotNull
-    private long tripId;
+    private Long tripId;
 
     @NotNull
-    private long airplaneId;
+    private Long airplaneId;
 
     @NotNull
     private String flightNumber;

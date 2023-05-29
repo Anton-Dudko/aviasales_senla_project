@@ -10,9 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketsCreateRequest {
-    private long flightId;
-    private long firstClassTicketsNumber;
-    private long secondClassTicketsNumber;
-    private double firstClassPrice;
-    private double secondClassPrice;
+    Long tripId;
+    int countTicketsFirstClass;
+    int countTicketsSecondClass;
 }

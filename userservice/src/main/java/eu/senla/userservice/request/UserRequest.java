@@ -1,5 +1,6 @@
 package eu.senla.userservice.request;
 
+import eu.senla.userservice.exception.ExceptionMessageConstant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +9,7 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
-import java.time.LocalDate;
+import javax.validation.constraints.Pattern;
 
 
 @Setter
@@ -20,12 +21,14 @@ public class UserRequest {
     @NonNull
     private String username;
     @NonNull
-    @Email(regexp = ".+[@].+[\\.].+", message = "Not valid format email")
+    @Email(regexp = ".+[@].+[\\.].+", message = ExceptionMessageConstant.NOT_VALID_EMAIL)
     private String email;
     @NonNull
     private String password;
-
-    private LocalDate dateBirth;
+    @NonNull
+    @Pattern(regexp = "(19|20)\\d\\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])",
+            message = ExceptionMessageConstant.NOT_VALID_DATE_FORMAT)
+    private String dateBirth;
     private String language;
     private String role;
 }

@@ -21,13 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -48,7 +50,7 @@ public class FlightService {
     }
 
     @Transactional
-    public void create(FlightRequest flightRequest) {
+    public Flight create(FlightRequest flightRequest) {
         log.info("FlightService-create");
 
         Trip trip = tripService.findTripById(flightRequest.getTripId());
@@ -63,6 +65,7 @@ public class FlightService {
         log.info("New flight was added, id: " + flightToSave.getFlightId());
         makeCreateTicketsRequest(generateTickets(flightToSave.getFlightId(),
                 flightRequest.getFirstClassTicketPercent(), flightRequest.getTicketPrice()));
+        return flightToSave;
     }
 
     public FlightFullDataResponse findById(long id) {
@@ -103,7 +106,7 @@ public class FlightService {
     }
 
     @Transactional
-    public void update(long id, FlightRequest flightRequest) {
+    public Flight update(long id, FlightRequest flightRequest) {
         log.info("FlightService-update");
         findFlightById(id);
         Trip trip = tripService.findTripById(flightRequest.getTripId());
@@ -112,6 +115,7 @@ public class FlightService {
         updatedFlight.setFlightId(id);
         flightRepository.save(updatedFlight);
         log.info("Flight with id: " + id + " was updated");
+        return updatedFlight;
     }
 
     @Transactional
@@ -136,12 +140,12 @@ public class FlightService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<TicketsCreateRequest> request = new HttpEntity<>(ticketsCreateRequest, headers);
-        String createTicketsRequestUrl = "https://aviasales-tickets/tickets/generate";
+        String createTicketsRequestUrl = "http://ticket-service:8080/tickets/generate";
 
-        ResponseEntity response = restTemplate.postForObject(createTicketsRequestUrl, request, ResponseEntity.class);
-
-        if (Objects.requireNonNull(response).getStatusCodeValue() != HttpStatus.OK.value()) {
-            throw new TicketsNotCreatedException(response.getStatusCodeValue() + "Ticket not created");
+        try {
+            restTemplate.postForObject(createTicketsRequestUrl, request, ResponseEntity.class);
+        } catch (Exception e) {
+            throw new TicketsNotCreatedException("Ticket not created: " + e.getMessage());
         }
 
     }
@@ -150,7 +154,7 @@ public class FlightService {
         log.info("Flight-service-makeGetTicketsRequest");
         RestTemplate restTemplate = new RestTemplate();
 
-        String getTicketsRequestUrl = "https://ticketservice/" + id;
+        String getTicketsRequestUrl = "https://ticket-service/" + id;
 
         return restTemplate.getForObject(getTicketsRequestUrl, TicketsResponse.class);
     }
@@ -174,7 +178,7 @@ public class FlightService {
 
         double secondClassPrice = Math.ceil(price * secondClassPriceCoefficient);
 
-        return new TicketsCreateRequest(flightId, firstClassSeatsNumber, secondClassSeatsNumber, price, secondClassPrice);
+        return new TicketsCreateRequest(flightId, firstClassSeatsNumber, secondClassSeatsNumber);
     }
 
     private boolean isFlightExist(Flight flightToCheck) {

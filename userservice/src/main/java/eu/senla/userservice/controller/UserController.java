@@ -30,9 +30,9 @@ public class UserController {
 
     @GetMapping("/admin/users/{id}")
     public UserResponse findById(@PathVariable Long id) {
-        log.trace("Method findById");
+        log.info("Method findById");
         UserResponse response = userService.findById(id);
-        log.trace("Response with user: {}", response);
+        log.info("Response with user: {}", response);
         return response;
     }
 
@@ -40,23 +40,23 @@ public class UserController {
     public UserGetPageResponse findBySpecification(@RequestParam(defaultValue = "0") Integer page,
                                                    @RequestParam(defaultValue = "10") Integer size,
                                                    @RequestBody UserFindRequest request) {
-        log.trace("Method findBySpecification");
+        log.info("Method findBySpecification");
         Pageable pageable = PageRequest.of(page, size);
         UserGetPageResponse responses = userService.findBySpecification(request, pageable);
-        log.trace("Response with users: {}", responses);
+        log.info("Response with users: {}", responses);
         return responses;
     }
 
     @PutMapping("/users/{id}")
     public UserResponse update(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
         UserResponse response = userService.update(id, request);
-        log.trace("Response with updated user: {}", response);
+        log.info("Response with updated user: {}", response);
         return response;
     }
 
     @DeleteMapping("/admin/{id}")
     public void deleteById(@PathVariable Long id) {
-        log.trace("Delete user:  id {}", id);
+        log.info("Delete user:  id {}", id);
         userService.delete(id);
     }
 }

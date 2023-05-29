@@ -2,8 +2,6 @@ package eu.senla.tripservice.response.flight;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @Builder

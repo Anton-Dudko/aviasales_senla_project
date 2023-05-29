@@ -6,8 +6,10 @@ import com.aviasalestickets.model.TicketStatus;
 import com.aviasalestickets.model.dto.GenerateTicketRequest;
 import com.aviasalestickets.model.dto.TicketRequest;
 import com.aviasalestickets.model.dto.TicketResponse;
+import com.aviasalestickets.model.dto.TicketResponseWithCount;
 import com.aviasalestickets.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TicketService {
 
     private final TicketMapper ticketMapper;
@@ -24,61 +27,50 @@ public class TicketService {
     private final CriteriaTicketService criteriaTicketService;
 
 
-    public String save(TicketRequest request) {
-        Ticket ticket = ticketMapper.convertDtoToEntity(request);
-        ticketRepository.save(ticket);
-        return "ticket was save";
+    public Ticket save(TicketRequest request) {
+        return Optional.ofNullable(request)
+                .map(ticketMapper::convertDtoToEntity)
+                .map(ticketRepository::save)
+                .orElse(null);
     }
 
-    public List<TicketResponse> search(TicketRequest request) {
+    public TicketResponseWithCount search(TicketRequest request) {
+        log.info(request.toString());
         return Optional.ofNullable(request)
-                .map(req-> criteriaTicketService.findAll(request.getUserId(), request.getStatus(), request.getTripId()))
-                .map(ticketMapper::convertListEntityToDto)
+                .map(req -> criteriaTicketService.findAll(request.getUserId(), request.getStatus(), request.getTripId()))
+                .map(ticketMapper::convertListEntityToDtoWithCount)
                 .orElse(null);
     }
 
     public TicketResponse findById(Long id) {
-//        return Optional.ofNullable(id)
-//                .map(ticketRepository::findById)
-//                .map(ticketMapper::convertEntityToDto)
-//                .orElse(null);
-        return ticketMapper.convertEntityToDto(ticketRepository.findById(id).get());
-    }
-
-    public List<TicketResponse> findByStatus(String status) {
-        return Optional.of(status)
-                .map(st -> ticketRepository.findByStatus(TicketStatus.valueOf(st)))
-                .map(ticketMapper::convertListEntityToDto)
+        return Optional.ofNullable(id)
+                .map(ticketRepository::findTicketById)
+                .map(ticketMapper::convertEntityToDto)
                 .orElse(null);
     }
-
-    public List<TicketResponse> findByTripId(Long tripId) {
-        return Optional.of(tripId)
-                .map(ticketRepository::findByTripId)
-                .map(ticketMapper::convertListEntityToDto)
-                .orElse(null);
-    }
-
-    public List<TicketResponse> findAll() {
-        return ticketMapper.convertListEntityToDto(ticketRepository.findAll());
-    }
+    //TODO exceptions
 
     public void bookTicket(Long id, Long userId) {
-        Ticket ticket = ticketRepository.findById(id).get();
-        ticket.setUserId(userId);
-        ticket.setStatus(TicketStatus.BOOKED);
-        ticketRepository.save(ticket);
+        Optional.ofNullable(id)
+                .map(ticketRepository::findTicketById)
+                .map(t -> {
+                    t.setUserId(userId);
+                    t.setStatus(TicketStatus.BOOKED);
+                    return ticketRepository.save(t);
+                })
+                .orElseThrow(RuntimeException::new);
+        //TODO add exception
     }
 
     public void deleteReservation(Long id) {
-        Ticket ticket = ticketRepository.findById(id).get();
+        Ticket ticket = ticketRepository.findTicketById(id);
         ticket.setStatus(TicketStatus.FREE);
         ticket.setUserId(null);
         ticketRepository.save(ticket);
     }
 
     public void payTicket(Long id) {
-        Ticket ticket = ticketRepository.findById(id).get();
+        Ticket ticket = ticketRepository.findTicketById(id);
         ticket.setStatus(TicketStatus.PAID);
         ticketRepository.save(ticket);
     }
@@ -93,6 +85,21 @@ public class TicketService {
     }
 
 
+    public String payTickets(List<Long> ticketsId) {
+        List<Ticket> tickets = ticketRepository.findAllById(ticketsId);
+
+        for(Ticket ticket : tickets){
+            if (!ticket.getStatus().equals(TicketStatus.FREE)){
+                return "not available";
+            }
+        }
+
+        for(Ticket ticket : tickets){
+            ticket.setStatus(TicketStatus.PAID);
+            ticketRepository.save(ticket);
+        }
+        return "tickets were paid";
+    }
 }
 
 

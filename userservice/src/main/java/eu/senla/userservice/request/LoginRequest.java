@@ -1,5 +1,6 @@
 package eu.senla.userservice.request;
 
+import eu.senla.userservice.exception.ExceptionMessageConstant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import javax.validation.constraints.Email;
 @Builder
 public class LoginRequest {
     @NonNull
-    @Email
+    @Email(regexp = ".+[@].+[\\.].+", message = ExceptionMessageConstant.NOT_VALID_EMAIL)
     private String email;
     @NonNull
     private String password;
