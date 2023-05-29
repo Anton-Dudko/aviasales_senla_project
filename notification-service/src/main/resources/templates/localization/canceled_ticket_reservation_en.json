@@ -1,0 +1,10 @@
+{
+  "appeal": "Dear",
+  "description": "You canceled ticket reservation, hope you will do a new one soon!",
+  "ticketDescriptionData1": "The ticket is from ",
+  "ticketDescriptionData2": "to",
+  "dateDescription": "Date: ",
+  "tripPriceDescription": "Ticket price: ",
+  "emailGeneratedAutomatically": "This email was generated automatically. Please, do not respond.",
+  "supportTeam": "The Aviasales Support Team"
+}

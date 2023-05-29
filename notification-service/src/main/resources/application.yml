@@ -8,6 +8,7 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -24,6 +25,7 @@ spring:
         encoding: UTF-8
         from:
           email: senla.aviasales.may2023@gmail.com
+
   datasource:
     url: jdbc:postgresql://notification-service-db/senla_aviasales_notification_service
     username: postgres
@@ -39,6 +41,7 @@ spring:
             batch_size: 100
           order_inserts: true
       show-sql: true
+
   kafka:
     properties:
       security.protocol: 'PLAINTEXT'
@@ -63,6 +66,7 @@ spring:
     suffix: .html
     mode: HTML5
     encoding: UTF-8
+
 eureka:
   instance:
     preferIpAddress: true
@@ -70,14 +74,57 @@ eureka:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://${cloud.eureka-host}:8761/eureka/ #порт для еврики выбран 8761
+      defaultZone: http://${cloud.eureka-host}:8761/eureka/
     enabled: false
 springfox:
   documentation:
     swagger-ui:
       enabled: true
+
 application:
   email:
     languages:
       - en
       - ru
+    localization_folder: '/templates/localization/'
+    topics:
+      USER_REGISTERED_EVENT:
+        topic_name: user_registered_event
+        template: user_registered
+        localization: user_registered
+        subject: Aviasales registration
+      USER_RESET_PASSWORD_EVENT:
+        topic_name: user_reset_password_event
+        template: user_reset_password
+        localization: user_reset_password
+        subject: Aviasales reset password
+      NEW_TRIP_EVENT:
+        topic_name: new_trip_event
+        template: new_trip
+        localization: new_trip
+        subject: New trip
+      TRIP_CANCELED_EVENT:
+        topic_name: trip_canceled_event
+        template: trip_canceled
+        localization: trip_canceled
+        subject: Canceled trip
+      NEW_TICKET_RESERVATION_EVENT:
+        topic_name: new_ticket_reservation_event
+        template: new_ticket_reservation
+        localization: new_ticket_reservation
+        subject: New ticket reservation
+      CANCELED_TICKET_RESERVATION_EVENT:
+        topic_name: canceled_ticket_reservation_event
+        template: canceled_ticket_reservation
+        localization: canceled_ticket_reservation
+        subject: Canceled ticket reservation
+      PAYMENT_SUCCESS_EVENT:
+        topic_name: payment_success_event
+        template: payment_success
+        localization: payment_success
+        subject: Aviasales payment success
+      PAYMENT_ERROR_EVENT:
+        topic_name: payment_error_event
+        template: payment_error
+        localization: payment_error
+        subject: Aviasales payment error

@@ -1,0 +1,10 @@
+{
+  "appeal": "Уважаемый",
+  "description": "К сожалению, рейс был отменен!",
+  "ticketDescriptionData1": "Отмененный рейс из ",
+  "ticketDescriptionData2": " в ",
+  "dateDescription": "Дата: ",
+  "tripPriceDescription": "Цена: ",
+  "emailGeneratedAutomatically": "Это письмо сгенерировано автоматически. Пожалуйста, не отвечайте на него.",
+  "supportTeam": "Служба поддержки Aviasales"
+}
