@@ -11,16 +11,15 @@ import eu.senla.tripservice.repository.FlightRepository;
 import eu.senla.tripservice.request.FindFlightRequest;
 import eu.senla.tripservice.request.FlightRequest;
 import eu.senla.tripservice.request.TicketsCreateRequest;
-import eu.senla.tripservice.response.flight.FlightFullDataResponse;
-import eu.senla.tripservice.response.flight.FlightInfo;
-import eu.senla.tripservice.response.flight.ListFlightsFullDataResponse;
-import eu.senla.tripservice.response.flight.ListFlightsResponse;
+import eu.senla.tripservice.response.flight.*;
+import eu.senla.tripservice.response.ticket.TicketResponse;
 import eu.senla.tripservice.response.ticket.TicketsResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -30,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -91,18 +92,107 @@ public class FlightService {
 
     public ListFlightsResponse find(FindFlightRequest findFlightRequest, Pageable pageable) {
         log.info("FlightService-find");
-
-        Page<Flight> flights = flightRepository.findAll(new FlightSpecification(findFlightRequest), pageable);
         ListFlightsResponse listFlightsResponse = new ListFlightsResponse();
+        findDirectFlight(listFlightsResponse, findFlightRequest, pageable);
 
-        if (flights.hasContent()) {
-            listFlightsResponse.setFlights(flights.getContent().stream().map(mapper::mapFlightToFlightResponse).collect(Collectors.toList()));
-            listFlightsResponse.setTotal(flights.getContent().size());
-        } else {
-            listFlightsResponse.setFlights(new ArrayList<>());
-            listFlightsResponse.setTotal(0);
+        if (findFlightRequest.getReturnDate() != null && !findFlightRequest.getReturnDate().isEmpty()) {
+            findReturnFlight(listFlightsResponse, findFlightRequest);
+            System.out.println("asdfasdfasf");
         }
         return listFlightsResponse;
+    }
+
+    private void findDirectFlight(ListFlightsResponse listFlightsResponse, FindFlightRequest findFlightRequest, Pageable pageable) {
+        log.info("FlightService-findDirectFlight");
+        if (findFlightRequest.isFastest() && findFlightRequest.isCheapest()) {
+            log.info("FlightService-find: selected fastest and cheapest");
+            listFlightsResponse.setMessage("Only one option must be selected: fastest or cheapest");
+
+            return;
+
+        } else if (findFlightRequest.isFastest()) {
+            log.info("FlightService-findDirectFlight: fastest");
+            List<Flight> sortedFlights = flightRepository.findAll(new FlightSpecification(findFlightRequest), Sort.by("duration"));
+            if (!sortedFlights.isEmpty()) {
+                listFlightsResponse.setFlights(new ArrayList<>(Collections.singleton(mapper.mapFlightToFlightResponse(sortedFlights.get(0)))));
+                return;
+            }
+
+        } else if (findFlightRequest.isCheapest()) {
+            log.info("FlightService-findDirectFlight: cheapest");
+            List<Flight> flights = flightRepository.findAll(new FlightSpecification(findFlightRequest));
+            if (!flights.isEmpty()) {
+                List<TicketsResponse> ticketsResponses = new ArrayList<>();
+
+                for (Flight flight : flights) {
+                    ticketsResponses.add(makeGetTicketsRequest(flight.getFlightId()));
+                }
+
+                ticketsResponses.sort((o1, o2) -> {
+                    sortTickets(o1.getTickets());
+                    sortTickets(o2.getTickets());
+
+                    return (int) Math.round(o1.getTickets().get(0).getPrice() - o2.getTickets().get(0).getPrice());
+                });
+
+                long cheapestFlightId = ticketsResponses.get(0).getTickets().get(0).getFlightId();
+
+                Flight cheapestFlight = null;
+
+                for (Flight flight : flights) {
+                    if (flight.getFlightId() == cheapestFlightId) {
+                        cheapestFlight = flight;
+                        break;
+                    }
+                }
+
+                if (cheapestFlight != null) {
+                    listFlightsResponse.setFlights(Collections.singletonList(mapper.mapFlightToFlightResponse(cheapestFlight)));
+                    return;
+                }
+            }
+        } else {
+            log.info("FlightService-findDirectFlight: not fastest or cheapest");
+            Page<Flight> flights;
+
+            flights = flightRepository.findAll(new FlightSpecification(findFlightRequest), pageable);
+
+            if (flights.hasContent()) {
+                listFlightsResponse.setFlights(flights.getContent().stream().map(mapper::mapFlightToFlightResponse).collect(Collectors.toList()));
+                listFlightsResponse.setTotal(flights.getContent().size());
+                return;
+            }
+        }
+        log.info("FlightService-findDirectFlight: not found");
+        listFlightsResponse.setMessage("Flights: " + findFlightRequest.getDepartureCity() +
+                " - " + findFlightRequest.getArrivalCity() + " not found");
+
+    }
+
+    private void findReturnFlight(ListFlightsResponse listFlightsResponse, FindFlightRequest findFlightRequest) {
+        log.info("FlightService-findReturnFlight");
+        FindFlightRequest returnFlight = FindFlightRequest.builder()
+                .departureCity(findFlightRequest.getArrivalCity())
+                .arrivalCity(findFlightRequest.getDepartureCity())
+                .departureDate(findFlightRequest.getReturnDate())
+                .build();
+
+        List<FlightResponse> returnFlights = flightRepository.findAll(new FlightSpecification(returnFlight)).stream()
+                .map(mapper::mapFlightToFlightResponse).toList();
+
+        if (returnFlights.isEmpty()) {
+            log.info("FlightService-findReturnFlight: not found");
+            String message = "No return flights on date: " + findFlightRequest.getReturnDate();
+            if (listFlightsResponse.getMessage() == null) {
+                listFlightsResponse.setMessage(message);
+            } else {
+                listFlightsResponse.setMessage(listFlightsResponse.getMessage() + message);
+            }
+        } else {
+            listFlightsResponse.setReturnFlights(returnFlights);
+            listFlightsResponse.setReturnTotal(returnFlights.size());
+        }
+
     }
 
     @Transactional
@@ -159,7 +249,7 @@ public class FlightService {
         TicketsResponse response;
 
         try {
-           response = restTemplate.getForObject(getTicketsRequestUrl, TicketsResponse.class);
+            response = restTemplate.getForObject(getTicketsRequestUrl, TicketsResponse.class);
         } catch (Exception e) {
             throw new TicketsRequestException("Error occurred while GET request to: " + getTicketsRequestUrl);
         }
@@ -197,5 +287,9 @@ public class FlightService {
         return flightRepository.findFlightByTrip_TripIdAndAirplane_AirplaneIdAndFlightNumberAndDepartureDateTimeAndArrivalDateTime(
                 flightToCheck.getTrip().getTripId(), flightToCheck.getAirplane().getAirplaneId(), flightToCheck.getFlightNumber(),
                 flightToCheck.getDepartureDateTime(), flightToCheck.getArrivalDateTime()).isPresent();
+    }
+
+    private void sortTickets(List<TicketResponse> tickets) {
+        tickets.sort((o1, o2) -> (int) Math.round(o1.getPrice() - o2.getPrice()));
     }
 }

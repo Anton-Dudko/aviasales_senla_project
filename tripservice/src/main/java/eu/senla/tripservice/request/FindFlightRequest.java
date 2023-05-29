@@ -1,19 +1,28 @@
 package eu.senla.tripservice.request;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
-@ToString
-
+@AllArgsConstructor
+@Builder
 public class FindFlightRequest {
+    @NotNull
+    @NotEmpty
     private String departureCity;
+    @NotNull
+    @NotEmpty
     private String arrivalCity;
-    private String dateFrom;
+    @NotNull
+    @NotEmpty
+    private String departureDate;
+    private String returnDate;
     private int minSeatCount;
     private int maxSeatCount;
     private boolean firstClass;
-    private boolean sortByDuration;
+    private boolean fastest;
+    private boolean cheapest;
 }

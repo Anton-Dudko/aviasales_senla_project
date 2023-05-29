@@ -29,8 +29,8 @@ public class FlightSpecification implements Specification<Flight> {
         if (request.getArrivalCity() != null && !request.getArrivalCity().isEmpty()) {
             predicates.add(criteriaBuilder.equal(root.get("trip").get("arrivalCity"), request.getArrivalCity()));
         }
-        if (request.getDateFrom() != null && !request.getDateFrom().isEmpty()) {
-            LocalDateTime departureDate = TimeFormatter.formatStringToDateTime(request.getDateFrom());
+        if (request.getDepartureDate() != null && !request.getDepartureDate().isEmpty()) {
+            LocalDateTime departureDate = TimeFormatter.formatStringToDateTime(request.getDepartureDate());
             predicates.add(criteriaBuilder.between(root.get("departureDateTime"), departureDate, departureDate.plusDays(1)));
         }
         if (request.getMinSeatCount() != 0) {
@@ -41,9 +41,6 @@ public class FlightSpecification implements Specification<Flight> {
         }
         if (request.isFirstClass()) {
             predicates.add(criteriaBuilder.equal(root.get("airplane").get("hasFirstClass"), request.isFirstClass()));
-        }
-        if (request.isSortByDuration()) {
-            query.orderBy(criteriaBuilder.asc(root.get("duration")));
         }
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 

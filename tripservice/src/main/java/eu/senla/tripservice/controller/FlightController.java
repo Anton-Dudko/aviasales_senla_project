@@ -1,7 +1,7 @@
 package eu.senla.tripservice.controller;
 
 import eu.senla.tripservice.entity.Flight;
-import eu.senla.tripservice.exeption.trip.TripNotCreatedException;
+import eu.senla.tripservice.exeption.flight.FlightValidationException;
 import eu.senla.tripservice.request.FindFlightRequest;
 import eu.senla.tripservice.request.FlightRequest;
 import eu.senla.tripservice.response.flight.FlightFullDataResponse;
@@ -50,7 +50,9 @@ public class FlightController {
     @GetMapping("/guest/find")
     public ListFlightsResponse findBySpec(@RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "20") int size,
-                                          @RequestBody FindFlightRequest flightRequest) {
+                                          @RequestBody @Valid FindFlightRequest flightRequest,
+                                          BindingResult bindingResult) {
+        validate(bindingResult);
         Pageable pageable = PageRequest.of(page, size);
         return flightService.find(flightRequest, pageable);
     }
@@ -62,8 +64,8 @@ public class FlightController {
 
     @PutMapping("/admin/update/{id}")
     public ResponseEntity<Flight> update(@PathVariable("id") long id,
-                                             @Valid @RequestBody FlightRequest flightRequest,
-                                             BindingResult bindingResult) {
+                                         @Valid @RequestBody FlightRequest flightRequest,
+                                         BindingResult bindingResult) {
         validate(bindingResult);
         return ResponseEntity.ok(flightService.update(id, flightRequest));
     }
@@ -77,7 +79,7 @@ public class FlightController {
     private void validate(BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String errorMessage = ErrorUtil.returnErrorMessage(bindingResult);
-            throw new TripNotCreatedException(errorMessage);
+            throw new FlightValidationException(errorMessage);
         }
     }
 }
