@@ -1,8 +1,16 @@
 package eu.senla.userservice.token;
 
-public class PasswordCoder {
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
-    public static String codingPassword(String password) {
-        return password.hashCode() + "$" + password.toUpperCase().hashCode();
+@Component
+public class PasswordCoder {
+    public static final int STRENGTH = 13;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(STRENGTH);
     }
 }

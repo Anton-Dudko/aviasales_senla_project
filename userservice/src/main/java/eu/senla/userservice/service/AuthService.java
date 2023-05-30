@@ -15,13 +15,13 @@ import eu.senla.userservice.request.UserRequest;
 import eu.senla.userservice.response.AuthResponse;
 import eu.senla.userservice.response.PasswordResponse;
 import eu.senla.userservice.response.UserResponse;
-import eu.senla.userservice.token.PasswordCoder;
 import eu.senla.userservice.token.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -31,6 +31,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthService {
     private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
     private final UserRequestMapper userRequestMapper;
     private final UserRepository repository;
 
@@ -40,7 +41,7 @@ public class AuthService {
     public AuthResponse createUser(UserRequest request) {
         if (repository.findByEmail(request.getEmail()).isEmpty()) {
             User user = userRequestMapper.requestToEntity(request);
-            user.setPassword(PasswordCoder.codingPassword(request.getPassword()));
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setAccessToken(generateAccessToken(user));
             user.setRefreshToken(generateRefreshToken(user));
             user = repository.save(user);
@@ -75,7 +76,7 @@ public class AuthService {
     public AuthResponse authenticateUser(LoginRequest request) {
         User user = repository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
-        if (PasswordCoder.codingPassword(request.getPassword()).equals(user.getPassword())) {
+        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             user.setAccessToken(generateAccessToken(user));
             user.setRefreshToken(generateRefreshToken(user));
             user = repository.save(user);
@@ -112,20 +113,22 @@ public class AuthService {
         user.setAccessToken(generateAccessToken(user));
         user.setRefreshToken(generateRefreshToken(user));
         String password = RandomStringUtils.randomAscii(email.length());
-        user.setPassword(PasswordCoder.codingPassword(password));
+        user.setPassword(passwordEncoder.encode(password));
         user = repository.save(user);
 
-//        UserEvent event = UserEvent.builder()
-//                .username(user.getUsername())
-//                .language(user.getLanguage().name())
-//                .email(user.getEmail())
-//                .password(password)
-//                .build();
-//
-//        ProducerRecord<String, UserEvent> producerRecord = new ProducerRecord<>(KafkaConstant.RESET_PASSWORD_EVENT, event);
-//        producer.send(producerRecord);
-//        producer.close();
-//        log.info("Sending message ... {}", producerRecord);
+        UserEvent event = UserEvent.builder()
+                .userName(user.getUsername())
+                .userLanguage(user.getLanguage().name().toLowerCase())
+                .email(user.getEmail())
+                .newPassword(password)
+                .build();
+
+        log.info("event ... {}", event);
+        ProducerRecord<String, Map<String, UserEvent>> producerRecord =
+                new ProducerRecord<>(KafkaConstant.RESET_PASSWORD_EVENT, objectMapper.convertValue(event, Map.class));
+        log.info("producerRecord ... {}", producerRecord);
+        producer.send(producerRecord);
+        log.info("Sending message ... {}", producerRecord);
 
         return PasswordResponse.builder()
                 .password(password)
