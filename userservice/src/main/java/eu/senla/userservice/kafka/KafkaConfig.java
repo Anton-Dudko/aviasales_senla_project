@@ -20,24 +20,24 @@ public class KafkaConfig {
 
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return props;
     }
 
     @Bean
-    public ProducerFactory<String, UserEvent> producerFactory() {
+    public ProducerFactory<String, Map<String, UserEvent>> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public Producer<String, UserEvent> producer() {
+    public Producer<String, Map<String, UserEvent>> producer() {
         return producerFactory().createProducer();
     }
 
     @Bean
-    public KafkaTemplate<String, UserEvent> kafkaTemplate() {
+    public KafkaTemplate<String, Map<String, UserEvent>> kafkaTemplate() {
         return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(producerConfigs()));
     }
 }

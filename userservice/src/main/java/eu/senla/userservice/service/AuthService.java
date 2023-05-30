@@ -1,5 +1,6 @@
 package eu.senla.userservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.senla.common.entity.Role;
 import eu.senla.userservice.entity.User;
 import eu.senla.userservice.exception.ExceptionMessageConstant;
@@ -23,6 +24,8 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -31,7 +34,8 @@ public class AuthService {
     private final UserRequestMapper userRequestMapper;
     private final UserRepository repository;
 
-    private final Producer<String, UserEvent> producer;
+    private final Producer<String, Map<String, UserEvent>> producer;
+    private final ObjectMapper objectMapper;
 
     public AuthResponse createUser(UserRequest request) {
         if (repository.findByEmail(request.getEmail()).isEmpty()) {
@@ -42,12 +46,14 @@ public class AuthService {
             user = repository.save(user);
 
             UserEvent event = UserEvent.builder()
-                    .username(user.getUsername())
-                    .language(user.getLanguage().name())
+                    .userName(user.getUsername())
+                    .userLanguage(user.getLanguage().name().toLowerCase())
                     .email(user.getEmail())
                     .build();
-
-            ProducerRecord<String, UserEvent> producerRecord = new ProducerRecord<>(KafkaConstant.REGISTERED_EVENT, event);
+            log.info("event ... {}", event);
+            ProducerRecord<String, Map<String, UserEvent>> producerRecord =
+                    new ProducerRecord<>(KafkaConstant.REGISTERED_EVENT, objectMapper.convertValue(event, Map.class));
+            log.info("producerRecord ... {}", producerRecord);
             producer.send(producerRecord);
             log.info("Sending message ... {}", producerRecord);
 
