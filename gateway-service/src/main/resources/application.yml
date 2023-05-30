@@ -1,5 +1,6 @@
 server:
   port: 8080
+  forward-headers-strategy: framework
 
 cloud:
   eureka-host: localhost
@@ -52,7 +53,7 @@ spring:
         - id: ticket-service
           uri: lb://${cloud.ticket-service-host}
           predicates:
-            - Path=/tickets/**
+            - Path=/tickets/**, /tickets
           filters:
             - AuthFilter=false
 
@@ -74,6 +75,13 @@ spring:
             - Path=/trips/admin/**
           filters:
             - AuthFilter=true
+
+        - id: subscription-service-admin
+          uri: lb://${cloud.trip-service-host}
+          predicates:
+            - Path=/subscriptions/**
+          filters:
+            - AuthFilter=false
 
         - id: trip-service-guest
           uri: lb://${cloud.trip-service-host}
@@ -117,7 +125,7 @@ logging:
   level:
     com.netflix: WARN
     org.springframework.cloud.gateway: TRACE
-    reactor.netty.http.client: DEBUG
+    reactor.netty.http.client: INFO
 
 
 swagger:
