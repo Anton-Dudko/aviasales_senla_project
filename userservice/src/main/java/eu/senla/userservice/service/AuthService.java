@@ -6,7 +6,7 @@ import eu.senla.userservice.entity.User;
 import eu.senla.userservice.exception.ExceptionMessageConstant;
 import eu.senla.userservice.exception.custom.AuthenticatException;
 import eu.senla.userservice.exception.custom.NotFoundException;
-import eu.senla.userservice.kafka.KafkaConstant;
+import eu.senla.userservice.kafka.KafkaTopicConstant;
 import eu.senla.userservice.kafka.UserEvent;
 import eu.senla.userservice.mapper.UserRequestMapper;
 import eu.senla.userservice.repository.UserRepository;
@@ -39,32 +39,34 @@ public class AuthService {
     private final ObjectMapper objectMapper;
 
     public AuthResponse createUser(UserRequest request) {
-        if (repository.findByEmail(request.getEmail()).isEmpty()) {
-            User user = userRequestMapper.requestToEntity(request);
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-            user.setAccessToken(generateAccessToken(user));
-            user.setRefreshToken(generateRefreshToken(user));
-            user = repository.save(user);
-
-            UserEvent event = UserEvent.builder()
-                    .userName(user.getUsername())
-                    .userLanguage(user.getLanguage().name().toLowerCase())
-                    .email(user.getEmail())
-                    .build();
-            log.info("event ... {}", event);
-            ProducerRecord<String, Map<String, UserEvent>> producerRecord =
-                    new ProducerRecord<>(KafkaConstant.REGISTERED_EVENT, objectMapper.convertValue(event, Map.class));
-            log.info("producerRecord ... {}", producerRecord);
-            producer.send(producerRecord);
-            log.info("Sending message ... {}", producerRecord);
-
-            return AuthResponse.builder()
-                    .accessToken(user.getAccessToken())
-                    .refreshToken(user.getRefreshToken())
-                    .build();
-        } else {
-            throw new AuthenticatException(ExceptionMessageConstant.USER_EXIST);
+        if (repository.findByUsername(request.getUsername()).isPresent()) {
+            throw new AuthenticatException(ExceptionMessageConstant.USER_WITH_SUCH_USERNAME_EXIST);
         }
+        if (repository.findByEmail(request.getEmail()).isPresent()) {
+            throw new AuthenticatException(ExceptionMessageConstant.USER_WITH_SUCH_EMAIL_EXIST);
+        }
+        User user = userRequestMapper.requestToEntity(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setAccessToken(generateAccessToken(user));
+        user.setRefreshToken(generateRefreshToken(user));
+        user = repository.save(user);
+
+        UserEvent event = UserEvent.builder()
+                .userName(user.getUsername())
+                .userLanguage(user.getLanguage().name().toLowerCase())
+                .email(user.getEmail())
+                .build();
+        log.info("event ... {}", event);
+        ProducerRecord<String, Map<String, UserEvent>> producerRecord =
+                new ProducerRecord<>(KafkaTopicConstant.REGISTERED_EVENT, objectMapper.convertValue(event, Map.class));
+        log.info("producerRecord ... {}", producerRecord);
+        producer.send(producerRecord);
+        log.info("Sending message ... {}", producerRecord);
+
+        return AuthResponse.builder()
+                .accessToken(user.getAccessToken())
+                .refreshToken(user.getRefreshToken())
+                .build();
     }
 
     public AuthResponse createAdmin(UserRequest request) {
@@ -125,7 +127,7 @@ public class AuthService {
 
         log.info("event ... {}", event);
         ProducerRecord<String, Map<String, UserEvent>> producerRecord =
-                new ProducerRecord<>(KafkaConstant.RESET_PASSWORD_EVENT, objectMapper.convertValue(event, Map.class));
+                new ProducerRecord<>(KafkaTopicConstant.RESET_PASSWORD_EVENT, objectMapper.convertValue(event, Map.class));
         log.info("producerRecord ... {}", producerRecord);
         producer.send(producerRecord);
         log.info("Sending message ... {}", producerRecord);

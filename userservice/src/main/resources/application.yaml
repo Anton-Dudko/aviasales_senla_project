@@ -15,10 +15,13 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+  kafka:
+    bootstrap-servers: "kafka:9092"
+
 token:
   access_secret: secret
   refresh_secret: refresh
-  access_time: 24h
+  access_time: 48h
   refresh_time: 30d
 
 cloud:
