@@ -2,10 +2,8 @@ package eu.senla.tripservice.mapper;
 
 import eu.senla.tripservice.entity.Airplane;
 import eu.senla.tripservice.entity.Flight;
-import eu.senla.tripservice.entity.Subscription;
 import eu.senla.tripservice.entity.Trip;
 import eu.senla.tripservice.request.FlightRequest;
-import eu.senla.tripservice.request.SubscriptionRequest;
 import eu.senla.tripservice.request.TripRequest;
 import eu.senla.tripservice.response.flight.FlightFullDataResponse;
 import eu.senla.tripservice.response.flight.FlightInfo;
@@ -106,13 +104,5 @@ public class Mapper {
                 .arrivalCity(trip.getArrivalCity())
                 .build();
 
-    }
-
-    public Subscription mapSubscriptionRequestToSubscription(SubscriptionRequest subscriptionRequest) {
-        return Subscription.builder()
-                .eventName(subscriptionRequest.getEventName())
-                .userId(subscriptionRequest.getUserId())
-                .tripFlightId(subscriptionRequest.getTripFlightId())
-                .build();
     }
 }
