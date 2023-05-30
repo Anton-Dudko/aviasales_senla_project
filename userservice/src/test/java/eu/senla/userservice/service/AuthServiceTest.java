@@ -85,7 +85,7 @@ class AuthServiceTest {
             authService.createUser(userRequest);
         });
 
-        String expectedMessage = ExceptionMessageConstant.USER_EXIST;
+        String expectedMessage = ExceptionMessageConstant.USER_WITH_SUCH_EMAIL_EXIST;
         String actualMessage = exception.getMessage();
 
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
