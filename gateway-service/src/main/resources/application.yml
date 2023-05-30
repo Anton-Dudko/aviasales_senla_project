@@ -7,93 +7,13 @@ cloud:
   finance-service-host: finance-service
   userservice-host: userservice
   ticket-service-host: tickets-service
-  trip-service-host: tripservice-service
+  trip-service-host: trip-service
   notification-service-host: notification-service
 spring:
+  config:
+    import: endpoint-mappings.yml
   application:
     name: api-gateway-service
-
-  cloud:
-    loadbalancer.ribbon.enabled: false
-    gateway:
-      routes:
-        - id: card-service
-          uri: lb://${cloud.finance-service-host}
-          predicates:
-            - Path=/admin/cards/**
-          filters:
-            - AuthFilter=true
-
-        - id: payment-service
-          uri: lb://${cloud.finance-service-host}
-          predicates:
-            - Path=/payment
-          filters:
-            - AuthFilter=false
-
-        - id: admin-user-service
-          uri: lb://${cloud.userservice-host}
-          predicates:
-            - Path=/admin/**, /admin
-          filters:
-            - AuthFilter=true
-
-        - id: guest-user-service
-          uri: lb://${cloud.userservice-host}
-          predicates:
-            - Path=/guest/**, /guest, /auth/**
-
-        - id: user-service
-          uri: lb://${cloud.userservice-host}
-          predicates:
-            - Path=/users/{id}
-          filters:
-            - UserIdFilter
-
-        - id: ticket-service
-          uri: lb://${cloud.ticket-service-host}
-          predicates:
-            - Path=/tickets/**, /tickets
-          filters:
-            - AuthFilter=false
-
-        - id: flight-service-admin
-          uri: lb://${cloud.trip-service-host}
-          predicates:
-              - Path=/flights/admin/**
-          filters:
-              - AuthFilter=true
-
-        - id: flight-service-guest
-          uri: lb://${cloud.trip-service-host}
-          predicates:
-              - Path=/flights/guest/**
-
-        - id: trip-service-admin
-          uri: lb://${cloud.trip-service-host}
-          predicates:
-            - Path=/trips/admin/**
-          filters:
-            - AuthFilter=true
-
-        - id: subscription-service-admin
-          uri: lb://${cloud.trip-service-host}
-          predicates:
-            - Path=/subscriptions/**
-          filters:
-            - AuthFilter=false
-
-        - id: trip-service-guest
-          uri: lb://${cloud.trip-service-host}
-          predicates:
-            - Path=/trips/guest/**
-
-        - id: notification-service
-          uri: lb://${cloud.notification-service-host}
-          predicates:
-            - Path=/api/admin/**
-          filters:
-            - AuthFilter=true
 
 eureka:
   instance:

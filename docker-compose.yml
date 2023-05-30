@@ -34,10 +34,10 @@ services:
       SPRING_DATASOURCE_USER: postgres
       SPRING_DATASOURCE_PASSWORD: admin
       SPRING_DATASOURCE_DB: aviasales
-      cloud.eureka-host: 172.31.0.10
+      cloud.eureka-host: eurekaserver
     depends_on:
       - userservice_db
-      - gateway-service
+      - eureka-service
     ports:
       - 8086:8086
     networks:
@@ -51,9 +51,10 @@ services:
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://finance_db:5432/postgres
-      cloud.eureka-host: 172.31.0.10
+      cloud.eureka-host: eurekaserver
     depends_on:
       - finance_db
+      - eureka-service
     networks:
       - backend
 
@@ -96,9 +97,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgrestripticket:5432/trip_ticket_db
       SPRING_DATASOURCE_USERNAME: postgres123
       SPRING_DATASOURCE_PASSWORD: postgres123
-      cloud.eureka-host: 172.31.0.10
+      cloud.eureka-host: eurekaserver
     depends_on:
       - postgrestripticket
+      - eureka-service
     ports:
       - 3000:8080
     networks:
@@ -113,9 +115,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgrestripticket:5432/trip_ticket_db
       SPRING_DATASOURCE_USERNAME: postgres123
       SPRING_DATASOURCE_PASSWORD: postgres123
-      cloud.eureka-host: 172.31.0.10
+      cloud.eureka-host: eurekaserver
     depends_on:
       - postgrestripticket
+      - eureka-service
     ports:
       - 8088:8080
     networks:
@@ -128,11 +131,14 @@ services:
     build:
       context: ./eureka-service
       dockerfile: Dockerfile
+    environment:
+      eureka.instance.hostname: eurekaserver
     ports:
       - "8761:8761"
     networks:
       backend:
-        ipv4_address: 172.31.0.10
+        aliases:
+          - "eurekaserver"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
       interval: 10s
@@ -145,7 +151,7 @@ services:
       context: ./gateway-service
       dockerfile: Dockerfile
     environment:
-      cloud.eureka-host: 172.31.0.10
+      cloud.eureka-host: eurekaserver
     networks:
       - backend
     ports:
@@ -170,13 +176,14 @@ services:
     ports:
       - "8087:8087"
     environment:
-      cloud.eureka-host: 172.31.0.10
+      cloud.eureka-host: eurekaserver
     networks:
       - backend
     restart: always
     depends_on:
       - notification-service-db
       - kafka
+      - eureka-service
   kafka:
     image: 'bitnami/kafka:2'
     ports:
@@ -213,7 +220,4 @@ volumes:
 networks:
   backend:
     driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.31.0.0/16
+
