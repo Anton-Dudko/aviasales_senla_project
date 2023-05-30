@@ -7,14 +7,14 @@ import eu.senla.userservice.exception.custom.NotFoundException;
 import eu.senla.userservice.mapper.UserRequestMapper;
 import eu.senla.userservice.repository.UserRepository;
 import eu.senla.userservice.request.UserFindRequest;
-import eu.senla.userservice.request.UserRequest;
+import eu.senla.userservice.request.UserUpdateRequest;
 import eu.senla.userservice.response.UserGetPageResponse;
 import eu.senla.userservice.response.UserResponse;
-import eu.senla.userservice.token.PasswordCoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,6 +27,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserRequestMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     public UserGetPageResponse findBySpecification(UserFindRequest request, Pageable pageable) {
@@ -49,17 +50,22 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER)));
     }
 
-    public UserResponse update(Long id, UserRequest request) {
+    public UserResponse update(Long id, UserUpdateRequest request) {
         log.info("Method update");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
-        user.setUsername(request.getUsername());
-        user.setPassword(PasswordCoder.codingPassword(request.getPassword()));
-        user.setDateBirth(LocalDate.parse(request.getDateBirth()));
+        user.setUsername(request.getUsername() != null
+                ? request.getUsername()
+                : user.getUsername());
+        user.setPassword(request.getPassword() != null
+                ? passwordEncoder.encode(request.getPassword())
+                : user.getPassword());
+        user.setDateBirth(request.getDateBirth() != null
+                ? LocalDate.parse(request.getDateBirth())
+                : user.getDateBirth());
         user.setLanguage(request.getLanguage() != null
                 ? Language.valueOf(request.getLanguage())
                 : user.getLanguage());
-
         User updatedUser = userRepository.save(user);
         return userMapper.entityToResponse(updatedUser);
     }

@@ -1,7 +1,7 @@
 package eu.senla.userservice.controller;
 
 import eu.senla.userservice.request.UserFindRequest;
-import eu.senla.userservice.request.UserRequest;
+import eu.senla.userservice.request.UserUpdateRequest;
 import eu.senla.userservice.response.UserGetPageResponse;
 import eu.senla.userservice.response.UserResponse;
 import eu.senla.userservice.service.UserService;
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    public UserResponse update(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
+    public UserResponse update(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request) {
         UserResponse response = userService.update(id, request);
         log.info("Response with updated user: {}", response);
         return response;
