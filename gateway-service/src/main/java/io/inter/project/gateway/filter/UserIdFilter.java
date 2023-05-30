@@ -34,7 +34,12 @@ public class UserIdFilter extends AbstractGatewayFilterFactory<UserIdFilter.Conf
                 return filterService.takeUserDetailsFromToken(accessToken).flatMap(userDetails -> {
                     int incomingRequestId = extractRequestIdFromPath(exchange.getRequest().getPath().toString());
                     if (incomingRequestId == userDetails.getUserId() || userDetails.getRole().equals(ADMIN_PARAM_VALUE)) {
-                        return Mono.just(filterService.insertUserDetailsInToResponse(exchange, userDetails));
+                        try {
+                            return Mono.just(filterService.insertUserDetailsInToResponse(exchange, userDetails));
+                        } catch (GatewayServiceException e) {
+                            log.warn("Some problems while processing");
+                            return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Some problems while processing"));
+                        }
                     } else {
                         return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied"));
                     }

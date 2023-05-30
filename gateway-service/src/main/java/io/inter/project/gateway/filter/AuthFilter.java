@@ -44,7 +44,12 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                                 log.warn("No authorities for this");
                                 return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied"));
                             }
-                            return Mono.just(filterService.insertUserDetailsInToResponse(exchange, userDetails));
+                            try {
+                                return Mono.just(filterService.insertUserDetailsInToResponse(exchange, userDetails));
+                            } catch (GatewayServiceException e) {
+                                log.warn("Some problems while processing");
+                                return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Some problems while processing"));
+                            }
                         })
                         .flatMap(chain::filter);
 
