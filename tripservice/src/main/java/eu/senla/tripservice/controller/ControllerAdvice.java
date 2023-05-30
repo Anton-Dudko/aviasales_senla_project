@@ -4,15 +4,17 @@ import eu.senla.tripservice.exeption.ErrorResponse;
 import eu.senla.tripservice.exeption.ParseException;
 import eu.senla.tripservice.exeption.airplane.AirplaneNotFoundException;
 import eu.senla.tripservice.exeption.flight.FlightAlreadyExistsException;
-import eu.senla.tripservice.exeption.flight.FlightValidationException;
 import eu.senla.tripservice.exeption.flight.FlightNotFoundException;
+import eu.senla.tripservice.exeption.flight.FlightValidationException;
 import eu.senla.tripservice.exeption.subscription.SubscriptionAlreadyExistsException;
+import eu.senla.tripservice.exeption.subscription.SubscriptionException;
 import eu.senla.tripservice.exeption.ticket.TicketsRequestException;
 import eu.senla.tripservice.exeption.trip.TripAlreadyExistsException;
 import eu.senla.tripservice.exeption.trip.TripNotCreatedException;
 import eu.senla.tripservice.exeption.trip.TripNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -101,5 +103,21 @@ public class ControllerAdvice {
     public ErrorResponse handleSubscriptionAlreadyExistsException(SubscriptionAlreadyExistsException subscriptionAlreadyExistsException) {
         log.error(subscriptionAlreadyExistsException.getMessage());
         return new ErrorResponse(subscriptionAlreadyExistsException.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(SubscriptionException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleSubscriptionException(SubscriptionException subscriptionException) {
+        log.error(subscriptionException.getMessage());
+        return new ErrorResponse(subscriptionException.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleMissingRequestHeaderException(MissingRequestHeaderException missingRequestHeaderException) {
+        log.error(missingRequestHeaderException.getMessage());
+        return new ErrorResponse(missingRequestHeaderException.getMessage(), LocalDateTime.now());
     }
 }
