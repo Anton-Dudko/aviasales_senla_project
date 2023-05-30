@@ -1,0 +1,49 @@
+endpoint:
+  userService:
+    "[/admin-reg]": /admin/registration
+    "[/login]": /guest/login
+    "[/new-password]": /guest/new-password
+    "[/registration]": /guest/registration
+    "[/validate]": /auth/validate
+    "[/deletion/**]": /admin/${id}
+    "[/search]": /admin/search
+    "[/find-by-id/**]": /admin/users/${id}
+    "[/update/**]": /users/${id}
+
+  financeService:
+    "[/block-card]": /admin/cards/block
+    "[/unblock-card]": /admin/cards/unblock
+    "[/blocked-cards]": /admin/cards/blocked-cards
+    "[/blocked-countries]": /admin/cards/blocked-countries
+    "[/payment]": /payment
+
+  tripService:
+    "[/new-flight]": /flights/admin/create
+    "[/find-flight/**]": /flights/admin/find/${id}
+    "[/find-flights]": /flights/guest/find
+    "[/flight-info/**]": /flights/guest/info/${id}
+    "[/flight-update/**]": /flights/admin/info/${id}
+    "[/flight-delete/**]": /flights/admin/delete/${id}
+    "[/sub-create]": /subscriptions/create-new-flight
+    "[/sub-cansel]": /subscriptions/create-flight-canceled
+    "[/new-trip]": /trips/admin/create
+    "[/find-trip/**]": /trips/admin/find/${id}
+    "[/find-trips]": /trips/admin/find-all
+    "[/find-all-trips]": /trips/guest/find-all
+    "[/update-trip/**]": /trips/admin/update/${id}
+    "[/delete-trip/**]": /trips/admin/delete/${id}
+
+  notificationService:
+    "[/find-emails]": /api/admin/email
+    "[/send-email]": /api/admin/email
+    "[/send-again/**]": /api/admin/${id}
+
+  ticketsService:
+    "[/new-ticket]": /tickets
+    "[/find-tickets]": /tickets
+    "[/find-ticket/**]": /tickets/${id}
+    "[/book-ticket]": /tickets/booking
+    "[/pay-tickets]": /tickets/pay-tickets
+    "[/delete-ticket/**]": /tickets/${id}
+    "[/pay-ticket/**]": /tickets/pay/${id}
+    "[/generate-tickets]": /tickets/generate
