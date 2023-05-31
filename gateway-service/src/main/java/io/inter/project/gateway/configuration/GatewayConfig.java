@@ -2,6 +2,9 @@ package io.inter.project.gateway.configuration;
 
 import io.inter.project.gateway.filter.AuthFilter;
 import io.inter.project.gateway.filter.UserIdFilter;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -13,50 +16,48 @@ import org.springframework.context.annotation.Configuration;
 import java.util.*;
 
 @Configuration
+@Getter
+@Setter
+@Slf4j
 @ConfigurationProperties(prefix = "endpoint")
 public class GatewayConfig {
 
-    private Map<String, String> userService = new LinkedHashMap<>();
+    private final String financeServiceHost;
+    private final String userServiceHost;
+    private final String ticketServiceHost;
+    private final String tripServiceHost;
+    private final String notificationServiceHost;
 
-    private Map<String, String> financeService = new LinkedHashMap<>();
+    private final Map<String, String> userService = new HashMap<>();
+    private final Map<String, String> financeService = new HashMap<>();
+    private final Map<String, String> tripService = new HashMap<>();
+    private final Map<String, String> notificationService = new HashMap<>();
+    private final Map<String, String> ticketsService = new HashMap<>();
+    private final List<String> exclusionList = new ArrayList<>();
 
-    private Map<String, String> tripService = new LinkedHashMap<>();
+    private final Map<String, Map<String, String>> mappings;
 
-    private Map<String, String> notificationService = new LinkedHashMap<>();
+    public GatewayConfig(
+            @Value("${cloud.finance-service-host}") String financeServiceHost,
+            @Value("${cloud.userservice-host}") String userServiceHost,
+            @Value("${cloud.ticket-service-host}") String ticketServiceHost,
+            @Value("${cloud.trip-service-host}") String tripServiceHost,
+            @Value("${cloud.notification-service-host}") String notificationServiceHost
+    ) {
+        this.financeServiceHost = financeServiceHost;
+        this.userServiceHost = userServiceHost;
+        this.ticketServiceHost = ticketServiceHost;
+        this.tripServiceHost = tripServiceHost;
+        this.notificationServiceHost = notificationServiceHost;
 
-    private Map<String, String> ticketsService = new LinkedHashMap<>();
-
-
-
-    @Value("${cloud.finance-service-host}")
-    private String financeServiceHost;
-
-    @Value("${cloud.userservice-host}")
-    private String userServiceHost;
-
-    @Value("${cloud.ticket-service-host}")
-    private String ticketServiceHost;
-
-    @Value("${cloud.trip-service-host}")
-    private String tripServiceHost;
-
-    @Value("${cloud.notification-service-host}")
-    private String notificationServiceHost;
+        this.mappings = new HashMap<>();
+        initMappings();
+    }
 
     @Bean
-    public RouteLocator routes(RouteLocatorBuilder builder, AuthFilter authFilter, UserIdFilter userIdFilter) {
+    public RouteLocator createRoutes(RouteLocatorBuilder builder, AuthFilter authFilter, UserIdFilter userIdFilter) {
         RouteLocatorBuilder.Builder routes = builder.routes();
-
-        addRoutes(authFilter, userIdFilter, routes, userService, userServiceHost);
-
-        addRoutes(authFilter, userIdFilter, routes, financeService, financeServiceHost);
-
-        addRoutes(authFilter, userIdFilter, routes, tripService, tripServiceHost);
-
-        addRoutes(authFilter, userIdFilter, routes, notificationService, notificationServiceHost);
-
-        addRoutes(authFilter, userIdFilter, routes, ticketsService, ticketServiceHost);
-
+        mappings.forEach((host, routesMap) -> addRoutes(authFilter, userIdFilter, routes, routesMap, host));
         return routes.build();
     }
 
@@ -88,24 +89,12 @@ public class GatewayConfig {
         }
     }
 
-    public void setUserService(Map<String, String> userService) {
-        this.userService = userService;
-    }
-
-    public void setFinanceService(Map<String, String> financeService) {
-        this.financeService = financeService;
-    }
-
-    public void setTripService(Map<String, String> tripService) {
-        this.tripService = tripService;
-    }
-
-    public void setNotificationService(Map<String, String> notificationService) {
-        this.notificationService = notificationService;
-    }
-
-    public void setTicketsService(Map<String, String> ticketsService) {
-        this.ticketsService = ticketsService;
+    private void initMappings() {
+        mappings.put(userServiceHost, userService);
+        mappings.put(tripServiceHost, tripService);
+        mappings.put(financeServiceHost, financeService);
+        mappings.put(notificationServiceHost, notificationService);
+        mappings.put(ticketServiceHost, ticketsService);
     }
 }
 

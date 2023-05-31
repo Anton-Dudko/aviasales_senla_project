@@ -47,28 +47,27 @@ public class ServiceDescriptionUpdater {
     @Scheduled(fixedDelayString = "${swagger.config.refreshrate}")
     public void refreshSwaggerConfigurations() {
         log.debug("Starting Service Definition Context refresh");
+        discoveryClient.getServices().forEach(this::refreshServiceDefinition);
+    }
 
-        discoveryClient.getServices().forEach(serviceId -> {
-            log.debug("Attempting service definition refresh for Service : {} ", serviceId);
-            List<ServiceInstance> serviceInstances = discoveryClient.getInstances(serviceId);
-            if (serviceInstances == null || serviceInstances.isEmpty()) {
-                log.info("No instances available for service : {} ", serviceId);
+    private void refreshServiceDefinition(String serviceId) {
+        log.debug("Attempting service definition refresh for Service: {}", serviceId);
+        List<ServiceInstance> serviceInstances = discoveryClient.getInstances(serviceId);
+        if (serviceInstances == null || serviceInstances.isEmpty()) {
+            log.info("No instances available for service: {}", serviceId);
+        } else {
+            ServiceInstance instance = serviceInstances.get(0);
+            String swaggerURL = getSwaggerURL(instance);
+            Optional<Object> jsonData = getSwaggerDefinitionForAPI(serviceId, swaggerURL);
+
+            if (jsonData.isPresent()) {
+                String content = getJSON(jsonData.get());
+                updateServiceDefinition(serviceId, content);
             } else {
-                ServiceInstance instance = serviceInstances.get(0);
-                String swaggerURL = getSwaggerURL(instance);
-
-                Optional<Object> jsonData = getSwaggerDefinitionForAPI(serviceId, swaggerURL);
-
-                if (jsonData.isPresent()) {
-                    String content = getJSON(jsonData.get());
-                    definitionContext.addServiceDefinition(serviceId, content);
-                } else {
-                    log.error("Skipping service id : {} Error : Could not get Swagger definition from API ", serviceId);
-                }
-
-                log.info("Service Definition Context Refreshed at :  {}", LocalDateTime.now());
+                log.error("Skipping service id: {}. Error: Could not get Swagger definition from API", serviceId);
             }
-        });
+            log.info("Service Definition Context Refreshed at: {}", LocalDateTime.now());
+        }
     }
 
     private String getSwaggerURL(ServiceInstance instance) {
@@ -77,15 +76,23 @@ public class ServiceDescriptionUpdater {
     }
 
     private Optional<Object> getSwaggerDefinitionForAPI(String serviceName, String url) {
-        log.debug("Accessing the SwaggerDefinition JSON for Service : {} : URL : {} ", serviceName, url);
+        log.debug("Accessing the SwaggerDefinition JSON for Service: {}. URL: {}", serviceName, url);
         try {
             Object jsonData = template.getForObject(url, Object.class);
             return Optional.ofNullable(jsonData);
         } catch (RestClientException ex) {
-            log.error("Error while getting service definition for service : {} Error : {} ", serviceName, ex.getMessage());
+            log.error("Error while getting service definition for service: {}. Error: {}", serviceName, ex.getMessage());
             return Optional.empty();
         }
+    }
 
+    private void updateServiceDefinition(String serviceId, String content) {
+        try {
+            definitionContext.addServiceDefinition(serviceId, swaggerUtils.setUpdatedMappings(serviceId, content));
+        } catch (JsonProcessingException e) {
+            log.error("Error: {}", e.getMessage());
+            definitionContext.addServiceDefinition(serviceId, "No data found for API definition");
+        }
     }
 
     public String getJSON(Object jsonData) {
