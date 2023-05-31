@@ -22,6 +22,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
@@ -119,7 +120,6 @@ class AuthServiceTest {
                 .email(EMAIL)
                 .password(PASSWORD)
                 .build());
-        System.out.println(userRepository.findByEmail(EMAIL).get().getPassword());
 
         Assertions.assertAll(
                 () -> assertNotNull(responce.getRefreshToken()),
@@ -229,4 +229,48 @@ class AuthServiceTest {
 
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
     }
+
+    @Test
+    void givenAccessTokenValid_validateAccessToken_OK() {
+        AuthResponse responce = authService.createUser(userRequest);
+
+        String accessToken = responce.getAccessToken();
+        String refreshToken = responce.getRefreshToken();
+        Assertions.assertAll(
+                () -> assertNotNull(responce.getRefreshToken()),
+                () -> assertNotNull(responce.getAccessToken())
+        );
+
+        UserResponse response = authService.validateAccessToken(accessToken);
+
+        Assertions.assertAll(
+                () -> assertEquals(USERNAME, response.getUsername()),
+                () -> assertEquals(EMAIL, response.getEmail()),
+                () -> assertEquals(accessToken, userRepository.findByEmail(EMAIL).get().getAccessToken()),
+                () -> assertEquals(refreshToken, userRepository.findByEmail(EMAIL).get().getRefreshToken())
+        );
+    }
+
+    @Test
+    void givenAccessTokenInvalidRefreshTokenValid_validateAccessToken_generateNewAccessToken() throws InterruptedException {
+        AuthResponse responce = authService.createUser(userRequest);
+
+        String accessToken = responce.getAccessToken();
+        String refreshToken = responce.getRefreshToken();
+        Assertions.assertAll(
+                () -> assertNotNull(responce.getRefreshToken()),
+                () -> assertNotNull(responce.getAccessToken())
+        );
+        Thread.sleep(1000 * 60 * 2);
+        UserResponse response = authService.validateAccessToken(accessToken);
+
+
+        Assertions.assertAll(
+                () -> assertEquals(USERNAME, response.getUsername()),
+                () -> assertEquals(EMAIL, response.getEmail()),
+                () -> assertNotEquals(accessToken, userRepository.findByEmail(EMAIL).get().getAccessToken()),
+                () -> assertEquals(refreshToken, userRepository.findByEmail(EMAIL).get().getRefreshToken())
+        );
+    }
+
 }

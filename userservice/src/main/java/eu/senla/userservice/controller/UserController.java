@@ -2,6 +2,7 @@ package eu.senla.userservice.controller;
 
 import eu.senla.userservice.request.UserFindRequest;
 import eu.senla.userservice.request.UserUpdateRequest;
+import eu.senla.userservice.response.TextResponse;
 import eu.senla.userservice.response.UserGetPageResponse;
 import eu.senla.userservice.response.UserResponse;
 import eu.senla.userservice.service.UserService;
@@ -55,8 +56,8 @@ public class UserController {
     }
 
     @DeleteMapping("/admin/{id}")
-    public void deleteById(@PathVariable Long id) {
+    public TextResponse deleteById(@PathVariable Long id) {
         log.info("Delete user:  id {}", id);
-        userService.delete(id);
+        return userService.delete(id);
     }
 }
