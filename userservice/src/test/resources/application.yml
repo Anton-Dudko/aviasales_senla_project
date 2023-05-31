@@ -11,6 +11,19 @@ spring:
     console:
       enabled: true
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.type.mapping: event:eu.senla.userservice.entity.UserEvent
+        spring.json.trusted.packages: "*"
+
+
 token:
   access_secret: secret
   refresh_secret: refresh

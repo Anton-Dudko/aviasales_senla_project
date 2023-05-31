@@ -125,6 +125,7 @@ class UserServiceTest {
                     .username(USERNAME + i)
                     .email(EMAIL + i)
                     .password(PASSWORD + i)
+                    .dateBirth(DATE_BIRTH)
                     .build();
             authService.createUser(request);
         }

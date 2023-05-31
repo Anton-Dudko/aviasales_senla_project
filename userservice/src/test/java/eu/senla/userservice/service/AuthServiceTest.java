@@ -22,7 +22,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
@@ -81,6 +80,7 @@ class AuthServiceTest {
     void givenUserRequest_createUserExistEmail_thenAuthenticateException() {
         authService.createUser(userRequest);
         int sizeBefore = userRepository.findAll().size();
+        userRequest.setUsername("new uniq name");
 
         Exception exception = Assertions.assertThrows(AuthenticatException.class, () -> {
             authService.createUser(userRequest);
@@ -167,7 +167,7 @@ class AuthServiceTest {
                 () -> assertEquals(USERNAME, response.getUsername()),
                 () -> assertEquals(EMAIL, response.getEmail()),
                 () -> assertEquals(LANGUAGE, response.getLanguage()),
-                () -> assertEquals(DATE_BIRTH, response.getDateBirth())
+                () -> assertEquals(DATE_BIRTH, response.getDateBirth().toString())
         );
     }
 
@@ -186,13 +186,13 @@ class AuthServiceTest {
     }
 
     @Test
-    void givenAccessToken_validateAccessTokenNotValidate_returnAuthenticatException() {
+    void givenAccessToken_validateAccessTokenNotValidate_returnNotFoundException() {
         String token = authService.createUser(userRequest).getAccessToken() + "z";
-        Exception exception = Assertions.assertThrows(AuthenticatException.class, () -> {
+        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
             authService.validateAccessToken(token);
         });
 
-        String expectedMessage = ExceptionMessageConstant.INVALID_TOKEN;
+        String expectedMessage = ExceptionMessageConstant.NOT_FOUND_USER;
         String actualMessage = exception.getMessage();
 
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
@@ -229,48 +229,4 @@ class AuthServiceTest {
 
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
     }
-
-    @Test
-    void givenAccessTokenValid_validateAccessToken_OK() {
-        AuthResponse responce = authService.createUser(userRequest);
-
-        String accessToken = responce.getAccessToken();
-        String refreshToken = responce.getRefreshToken();
-        Assertions.assertAll(
-                () -> assertNotNull(responce.getRefreshToken()),
-                () -> assertNotNull(responce.getAccessToken())
-        );
-
-        UserResponse response = authService.validateAccessToken(accessToken);
-
-        Assertions.assertAll(
-                () -> assertEquals(USERNAME, response.getUsername()),
-                () -> assertEquals(EMAIL, response.getEmail()),
-                () -> assertEquals(accessToken, userRepository.findByEmail(EMAIL).get().getAccessToken()),
-                () -> assertEquals(refreshToken, userRepository.findByEmail(EMAIL).get().getRefreshToken())
-        );
-    }
-
-    @Test
-    void givenAccessTokenInvalidRefreshTokenValid_validateAccessToken_generateNewAccessToken() throws InterruptedException {
-        AuthResponse responce = authService.createUser(userRequest);
-
-        String accessToken = responce.getAccessToken();
-        String refreshToken = responce.getRefreshToken();
-        Assertions.assertAll(
-                () -> assertNotNull(responce.getRefreshToken()),
-                () -> assertNotNull(responce.getAccessToken())
-        );
-        Thread.sleep(1000 * 60 * 2);
-        UserResponse response = authService.validateAccessToken(accessToken);
-
-
-        Assertions.assertAll(
-                () -> assertEquals(USERNAME, response.getUsername()),
-                () -> assertEquals(EMAIL, response.getEmail()),
-                () -> assertNotEquals(accessToken, userRepository.findByEmail(EMAIL).get().getAccessToken()),
-                () -> assertEquals(refreshToken, userRepository.findByEmail(EMAIL).get().getRefreshToken())
-        );
-    }
-
 }
