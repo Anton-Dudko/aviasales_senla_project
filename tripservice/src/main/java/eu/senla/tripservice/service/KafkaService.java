@@ -1,6 +1,7 @@
 package eu.senla.tripservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.senla.tripservice.entity.Subscription;
 import eu.senla.tripservice.entity.Trip;
 import eu.senla.tripservice.exeption.ticket.RequestException;
 import eu.senla.tripservice.request.UserDetails;
@@ -12,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -39,18 +43,26 @@ public class KafkaService {
 
     public void newEvent(String eventName, long flightId, long tripId, LocalDateTime departureDate) {
         log.info("KafkaService-newEvent");
-        long userId = 0;
+        List<Subscription> subscriptions = new ArrayList<>();
         switch (eventName) {
-            case (KafkaTopicsName.NEW_FLIGHT_EVENT) -> userId = subscriptionService.findSubscription(eventName, tripId);
-            case (KafkaTopicsName.FLIGHT_CANCELED_EVENT) ->
-                    userId = subscriptionService.findSubscription(eventName, flightId);
+            case (KafkaTopicsName.NEW_FLIGHT_EVENT) -> {
+                log.info("KafkaService-newEvent-case: " + KafkaTopicsName.NEW_FLIGHT_EVENT);
+                subscriptions = subscriptionService.findSubscription(eventName, tripId);
+            }
+            case (KafkaTopicsName.FLIGHT_CANCELED_EVENT) -> {
+                log.info("KafkaService-newEvent-case: " + KafkaTopicsName.FLIGHT_CANCELED_EVENT);
+                subscriptions = subscriptionService.findSubscription(eventName, flightId);
+            }
         }
 
-        if (userId != 0) {
-            log.info("KafkaService-newEvent: userId = " + userId);
-            KafkaFlightDTO kafkaFlightDTO = createKafkaFlightDTO(userId, flightId, tripId, departureDate);
-            if (kafkaFlightDTO != null) {
-                sendKafkaNewEvent(eventName, kafkaFlightDTO);
+        if (!subscriptions.isEmpty()) {
+            log.info("KafkaService-newEvent: subscription's count = " + subscriptions.size());
+            for (Subscription subscription : subscriptions) {
+                long userId = subscription.getUserId();
+                KafkaFlightDTO kafkaFlightDTO = createKafkaFlightDTO(userId, flightId, tripId, departureDate);
+                if (kafkaFlightDTO != null) {
+                    sendKafkaNewEvent(eventName, kafkaFlightDTO);
+                }
             }
         }
     }
@@ -87,12 +99,12 @@ public class KafkaService {
     public UserDetails makeRequestForUserDetails(long userId) {
         log.info("KafkaService-makeRequestForUserDetails");
         RestTemplate restTemplate = new RestTemplate();
-        String getUserDetailsUrl = "http://userservice:8086//admin/users/" + userId;
+        String getUserDetailsUrl = "http://userservice:8086/admin/users/" + userId;
         UserDetails response;
         try {
             response = restTemplate.getForObject(getUserDetailsUrl, UserDetails.class);
-        } catch (Exception e) {
-            throw new RequestException("Error occurred while GET request to: " + getUserDetailsUrl);
+        } catch (HttpClientErrorException e) {
+            throw new RequestException(e.getResponseBodyAsString());
         }
         return response;
     }

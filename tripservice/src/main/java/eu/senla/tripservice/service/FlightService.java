@@ -27,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -172,7 +173,7 @@ public class FlightService {
         }
         log.info("FlightService-findDirectFlight: not found");
         listFlightsResponse.setMessage("Flights: " + findFlightRequest.getDepartureCity() +
-                " - " + findFlightRequest.getArrivalCity() + " not found");
+                " - " + findFlightRequest.getArrivalCity() + " not found: ");
 
     }
 
@@ -205,11 +206,14 @@ public class FlightService {
     @Transactional
     public Flight update(long id, FlightRequest flightRequest) {
         log.info("FlightService-update");
-        findFlightById(id);
+        Flight flightToUpdate = findFlightById(id);
         Trip trip = tripService.findTripById(flightRequest.getTripId());
         Airplane airplane = airplaneService.findById(flightRequest.getAirplaneId());
         Flight updatedFlight = mapper.mapFlightRequestToFlight(flightRequest, trip, airplane);
         updatedFlight.setFlightId(id);
+        if (flightRequest.isCanceled() && !flightToUpdate.isCanceled()) {
+            kafkaService.newEvent(KafkaTopicsName.FLIGHT_CANCELED_EVENT, id, trip.getTripId(), updatedFlight.getDepartureDateTime());
+        }
         flightRepository.save(updatedFlight);
         log.info("Flight with id: " + id + " was updated");
         return updatedFlight;
@@ -257,8 +261,8 @@ public class FlightService {
 
         try {
             response = restTemplate.getForObject(getTicketsRequestUrl, TicketsResponse.class);
-        } catch (Exception e) {
-            throw new RequestException("Error occurred while GET request to: " + getTicketsRequestUrl);
+        } catch (HttpClientErrorException e) {
+            throw new RequestException(e.getResponseBodyAsString());
         }
 
         if (response == null || response.getTickets().isEmpty()) {

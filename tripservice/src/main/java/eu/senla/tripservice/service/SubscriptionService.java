@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -66,13 +66,9 @@ public class SubscriptionService {
         return subscriptionToSave;
     }
 
-    public long findSubscription(String eventName, Long tripFlightId) {
+    public List<Subscription> findSubscription(String eventName, Long tripFlightId) {
         log.info("SubscriptionService-findSubscription");
-        long userId = 0;
-        Optional<Subscription> subscription = subscriptionRepository.findByEventNameAndTripFlightId(eventName, tripFlightId);
-        if (subscription.isPresent())
-            userId = subscription.get().getUserId();
-        return userId;
+        return subscriptionRepository.findAllByEventNameAndTripFlightId(eventName, tripFlightId);
     }
 
     private boolean isSubscriptionExist(Subscription subscription) {
