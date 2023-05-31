@@ -50,6 +50,7 @@ public class SubscriptionService {
     }
 
     private Subscription saveSubscription(String eventName, long userId, long tripFlightId) {
+        log.info("SubscriptionService-saveSubscription: " + eventName + ", " + userId + ", " + tripFlightId);
         Subscription subscriptionToSave = Subscription.builder()
                 .eventName(eventName)
                 .userId(userId)
@@ -66,6 +67,7 @@ public class SubscriptionService {
     }
 
     public long findSubscription(String eventName, Long tripFlightId) {
+        log.info("SubscriptionService-findSubscription");
         long userId = 0;
         Optional<Subscription> subscription = subscriptionRepository.findByEventNameAndTripFlightId(eventName, tripFlightId);
         if (subscription.isPresent())
@@ -79,6 +81,7 @@ public class SubscriptionService {
     }
 
     private long getUserId(String userDetails) {
+        log.info("SubscriptionService-getUserId");
         UserDetails user;
         long userId = 0;
         try {
