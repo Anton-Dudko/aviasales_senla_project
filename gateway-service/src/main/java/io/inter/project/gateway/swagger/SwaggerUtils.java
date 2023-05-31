@@ -1,11 +1,19 @@
 package io.inter.project.gateway.swagger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.inter.project.gateway.configuration.GatewayConfig;
 import io.swagger.models.Operation;
 import io.swagger.models.Path;
 import io.swagger.models.Swagger;
+import io.swagger.models.Tag;
 import io.swagger.models.parameters.HeaderParameter;
+import io.swagger.parser.SwaggerParser;
+import io.swagger.util.Json;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -17,25 +25,72 @@ public class SwaggerUtils {
     public static final String CONTENT_TYPE = "string";
     public static final String HOST_VALUE = "localhost:8080";
 
+    @Autowired
+    private GatewayConfig gatewayConfig;
+
     public Swagger setSpecialDataIntoApiDocs(Swagger swagger) {
+        addAuthHeaderToOperations(swagger);
+        setHostValue(swagger);
+        return swagger;
+    }
+
+    public String setUpdatedMappings(String serviceName, String content) throws JsonProcessingException {
+        Swagger swagger = new SwaggerParser().parse(content);
+        if (gatewayConfig.getMappings().containsKey(serviceName)) {
+            Map<String, Path> newPaths = createNewPaths(serviceName, swagger);
+            swagger.setPaths(newPaths);
+
+            List<Tag> tagList = filterTags(swagger.getTags());
+            swagger.setTags(tagList);
+        }
+        return Json.mapper().writeValueAsString(swagger);
+    }
+
+    private void addAuthHeaderToOperations(Swagger swagger) {
         for (Map.Entry<String, Path> entry : swagger.getPaths().entrySet()) {
             String path = entry.getKey();
             Path pathObject = entry.getValue();
             if (!path.contains(GUEST_ROUTE_PARAM)) {
                 for (Operation operation : pathObject.getOperations()) {
-                    HeaderParameter authHeader = new HeaderParameter();
-                    authHeader.setName(PARAM_NAME);
-                    authHeader.setDescription(DESCRIPTION);
-                    authHeader.setRequired(true);
-                    authHeader.setType(CONTENT_TYPE);
-
+                    HeaderParameter authHeader = createAuthHeader();
                     operation.addParameter(authHeader);
                 }
             }
         }
+    }
 
+    private HeaderParameter createAuthHeader() {
+        HeaderParameter authHeader = new HeaderParameter();
+        authHeader.setName(PARAM_NAME);
+        authHeader.setDescription(DESCRIPTION);
+        authHeader.setRequired(true);
+        authHeader.setType(CONTENT_TYPE);
+        return authHeader;
+    }
+
+    private void setHostValue(Swagger swagger) {
         swagger.setHost(HOST_VALUE);
-        return swagger;
+    }
+
+    private Map<String, Path> createNewPaths(String serviceName, Swagger swagger) {
+        Map<String, Path> newPaths = new LinkedHashMap<>();
+        gatewayConfig.getMappings().get(serviceName).forEach((key, value) -> {
+            String newValue = value.replace("$", "");
+            String newKey = key.replace("**", "{id}");
+            swagger.getPaths().forEach((url, path) -> {
+                if (url.equals(newValue)) {
+                    newPaths.put(newKey, path);
+                }
+            });
+        });
+        return newPaths;
+    }
+
+    private List<Tag> filterTags(List<Tag> tags) {
+        List<String> exclusionList = gatewayConfig.getExclusionList();
+        return tags.stream()
+                .filter(x -> !exclusionList.contains(x.getName()))
+                .toList();
     }
 
 }
