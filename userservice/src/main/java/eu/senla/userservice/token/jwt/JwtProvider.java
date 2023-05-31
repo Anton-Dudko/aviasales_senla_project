@@ -12,4 +12,8 @@ public interface JwtProvider {
     boolean validateAccessToken(String token);
 
     String getLoginFromAccessToken(String token);
+
+    boolean validateRefreshToken(String accessToken);
+
+    String getLoginFromRefreshToken(String token);
 }

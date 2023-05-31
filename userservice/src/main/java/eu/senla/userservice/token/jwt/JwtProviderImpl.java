@@ -48,7 +48,14 @@ public class JwtProviderImpl implements JwtProvider {
 
     @Override
     public boolean validateAccessToken(String accessToken) {
+        log.info("Method validateAccessToken");
         return validateToken(accessToken, securityProperties.getAccessSecret());
+    }
+
+    @Override
+    public boolean validateRefreshToken(String refreshToken) {
+        log.info("Method validateRefreshToken");
+        return validateToken(refreshToken, securityProperties.getRefreshSecret());
     }
 
     @Override
@@ -57,8 +64,13 @@ public class JwtProviderImpl implements JwtProvider {
         return getLoginFromToken(token, securityProperties.getAccessSecret());
     }
 
+    @Override
+    public String getLoginFromRefreshToken(String token) {
+        log.trace("Method getLoginFromRefreshToken");
+        return getLoginFromToken(token, securityProperties.getRefreshSecret());
+    }
+
     private boolean validateToken(String token, String secret) {
-        log.info("Method validateToken");
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             log.info("Return true");

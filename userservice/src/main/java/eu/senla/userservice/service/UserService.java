@@ -8,6 +8,8 @@ import eu.senla.userservice.mapper.UserRequestMapper;
 import eu.senla.userservice.repository.UserRepository;
 import eu.senla.userservice.request.UserFindRequest;
 import eu.senla.userservice.request.UserUpdateRequest;
+import eu.senla.userservice.response.TextResponse;
+import eu.senla.userservice.response.TextResponseMessageConstant;
 import eu.senla.userservice.response.UserGetPageResponse;
 import eu.senla.userservice.response.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -71,10 +73,15 @@ public class UserService {
     }
 
 
-    public void delete(Long id) {
+    public TextResponse delete(Long id) {
         log.info("Method delete");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
         userRepository.delete(user);
+        return TextResponse.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .message(TextResponseMessageConstant.USER_DELETED)
+                .build();
     }
 }

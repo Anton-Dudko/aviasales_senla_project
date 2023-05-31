@@ -39,6 +39,7 @@ public class AuthService {
     private final ObjectMapper objectMapper;
 
     public AuthResponse createUser(UserRequest request) {
+        log.info("...method createUser");
         if (repository.findByUsername(request.getUsername()).isPresent()) {
             throw new AuthenticatException(ExceptionMessageConstant.USER_WITH_SUCH_USERNAME_EXIST);
         }
@@ -92,10 +93,30 @@ public class AuthService {
     }
 
     public UserResponse validateAccessToken(String accessToken) {
+        String refreshToken = repository.findByAccessToken(accessToken)
+                .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER))
+                .getRefreshToken();
         if (jwtProvider.validateAccessToken(accessToken)) {
             String username = jwtProvider.getLoginFromAccessToken(accessToken);
             User user = repository.findByUsername(username)
                     .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
+            return UserResponse.builder()
+                    .userId(user.getId())
+                    .email(user.getEmail())
+                    .username(user.getUsername())
+                    .dateBirth(user.getDateBirth())
+                    .language(user.getLanguage().name())
+                    .role(user.getRole().name())
+                    .build();
+        } else if (jwtProvider.validateRefreshToken(refreshToken)) {
+            log.info("...validate refresh token");
+            String username = jwtProvider.getLoginFromRefreshToken(refreshToken);
+            log.info("...username is " + username);
+            User user = repository.findByUsername(username)
+                    .orElseThrow(() -> new NotFoundException(ExceptionMessageConstant.NOT_FOUND_USER));
+            String newAccessToken = generateAccessToken(user);
+            user.setAccessToken(newAccessToken);
+            repository.save(user);
             return UserResponse.builder()
                     .userId(user.getId())
                     .email(user.getEmail())
@@ -141,6 +162,7 @@ public class AuthService {
     }
 
     private String generateAccessToken(User user) {
+        log.info("method generateAccessToken");
         return jwtProvider.generateAccessToken(user);
     }
 
