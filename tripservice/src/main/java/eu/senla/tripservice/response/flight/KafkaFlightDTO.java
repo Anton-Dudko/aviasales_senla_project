@@ -1,5 +1,13 @@
 package eu.senla.tripservice.response.flight;
 
+import eu.senla.tripservice.util.time.TimeFormatter;
+import lombok.*;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class KafkaFlightDTO {
     private String userLanguage;
     private String email;
@@ -8,4 +16,8 @@ public class KafkaFlightDTO {
     private String to;
     private String tripDate;
     private Double price;
+
+    public void setTripDate(LocalDateTime tripDate) {
+        this.tripDate = TimeFormatter.formatLocalDateTimeToString(tripDate);
+    }
 }

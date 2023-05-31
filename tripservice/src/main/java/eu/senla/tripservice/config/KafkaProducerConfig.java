@@ -1,5 +1,6 @@
 package eu.senla.tripservice.config;
 
+import eu.senla.tripservice.response.flight.KafkaFlightDTO;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,12 +31,12 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, Object> producerFactory() {
+    public ProducerFactory<String, Map<String, KafkaFlightDTO>> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate() {
+    public KafkaTemplate<String, Map<String, KafkaFlightDTO>> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

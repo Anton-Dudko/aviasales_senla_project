@@ -5,7 +5,7 @@ import eu.senla.tripservice.entity.Flight;
 import eu.senla.tripservice.entity.Trip;
 import eu.senla.tripservice.exeption.flight.FlightAlreadyExistsException;
 import eu.senla.tripservice.exeption.flight.FlightNotFoundException;
-import eu.senla.tripservice.exeption.ticket.TicketsRequestException;
+import eu.senla.tripservice.exeption.ticket.RequestException;
 import eu.senla.tripservice.mapper.Mapper;
 import eu.senla.tripservice.repository.FlightRepository;
 import eu.senla.tripservice.request.FindFlightRequest;
@@ -14,6 +14,7 @@ import eu.senla.tripservice.request.TicketsCreateRequest;
 import eu.senla.tripservice.response.flight.*;
 import eu.senla.tripservice.response.ticket.TicketResponse;
 import eu.senla.tripservice.response.ticket.TicketsResponse;
+import eu.senla.tripservice.util.KafkaTopicsName;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,13 +42,16 @@ public class FlightService {
     private final TripService tripService;
     private final AirplaneService airplaneService;
     private final Mapper mapper;
+    private final KafkaService kafkaService;
 
     @Autowired
-    public FlightService(FlightRepository flightRepository, TripService tripService, AirplaneService airplaneService, Mapper mapper) {
+    public FlightService(FlightRepository flightRepository, TripService tripService, AirplaneService airplaneService,
+                         Mapper mapper, KafkaService kafkaService) {
         this.flightRepository = flightRepository;
         this.tripService = tripService;
         this.airplaneService = airplaneService;
         this.mapper = mapper;
+        this.kafkaService = kafkaService;
     }
 
     @Transactional
@@ -66,6 +70,10 @@ public class FlightService {
         log.info("New flight was added, id: " + flightToSave.getFlightId());
         makeCreateTicketsRequest(generateTickets(flightToSave.getFlightId(),
                 flightRequest.getFirstClassTicketPercent(), flightRequest.getTicketPrice()));
+
+        kafkaService.newEvent(KafkaTopicsName.NEW_FLIGHT_EVENT, flightToSave.getFlightId(), flightToSave.getTrip().getTripId(),
+                flightToSave.getDepartureDateTime());
+
         return flightToSave;
     }
 
@@ -97,7 +105,6 @@ public class FlightService {
 
         if (findFlightRequest.getReturnDate() != null && !findFlightRequest.getReturnDate().isEmpty()) {
             findReturnFlight(listFlightsResponse, findFlightRequest);
-            System.out.println("asdfasdfasf");
         }
         return listFlightsResponse;
     }
@@ -235,12 +242,12 @@ public class FlightService {
         try {
             restTemplate.postForObject(createTicketsRequestUrl, request, ResponseEntity.class);
         } catch (Exception e) {
-            throw new TicketsRequestException("Ticket not created: " + e.getMessage());
+            throw new RequestException("Ticket not created: " + e.getMessage());
         }
 
     }
 
-    private TicketsResponse makeGetTicketsRequest(long id) {
+    protected TicketsResponse makeGetTicketsRequest(long id) {
         log.info("Flight-service-makeGetTicketsRequest");
         RestTemplate restTemplate = new RestTemplate();
 
@@ -251,7 +258,7 @@ public class FlightService {
         try {
             response = restTemplate.getForObject(getTicketsRequestUrl, TicketsResponse.class);
         } catch (Exception e) {
-            throw new TicketsRequestException("Error occurred while GET request to: " + getTicketsRequestUrl);
+            throw new RequestException("Error occurred while GET request to: " + getTicketsRequestUrl);
         }
 
         if (response == null || response.getTickets().isEmpty()) {
@@ -289,7 +296,7 @@ public class FlightService {
                 flightToCheck.getDepartureDateTime(), flightToCheck.getArrivalDateTime()).isPresent();
     }
 
-    private void sortTickets(List<TicketResponse> tickets) {
+    protected void sortTickets(List<TicketResponse> tickets) {
         tickets.sort((o1, o2) -> (int) Math.round(o1.getPrice() - o2.getPrice()));
     }
 }
