@@ -5,6 +5,8 @@ import com.aviasalestickets.model.dto.*;
 import com.aviasalestickets.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,29 +34,38 @@ public class TicketController {
         return ticketService.findById(id);
     }
 
+    @GetMapping("/findByIds")
+    public List<Ticket> findTicketsByIds(@RequestParam("ids") List<Long> ids) {
+        return ticketService.findAllByIds(ids);
+    }
+
     @PostMapping("/booking")
-    public void bookingTicket(@RequestBody BookingRequest request) {
+    public ResponseEntity<?> bookingTicket(@RequestBody BookingRequest request) {
         ticketService.bookTicket(request.getId(), request.getUserId());
+        return ResponseEntity.status(HttpStatus.OK).body("Ticket number - " + request.getId() + " booked!");
     }
 
     @GetMapping("/pay-tickets")
-    public String bookTickets(@RequestParam List<Long> ticketsId) {
+    public ResponseEntity<?> payTickets(@RequestParam List<Long> ticketsId) {
         return ticketService.payTickets(ticketsId);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
         ticketService.deleteReservation(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Ticket number - " + id + " deleted!");
     }
 
     @PostMapping("/pay/{id}")
-    public void payTicket(@PathVariable Long id) {
+    public ResponseEntity<?> payTicket(@PathVariable Long id) {
         ticketService.payTicket(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Ticket number - " + id + " paid!");
     }
 
     @PostMapping("/generate")
-    public void generateTickets(@RequestBody GenerateTicketRequest request) {
+    public ResponseEntity<?> generateTickets(@RequestBody GenerateTicketRequest request) {
         ticketService.generateTickets(request);
+        return ResponseEntity.status(HttpStatus.OK).body("Tickets for trip number - " + request.getTripId() + " created");
     }
 
 }
