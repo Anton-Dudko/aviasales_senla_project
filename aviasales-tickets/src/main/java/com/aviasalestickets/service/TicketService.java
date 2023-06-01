@@ -112,8 +112,7 @@ public class TicketService {
 
         log.info("info" + kafkaTicketDto);
 
-                ProducerRecord<String, Map<String, KafkaTicketDto>> producerRecord =
-                new ProducerRecord<>(CANCELED_TICKET_RESERVATION_EVENT, objectMapper.convertValue(ticket, Map.class));
+        ProducerRecord<String, Map<String, KafkaTicketDto>> producerRecord = new ProducerRecord<>(CANCELED_TICKET_RESERVATION_EVENT, objectMapper.convertValue(ticket, Map.class));
         log.info("producerRecord ... {}", producerRecord);
         producer.send(producerRecord);
         log.info("Sending message ... {}", producerRecord);
@@ -151,6 +150,16 @@ public class TicketService {
         }
         return ResponseEntity.status(HttpStatus.OK).body("Tickets number - " + ticketsId + " paid!");
 
+    }
+
+    public ResponseEntity<?> refundTickets(List<Long> ticketsId) {
+        List<Ticket> tickets = ticketRepository.findAllById(ticketsId);
+
+        for(Ticket ticket : tickets){
+            ticket.setStatus(TicketStatus.FREE);
+            ticketRepository.save(ticket);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Tickets number - " + ticketsId + " refunded!");
     }
 
     public FlightInfoDto requestToTrip(Long id){
