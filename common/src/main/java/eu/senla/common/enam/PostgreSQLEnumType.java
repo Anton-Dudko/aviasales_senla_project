@@ -1,4 +1,4 @@
-package eu.senla.userservice.entity;
+package eu.senla.common.enam;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;

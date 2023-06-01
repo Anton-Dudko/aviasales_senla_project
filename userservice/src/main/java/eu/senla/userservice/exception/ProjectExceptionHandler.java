@@ -16,7 +16,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.validation.ValidationException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -24,48 +23,45 @@ public class ProjectExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponce notFoundException(NotFoundException ex) {
+    public ErrorResponse notFoundException(NotFoundException ex) {
         log.warn(ex.getMessage());
-        return new ErrorResponce(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
 
     @ExceptionHandler(StaleObjectStateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponce staleObjectStateException(StaleObjectStateException ex) {
+    public ErrorResponse staleObjectStateException(StaleObjectStateException ex) {
         log.warn(ex.getMessage());
-        return new ErrorResponce(HttpStatus.CONFLICT.value(), ex.getMessage());
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
     }
 
     @ExceptionHandler(AuthenticatException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorResponce handleAuthenticatException(AuthenticatException ex) {
+    public ErrorResponse handleAuthenticatException(AuthenticatException ex) {
         log.warn(ex.getMessage());
-        return new ErrorResponce(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+        return new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponce handleIllegalArgumentException(IllegalArgumentException ex) {
+    public ErrorResponse handleIllegalArgumentException(IllegalArgumentException ex) {
         log.warn(ex.getMessage());
-        return new ErrorResponce(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponce handleValidationException(ValidationException ex) {
+    public ErrorResponse handleValidationException(ValidationException ex) {
         log.warn(ex.getMessage());
-        return new ErrorResponce(HttpStatus.BAD_REQUEST.value(), ex.getMessage().split("propertyPath=")[1].split(",")[0]
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage().split("propertyPath=")[1].split(",")[0]
                 + " " + ex.getMessage().split("interpolatedMessage='")[1].split("'")[0]);
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
-        List<String> validationList = ex.getBindingResult().getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).collect(Collectors.toList());
-        String message = "";
-        for (String str : validationList) {
-            message = message + " " + str;
-        }
-        return new ResponseEntity<>(new ErrorResponce(status.value(), message), status);
+        List<String> validationList = ex.getBindingResult().getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList();
+        String message = String.join(" ", validationList);
+        return new ResponseEntity<>(new ErrorResponse(status.value(), message), status);
     }
 }

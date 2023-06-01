@@ -19,7 +19,7 @@ public class TokenController {
 
     @GetMapping("/validate")
     public UserResponse validateAccessToken(String accessToken) {
-        log.info("Method validateAccessToken");
+        log.info("...Method validateAccessToken");
         return authService.validateAccessToken(accessToken);
     }
 }

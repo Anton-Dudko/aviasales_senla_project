@@ -1,7 +1,9 @@
 package eu.senla.userservice.entity;
 
-import eu.senla.common.entity.Role;
-import eu.senla.userservice.exception.ExceptionMessageConstant;
+import eu.senla.common.enam.Language;
+import eu.senla.common.enam.PostgreSQLEnumType;
+import eu.senla.common.enam.Role;
+import eu.senla.userservice.exception.ExceptionMessageConstants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -43,8 +45,8 @@ public class User {
     @Column
     private String username;
 
-    @Email(regexp = ".+[@].+[\\.].+", message = ExceptionMessageConstant.NOT_VALID_EMAIL)
     @NotNull
+    @Email(regexp = ".+[@].+[\\.].+", message = ExceptionMessageConstants.NOT_VALID_EMAIL)
     @Column
     private String email;
 
@@ -52,28 +54,28 @@ public class User {
     @Column
     private String password;
 
-    @Past(message = ExceptionMessageConstant.NOT_VALID_DATE)
     @NotNull
+    @Past(message = ExceptionMessageConstants.NOT_VALID_DATE)
     @Column(name = "date_birth")
     private LocalDate dateBirth;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "language")
     @Type(type = "pgsql_enum")
+    @Column(columnDefinition = "language")
     private Language language;
 
-    @Enumerated(EnumType.STRING)
     @NotNull
-    @Column(columnDefinition = "role")
+    @Enumerated(EnumType.STRING)
     @Type(type = "pgsql_enum")
+    @Column(columnDefinition = "role")
     private Role role;
 
-    @Column(name = "refresh_token")
     @NotNull
+    @Column(name = "refresh_token")
     private String refreshToken;
 
-    @Column(name = "access_token")
     @NotNull
+    @Column(name = "access_token")
     private String accessToken;
 
     @Override
