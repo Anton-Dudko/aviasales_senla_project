@@ -7,4 +7,6 @@ public class GenerateTicketRequest {
     Long tripId;
     Integer countTicketsFirstClass;
     Integer countTicketsSecondClass;
+    Double firstClassPrice;
+    Double secondClassPrice;
 }
