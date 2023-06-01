@@ -6,7 +6,7 @@ cloud:
   eureka-host: localhost
   finance-service-host: finance-service
   userservice-host: userservice
-  ticket-service-host: tickets-service
+  ticket-service-host: ticket-service
   trip-service-host: trip-service
   notification-service-host: notification-service
 spring:
