@@ -154,7 +154,7 @@ public class TicketService {
     }
 
     public FlightInfoDto requestToTrip(Long id){
-        String url = "http://localhost:3000/flights/admin/find/{id}"; //tripservice:8080
+        String url = "http://trip-service:8081/flights/admin/find/{id}"; //trip-service:8081    localhost:8081
         FlightInfoDto flight = restTemplate.getForObject(url, FlightInfoDto.class, id);
         return flight;
     }
