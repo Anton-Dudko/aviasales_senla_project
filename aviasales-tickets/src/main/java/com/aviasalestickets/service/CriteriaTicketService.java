@@ -15,10 +15,12 @@ public class CriteriaTicketService {
 
     private final TicketRepository ticketRepository;
 
-    public List<Ticket> findAll(Long userId, String status, Long tripId) {
+    public List<Ticket> findAll(Long userId, String status, Long tripId, String fio, Long id) {
         return ticketRepository.findAll(
-                where(TicketSpecifications.idEqual(userId)
+                where(TicketSpecifications.userIdEqual(userId)
                         .and(TicketSpecifications.statusEqual(status))
-                        .and(TicketSpecifications.tripIdLike(tripId))));
+                        .and(TicketSpecifications.tripIdLike(tripId))
+                        .and(TicketSpecifications.idEqual(id))
+                        .and(TicketSpecifications.fioLike(fio))));
     }
 }
