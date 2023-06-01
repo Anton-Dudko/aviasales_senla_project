@@ -71,11 +71,11 @@ services:
   #finance microservice end
 
   #trip microservice start
-  postgrestripticket:
+  trip-ticket-database:
     image: postgres:13.1-alpine
-    container_name: trip_ticket
+    container_name: trip_ticket_db
     ports:
-      - 32768:5432
+      - "32768:5432"
     volumes:
       - ~/app/postgresql:/data
     environment:
@@ -90,19 +90,19 @@ services:
       timeout: 5s
       retries: 5
 
-  tripservice:
-    container_name: tripservice
-    build: tripservice
+  trip-service:
+    container_name: trip-service
+    build: ./tripservice
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgrestripticket:5432/trip_ticket_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://trip-ticket-database:5432/trip_ticket_db
       SPRING_DATASOURCE_USERNAME: postgres123
       SPRING_DATASOURCE_PASSWORD: postgres123
       cloud.eureka-host: eurekaserver
     depends_on:
-      - postgrestripticket
+      - trip-ticket-database
       - eureka-service
     ports:
-      - 3000:8080
+      - "8081:8081"
     networks:
       - backend
   #trip microservice end
@@ -112,12 +112,12 @@ services:
     container_name: ticket-service
     build: ./aviasales-tickets
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgrestripticket:5432/trip_ticket_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://trip-ticket-database:5432/trip_ticket_db
       SPRING_DATASOURCE_USERNAME: postgres123
       SPRING_DATASOURCE_PASSWORD: postgres123
       cloud.eureka-host: eurekaserver
     depends_on:
-      - postgrestripticket
+      - trip-ticket-database
       - eureka-service
     ports:
       - 8088:8080
