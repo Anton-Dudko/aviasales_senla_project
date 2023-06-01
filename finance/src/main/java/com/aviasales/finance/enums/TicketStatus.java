@@ -1,5 +1,5 @@
 package com.aviasales.finance.enums;
 
 public enum TicketStatus {
-    AVAILABLE, BOOKED, PAID
+    FREE, BOOKED, PAID
 }

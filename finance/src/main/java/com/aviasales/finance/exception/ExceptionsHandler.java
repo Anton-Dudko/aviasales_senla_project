@@ -14,18 +14,13 @@ public class ExceptionsHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new SimpleErrorResponse(ex.getMessage()));
     }
 
-    @ExceptionHandler(TicketNotFoundException.class)
-    public ResponseEntity<Object> handleTicketNotFoundException (TicketNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SimpleErrorResponse(ex.getMessage()));
-    }
-
-    @ExceptionHandler(TickedAlreadyPaidException.class)
-    public ResponseEntity<Object> handleTicketAlreadyPaidException(TickedAlreadyPaidException ex) {
+    @ExceptionHandler(ExternalPaymentSystemException.class)
+    public ResponseEntity<Object> handleExternalPaymentSystemException(ExternalPaymentSystemException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SimpleErrorResponse(ex.getMessage()));
     }
 
-    @ExceptionHandler(ExternalPaymentSystemException.class)
-    public ResponseEntity<Object> handleExternalPaymentSystemException(ExternalPaymentSystemException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new SimpleErrorResponse(ex.getMessage()));
+    @ExceptionHandler(TicketServiceException.class)
+    public ResponseEntity<Object> handleTicketServiceException(TicketServiceException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SimpleErrorResponse(ex.getMessage()));
     }
 }

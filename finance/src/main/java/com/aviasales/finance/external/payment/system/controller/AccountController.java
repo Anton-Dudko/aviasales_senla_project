@@ -36,7 +36,6 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity<?> createBankCard(@RequestBody BankCardDto bankCardDto) {
-        //ToDo validation can be added if needed
         bankCardRepository.save(bankCardMapper.convertToEntity(bankCardDto));
         return ResponseEntity.status(HttpStatus.OK).body("Bank card created - " + bankCardDto.getCardNumber());
     }
