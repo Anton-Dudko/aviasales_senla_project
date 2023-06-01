@@ -5,7 +5,9 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,9 +21,14 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double price;
+    @Column(name = "amount")
+    private BigDecimal amount;
     private LocalDateTime paymentCreationDateTime;
-    private String ticketId;
+
+    @ElementCollection
+    @CollectionTable(name="payment_ticket", joinColumns=@JoinColumn(name="payment_id"))
+    @Column(name="ticket_id")
+    private List<Long> tickets;
     private String userId;
     private String cardNumber;
     private PaymentStatus paymentStatus;

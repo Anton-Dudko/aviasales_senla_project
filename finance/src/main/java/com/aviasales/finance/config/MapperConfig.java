@@ -1,4 +1,4 @@
-package com.aviasales.finance.converter;
+package com.aviasales.finance.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
