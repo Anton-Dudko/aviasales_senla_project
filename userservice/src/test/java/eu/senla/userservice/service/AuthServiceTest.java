@@ -1,8 +1,8 @@
 package eu.senla.userservice.service;
 
-import eu.senla.common.entity.Role;
-import eu.senla.userservice.entity.Language;
-import eu.senla.userservice.exception.ExceptionMessageConstant;
+import eu.senla.common.enam.Language;
+import eu.senla.common.enam.Role;
+import eu.senla.userservice.exception.ExceptionMessageConstants;
 import eu.senla.userservice.exception.custom.AuthenticatException;
 import eu.senla.userservice.exception.custom.NotFoundException;
 import eu.senla.userservice.repository.UserRepository;
@@ -86,7 +86,7 @@ class AuthServiceTest {
             authService.createUser(userRequest);
         });
 
-        String expectedMessage = ExceptionMessageConstant.USER_WITH_SUCH_EMAIL_EXIST;
+        String expectedMessage = ExceptionMessageConstants.USER_WITH_SUCH_EMAIL_EXIST;
         String actualMessage = exception.getMessage();
 
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
@@ -136,7 +136,7 @@ class AuthServiceTest {
                     .build());
         });
 
-        String expectedMessage = ExceptionMessageConstant.NOT_FOUND_USER;
+        String expectedMessage = ExceptionMessageConstants.USER_NOT_FOUND;
         String actualMessage = exception.getMessage();
 
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
@@ -152,7 +152,7 @@ class AuthServiceTest {
                     .build());
         });
 
-        String expectedMessage = ExceptionMessageConstant.INVALID_PASSWORD;
+        String expectedMessage = ExceptionMessageConstants.INVALID_PASSWORD;
         String actualMessage = exception.getMessage();
 
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
@@ -179,7 +179,7 @@ class AuthServiceTest {
             authService.validateAccessToken(token);
         });
 
-        String expectedMessage = ExceptionMessageConstant.NOT_FOUND_USER;
+        String expectedMessage = ExceptionMessageConstants.USER_NOT_FOUND;
         String actualMessage = exception.getMessage();
 
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
@@ -192,7 +192,7 @@ class AuthServiceTest {
             authService.validateAccessToken(token);
         });
 
-        String expectedMessage = ExceptionMessageConstant.NOT_FOUND_USER;
+        String expectedMessage = ExceptionMessageConstants.USER_NOT_FOUND;
         String actualMessage = exception.getMessage();
 
         Assertions.assertTrue(actualMessage.contains(expectedMessage));
@@ -224,7 +224,7 @@ class AuthServiceTest {
             authService.generatePassword(EMAIL);
         });
 
-        String expectedMessage = ExceptionMessageConstant.USER_NOT_REGISTRATE;
+        String expectedMessage = ExceptionMessageConstants.USER_NOT_REGISTRATE;
         String actualMessage = exception.getMessage();
 
         Assertions.assertTrue(actualMessage.contains(expectedMessage));

@@ -1,11 +1,12 @@
 package eu.senla.userservice.mapper;
 
-import eu.senla.common.entity.Role;
-import eu.senla.userservice.entity.Language;
+import eu.senla.common.enam.Language;
+import eu.senla.common.enam.Role;
 import eu.senla.userservice.entity.User;
+import eu.senla.userservice.kafka.UserEvent;
 import eu.senla.userservice.request.UserRequest;
+import eu.senla.userservice.response.TextResponse;
 import eu.senla.userservice.response.UserResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -14,8 +15,7 @@ import java.util.stream.Collectors;
 
 
 @Component
-@RequiredArgsConstructor
-public class UserRequestMapperImpl implements UserRequestMapper {
+public class UserMapperImpl implements UserMapper {
 
     @Override
     public List<UserResponse> listEntityToListResponse(List<User> all) {
@@ -37,6 +37,14 @@ public class UserRequestMapperImpl implements UserRequestMapper {
     }
 
     @Override
+    public TextResponse entityToTextResponse(User user) {
+        return TextResponse.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .build();
+    }
+
+    @Override
     public User requestToEntity(UserRequest request) {
         User user = new User();
         user.setUsername(request.getUsername());
@@ -51,4 +59,12 @@ public class UserRequestMapperImpl implements UserRequestMapper {
         return user;
     }
 
+    @Override
+    public UserEvent entityToEvent(User user) {
+        return UserEvent.builder()
+                .userName(user.getUsername())
+                .userLanguage(user.getLanguage().name().toLowerCase())
+                .email(user.getEmail())
+                .build();
+    }
 }

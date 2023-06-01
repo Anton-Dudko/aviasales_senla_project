@@ -1,4 +1,4 @@
-package eu.senla.userservice.token.jwt;
+package eu.senla.userservice.security.jwt;
 
 
 import eu.senla.userservice.entity.User;

@@ -1,4 +1,4 @@
-package eu.senla.userservice.token;
+package eu.senla.userservice.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

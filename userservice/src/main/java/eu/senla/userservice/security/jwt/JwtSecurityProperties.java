@@ -1,4 +1,4 @@
-package eu.senla.userservice.token.jwt;
+package eu.senla.userservice.security.jwt;
 
 import lombok.Getter;
 import lombok.Setter;

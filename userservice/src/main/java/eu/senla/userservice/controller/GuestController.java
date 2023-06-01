@@ -18,40 +18,26 @@ import javax.validation.constraints.Email;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
-public class AuthController {
+@RequestMapping("/guest")
+public class GuestController {
 
     private final AuthService authService;
 
-    @PostMapping("/guest/registration")
+    @PostMapping("/registration")
     public AuthResponse registerUser(@Valid @RequestBody UserRequest request) {
-        log.info("Method registrations");
-        AuthResponse response = authService.createUser(request);
-        log.info("Response: {}", response);
-        return response;
+        log.info("...Method registerUser");
+        return authService.createUser(request);
     }
 
-    @PostMapping("/guest/login")
+    @PostMapping("/login")
     public AuthResponse logIn(@Valid @RequestBody LoginRequest request) {
-        log.info("Method logIn");
-        AuthResponse response = authService.authenticateUser(request);
-        log.info("Response: {}", response);
-        return response;
+        log.info("...Method logIn");
+        return authService.authenticateUser(request);
     }
 
-    @PostMapping("/guest/new-password")
+    @PostMapping("/new-password")
     public PasswordResponse generatePassword(@Valid @Email String email) {
-        log.info("Method generatePassword");
-        PasswordResponse response = authService.generatePassword(email);
-        log.info("Response : {}", response);
-        return response;
-    }
-
-    @PostMapping("/admin/registration")
-    public AuthResponse registerAdmin(@Valid @RequestBody UserRequest request) {
-        log.info("Method registerAdmin");
-        AuthResponse response = authService.createAdmin(request);
-        log.info("Response with created admin: {}", response);
-        return response;
+        log.info("...Method generatePassword");
+        return authService.generatePassword(email);
     }
 }
