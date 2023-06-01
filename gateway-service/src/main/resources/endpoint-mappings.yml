@@ -16,6 +16,9 @@ endpoint:
     "[/blocked-cards]": /admin/cards/blocked-cards
     "[/blocked-countries]": /admin/cards/blocked-countries
     "[/payment]": /payment
+    "[/payment-info/**]": /payment/${id}
+    "[/payment-stat]": /payment/stat
+    "[/payment-refund/**]": /payment/refund/${id}
 
   tripService:
     "[/new-flight]": /flights/admin/create
@@ -43,6 +46,7 @@ endpoint:
     "[/new-ticket]": /tickets
     "[/find-tickets]": /tickets
     "[/find-ticket/**]": /tickets/${id}
+    "[/find-tickets-by]": /tickets/findByIds
     "[/book-ticket]": /tickets/booking
     "[/pay-tickets]": /tickets/pay-tickets
     "[/delete-ticket/**]": /tickets/${id}
