@@ -1,0 +1,648 @@
+{
+	"info": {
+		"_postman_id": "fe7c115a-3e19-4e09-930e-048802bcfd01",
+		"name": "tripservice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24150085",
+		"_collection_link": "https://interstellar-crater-494474.postman.co/workspace/Team-Workspace~20f3f218-87c2-40a9-830c-45fed934de7c/collection/24150085-fe7c115a-3e19-4e09-930e-048802bcfd01?action=share&creator=24150085&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "create trip (correct request)",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Access-Token",
+						"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"departureCity\":\"M\",\r\n    \"arrivalCity\":\"C\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/new-trip/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"new-trip",
+						""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get trip with id (correct)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"departureCity\":\"Minsk\",\r\n    \"arrivalCity\":\"Grodno\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/find-trip/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"find-trip",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all trips",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/find-trips?page=0&size=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"find-trips"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update trip",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"departureCity\":\"Minsk\",\r\n    \"arrivalCity\":\"Brest\"\r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/update-trip/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"update-trip",
+						"1"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete trip",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/delete-trip/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"delete-trip",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create flight (correct request) Copy",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tripId\":\"2\",\r\n    \"airplaneId\":\"2\",\r\n    \"flightNumber\":\"BY-25477\",\r\n    \"departureDateTime\":\"12-05-2023 21:30\",\r\n    \"arrivalDateTime\":\"12-05-2023 23:30\",\r\n    \"luggage\":\"true\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/new-flight",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"new-flight"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get flight with id (correct)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/find-flight/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"find-flight",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all flights (admin)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/all-flights/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"all-flights",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "find flight (guest)",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"departureCity\":\"M\",\r\n    \"arrivalCity\":\"C\",\r\n    \"departureDate\":\"12-05-2023\",\r\n    \"cheapest\":\"false\",\r\n    \"fastest\":\"false\",\r\n    \"returnDate\":\"13-05-2023\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/find-flights",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"find-flights"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update flight",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tripId\":\"2\",\r\n    \"airplaneId\":\"1\",\r\n    \"flightNumber\":\"BY-2577\",\r\n    \"departureDateTime\":\"12-05-2023 21:30\",\r\n    \"arrivalDateTime\":\"12-05-2023 23:30\",\r\n    \"luggage\":\"true\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/flight-update/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flight-update",
+						"1"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "flight info",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/flight-info/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flight-info",
+						"1"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete flight",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/flight-delete/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flight-delete",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "subscriptions-new-flight",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "userDetails",
+						"value": "{    \"userId\": \"6\",  \"username\": \"username\",    \"email\": \"email\",    \"password\": \"password\",    \"dateBirth\": \"2023-05-01\",    \"language\": \"EN\",    \"role\": \"ROLE_USER\"}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"departureCity\":\"M\",\r\n    \"arrivalCity\":\"C\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/sub-create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sub-create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "subscriptions-flight-canceled",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTAxIiwiZXhwIjoxNjg1NzA1MzI5LCJyb2xlIjoiUk9MRV9VU0VSIn0.1W-FYgfAv5GfEHRHhW9pSlewcx_55dqnOtm2mkx5pBl1c_Q6iwuLeO1TMOO7ACgsRB9TnaNE6b6FHD8Jnuq2iQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "userDetails",
+						"value": "{    \"userId\": \"6\",  \"username\": \"username\",    \"email\": \"email\",    \"password\": \"password\",    \"dateBirth\": \"2023-05-01\",    \"language\": \"EN\",    \"role\": \"ROLE_USER\"}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"flightId\":\"2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/sub-cancel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sub-cancel"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
