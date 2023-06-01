@@ -62,6 +62,11 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.OK).body("Ticket number - " + id + " paid!");
     }
 
+    @PostMapping("/refund")
+    public ResponseEntity<?> refundTickets(@RequestParam List<Long> ticketsId) {
+        return ticketService.refundTickets(ticketsId);
+    }
+
     @PostMapping("/generate")
     public ResponseEntity<?> generateTickets(@RequestBody GenerateTicketRequest request) {
         ticketService.generateTickets(request);
