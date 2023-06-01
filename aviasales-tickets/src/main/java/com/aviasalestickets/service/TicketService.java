@@ -4,13 +4,18 @@ import com.aviasalestickets.mapper.TicketMapper;
 import com.aviasalestickets.model.Ticket;
 import com.aviasalestickets.model.TicketStatus;
 import com.aviasalestickets.model.dto.*;
+import com.aviasalestickets.model.dto.trip.FlightInfoDto;
+import com.aviasalestickets.model.dto.user.UserResponse;
 import com.aviasalestickets.repository.TicketRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +31,13 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final List<GenerateTicketService> generateTicketServices;
     private final CriteriaTicketService criteriaTicketService;
+    private final RestTemplate restTemplate;
 
-    public static final String REGISTERED_EVENT = "new_ticket_reservation_event";
-    public static final String RESET_PASSWORD_EVENT = "canceled_ticket_reservation_event";
+    public static final String NEW_TICKET_RESERVATION_EVENT = "new_ticket_reservation_event";
+    public static final String CANCELED_TICKET_RESERVATION_EVENT = "canceled_ticket_reservation_event";
 
     private final Producer<String, Map<String, KafkaTicketDto>> producer;
     private final ObjectMapper objectMapper;
-
 
     public Ticket save(TicketRequest request) {
         return Optional.ofNullable(request)
@@ -44,7 +49,7 @@ public class TicketService {
     public TicketResponseWithCount search(TicketRequest request) {
         log.info(request.toString());
         return Optional.ofNullable(request)
-                .map(req -> criteriaTicketService.findAll(request.getUserId(), request.getStatus(), request.getTripId()))
+                .map(req -> criteriaTicketService.findAll(request.getUserId(), request.getStatus(), request.getTripId(), request.getFio(), request.getId()))
                 .map(ticketMapper::convertListEntityToDtoWithCount)
                 .orElse(null);
     }
@@ -58,17 +63,22 @@ public class TicketService {
     //TODO exceptions
 
     public void bookTicket(Long id, Long userId) {
-        KafkaTicketDto ticket =new KafkaTicketDto();
+
+        Ticket newTicket = ticketRepository.findTicketById(id);
+
+        FlightInfoDto flightInfoDto = requestToTrip(newTicket.getTripId());
+
+        KafkaTicketDto ticket = new KafkaTicketDto();
         ticket.setUserLanguage("RU");
         ticket.setEmail("antondudko01@gmail.com");
         ticket.setUserName("Anton");
-        ticket.setFrom("Minsk");
-        ticket.setTo("Moscov");
+        ticket.setFrom(flightInfoDto.getTrip().getDepartureCity());
+        ticket.setTo(flightInfoDto.getTrip().getArrivalCity());
         ticket.setPrice("200");
         ticket.setTicketDate("2023");
         log.info("event ... {}", ticket);
         ProducerRecord<String, Map<String, KafkaTicketDto>> producerRecord =
-                new ProducerRecord<>(REGISTERED_EVENT, objectMapper.convertValue(ticket, Map.class));
+                new ProducerRecord<>(NEW_TICKET_RESERVATION_EVENT, objectMapper.convertValue(ticket, Map.class));
         log.info("producerRecord ... {}", producerRecord);
         producer.send(producerRecord);
         log.info("Sending message ... {}", producerRecord);
@@ -88,6 +98,26 @@ public class TicketService {
         ticket.setStatus(TicketStatus.FREE);
         ticket.setUserId(null);
         ticketRepository.save(ticket);
+
+        FlightInfoDto flightInfoDto = requestToTrip(ticket.getTripId());
+
+        KafkaTicketDto kafkaTicketDto =new KafkaTicketDto();
+        kafkaTicketDto.setUserLanguage("RU");
+        kafkaTicketDto.setEmail("antondudko01@gmail.com");
+        kafkaTicketDto.setUserName("Anton");
+        kafkaTicketDto.setFrom(flightInfoDto.getTrip().getDepartureCity());
+        kafkaTicketDto.setTo(flightInfoDto.getTrip().getArrivalCity());
+        kafkaTicketDto.setPrice("200");
+        kafkaTicketDto.setTicketDate("2023");
+
+        log.info("info" + kafkaTicketDto);
+
+                ProducerRecord<String, Map<String, KafkaTicketDto>> producerRecord =
+                new ProducerRecord<>(CANCELED_TICKET_RESERVATION_EVENT, objectMapper.convertValue(ticket, Map.class));
+        log.info("producerRecord ... {}", producerRecord);
+        producer.send(producerRecord);
+        log.info("Sending message ... {}", producerRecord);
+
     }
 
     public void payTicket(Long id) {
@@ -105,13 +135,13 @@ public class TicketService {
 
     }
 
-
-    public String payTickets(List<Long> ticketsId) {
+    public ResponseEntity<?> payTickets(List<Long> ticketsId) {
         List<Ticket> tickets = ticketRepository.findAllById(ticketsId);
+        log.info(tickets.toString());
 
         for(Ticket ticket : tickets){
             if (!ticket.getStatus().equals(TicketStatus.FREE)){
-                return "not available";
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tickets not FREE or not exist!");
             }
         }
 
@@ -119,7 +149,24 @@ public class TicketService {
             ticket.setStatus(TicketStatus.PAID);
             ticketRepository.save(ticket);
         }
-        return "tickets were paid";
+        return ResponseEntity.status(HttpStatus.OK).body("Tickets number - " + ticketsId + " paid!");
+
+    }
+
+    public FlightInfoDto requestToTrip(Long id){
+        String url = "http://localhost:3000/flights/admin/find/{id}"; //tripservice:8080
+        FlightInfoDto flight = restTemplate.getForObject(url, FlightInfoDto.class, id);
+        return flight;
+    }
+
+    public List<Ticket> findAllByIds(List<Long> ids) {
+        return ticketRepository.findAllById(ids);
+    }
+
+    public UserResponse requestToUser(Long id){
+        String url = "http://userservice:8086/flights/admin/find/{id}";
+        UserResponse user = restTemplate.getForObject(url, UserResponse.class, id);
+        return user;
     }
 }
 
