@@ -9,9 +9,10 @@ import eu.senla.tripservice.response.flight.KafkaFlightDTO;
 import eu.senla.tripservice.response.ticket.TicketsResponse;
 import eu.senla.tripservice.util.KafkaTopicsName;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -24,17 +25,17 @@ import java.util.Map;
 @Slf4j
 @Service
 public class KafkaService {
-    private final KafkaTemplate<String, Map<String, KafkaFlightDTO>> kafkaTemplate;
+    private final Producer<String, Map<String, KafkaFlightDTO>> producer;
     private final ObjectMapper objectMapper;
     private final SubscriptionService subscriptionService;
     private final FlightService flightService;
     private final TripService tripService;
 
     @Autowired
-    public KafkaService(KafkaTemplate<String, Map<String, KafkaFlightDTO>> kafkaTemplate,
+    public KafkaService(Producer<String, Map<String, KafkaFlightDTO>> producer,
                         ObjectMapper objectMapper, @Lazy SubscriptionService subscriptionService,
                         @Lazy FlightService flightService, @Lazy TripService tripService) {
-        this.kafkaTemplate = kafkaTemplate;
+        this.producer = producer;
         this.objectMapper = objectMapper;
         this.subscriptionService = subscriptionService;
         this.flightService = flightService;
@@ -93,7 +94,9 @@ public class KafkaService {
 
     public void sendKafkaNewEvent(String eventName, KafkaFlightDTO flightDTO) {
         log.info("KafkaService-sentKafkaNewEvent");
-        kafkaTemplate.send(eventName, objectMapper.convertValue(flightDTO, Map.class));
+        ProducerRecord<String, Map<String, KafkaFlightDTO>> producerRecord =
+                new ProducerRecord<>(eventName, objectMapper.convertValue(flightDTO, Map.class));
+        producer.send(producerRecord);
     }
 
     public UserDetails makeRequestForUserDetails(long userId) {

@@ -67,7 +67,7 @@ public class TripService {
                 .stream()
                 .map(mapper::mapTripToTripFullDataResponse)
                 .collect(Collectors.toList()));
-        listTripsFullDataResponse.setTotal(tripRepository.count());
+        listTripsFullDataResponse.setTotal(listTripsFullDataResponse.getTripFullDataResponseList().size());
         return listTripsFullDataResponse;
     }
 
