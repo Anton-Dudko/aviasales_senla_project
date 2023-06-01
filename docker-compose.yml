@@ -120,7 +120,7 @@ services:
       - trip-ticket-database
       - eureka-service
     ports:
-      - 8088:8080
+      - 8088:8088
     networks:
       - backend
   #ticket microservice end
