@@ -32,7 +32,7 @@ public class FlightRequest {
 
     private boolean meal;
 
-    private boolean HandLuggage;
+    private boolean handLuggage;
 
     private boolean luggage;
 
