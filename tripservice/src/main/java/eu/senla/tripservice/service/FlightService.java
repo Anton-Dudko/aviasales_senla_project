@@ -220,11 +220,12 @@ public class FlightService {
     }
 
     @Transactional
-    public void delete(long id) {
+    public Flight delete(long id) {
         log.info("FlightService-delete, id: " + id);
-        findFlightById(id);
+        Flight flightToDelete = findFlightById(id);
         flightRepository.deleteById(id);
         log.info("Flight id: " + id + " was deleted");
+        return flightToDelete;
     }
 
     public FlightInfo info(long id) {

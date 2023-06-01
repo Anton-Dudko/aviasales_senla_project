@@ -32,7 +32,7 @@ public class FlightController {
     public ResponseEntity<Flight> create(@RequestBody @Valid FlightRequest flightRequest,
                                          BindingResult bindingResult) {
         validate(bindingResult);
-        return ResponseEntity.ok(flightService.create(flightRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(flightService.create(flightRequest));
     }
 
     @GetMapping("/admin/find/{id}")
@@ -67,13 +67,12 @@ public class FlightController {
                                          @Valid @RequestBody FlightRequest flightRequest,
                                          BindingResult bindingResult) {
         validate(bindingResult);
-        return ResponseEntity.ok(flightService.update(id, flightRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(flightService.update(id, flightRequest));
     }
 
     @DeleteMapping("/admin/delete/{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") long id) {
-        flightService.delete(id);
-        return ResponseEntity.ok(HttpStatus.OK);
+    public ResponseEntity<Flight> delete(@PathVariable("id") long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(flightService.delete(id));
     }
 
     private void validate(BindingResult bindingResult) {
