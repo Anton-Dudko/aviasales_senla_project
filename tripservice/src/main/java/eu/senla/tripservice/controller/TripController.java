@@ -30,7 +30,7 @@ public class TripController {
     @PostMapping("/admin/create")
     public ResponseEntity<Trip> create(@RequestBody @Valid TripRequest tripRequest, BindingResult bindingResult) {
         validate(bindingResult);
-        return ResponseEntity.ok(tripService.save(tripRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(tripService.save(tripRequest));
     }
 
     @GetMapping("/admin/find/{id}")
@@ -54,16 +54,15 @@ public class TripController {
 
     @PutMapping("/admin/update/{id}")
     public ResponseEntity<Trip> update(@PathVariable("id") long id,
-                                             @Valid @RequestBody TripRequest tripRequest,
-                                             BindingResult bindingResult) {
+                                       @Valid @RequestBody TripRequest tripRequest,
+                                       BindingResult bindingResult) {
         validate(bindingResult);
-        return ResponseEntity.ok(tripService.update(id, tripRequest));
+        return ResponseEntity.status(HttpStatus.OK).body(tripService.update(id, tripRequest));
     }
 
     @DeleteMapping("/admin/delete/{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") long id) {
-        tripService.delete(id);
-        return ResponseEntity.ok(HttpStatus.OK);
+    public ResponseEntity<Trip> delete(@PathVariable("id") long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(tripService.delete(id));
     }
 
     private void validate(BindingResult bindingResult) {

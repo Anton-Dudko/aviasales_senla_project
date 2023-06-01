@@ -99,11 +99,12 @@ public class TripService {
     }
 
     @Transactional
-    public void delete(long id) {
+    public Trip delete(long id) {
         log.info("TripService-deleteById: " + id);
-        findTripById(id);
+        Trip trip = findTripById(id);
         tripRepository.deleteById(id);
         log.info("Trip with id: " + id + " was deleted");
+        return trip;
     }
 
     private boolean isTripExist(String departureCity, String arrivalCity) {
