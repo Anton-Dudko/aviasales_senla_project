@@ -44,7 +44,7 @@ public class AdminController {
         return userService.findById(id);
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public UserGetPageResponse findBySpecification(@RequestParam(defaultValue = "0") Integer page,
                                                    @RequestParam(defaultValue = "10") Integer size,
                                                    @RequestBody UserFindRequest request) {
