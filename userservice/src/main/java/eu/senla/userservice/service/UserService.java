@@ -5,6 +5,7 @@ import eu.senla.common.enam.Language;
 import eu.senla.userservice.dao.UserSpecification;
 import eu.senla.userservice.entity.User;
 import eu.senla.userservice.exception.ExceptionMessageConstants;
+import eu.senla.userservice.exception.custom.AuthenticatException;
 import eu.senla.userservice.exception.custom.NotFoundException;
 import eu.senla.userservice.kafka.KafkaTopicConstants;
 import eu.senla.userservice.kafka.UserEvent;
@@ -65,38 +66,41 @@ public class UserService {
 
     public UserResponse update(Long id, UserUpdateRequest request) {
         log.info("Method update");
-        User user = userRepository.findById(id)
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_FOUND));
-        user.setUsername(StringUtils.isNotEmpty(request.getUsername())
-                ? request.getUsername()
-                : user.getUsername());
-        user.setPassword(StringUtils.isNotEmpty(request.getPassword())
-                ? passwordEncoder.encode(request.getPassword())
-                : user.getPassword());
-        user.setDateBirth(StringUtils.isNotEmpty(request.getDateBirth())
-                ? LocalDate.parse(request.getDateBirth())
-                : user.getDateBirth());
-        user.setLanguage(StringUtils.isNotEmpty(request.getLanguage())
-                ? Language.valueOf(request.getLanguage())
-                : user.getLanguage());
-        User updatedUser = userRepository.save(user);
+        if (id.equals(user.getId())) {
+            user.setUsername(StringUtils.isNotEmpty(request.getUsername())
+                    ? request.getUsername()
+                    : user.getUsername());
+            user.setPassword(StringUtils.isNotEmpty(request.getPassword())
+                    ? passwordEncoder.encode(request.getPassword())
+                    : user.getPassword());
+            user.setDateBirth(StringUtils.isNotEmpty(request.getDateBirth())
+                    ? LocalDate.parse(request.getDateBirth())
+                    : user.getDateBirth());
+            user.setLanguage(StringUtils.isNotEmpty(request.getLanguage())
+                    ? Language.valueOf(request.getLanguage())
+                    : user.getLanguage());
+            User updatedUser = userRepository.save(user);
 
-        if (request.getPassword() != null) {
-            UserEvent event = UserEvent.builder()
-                    .userName(updatedUser.getUsername())
-                    .userLanguage(updatedUser.getLanguage().name().toLowerCase())
-                    .email(updatedUser.getEmail())
-                    .newPassword(request.getPassword())
-                    .build();
+            if (request.getPassword() != null) {
+                UserEvent event = UserEvent.builder()
+                        .userName(updatedUser.getUsername())
+                        .userLanguage(updatedUser.getLanguage().name().toLowerCase())
+                        .email(updatedUser.getEmail())
+                        .newPassword(request.getPassword())
+                        .build();
 
-            log.info("event ... {}", event);
-            ProducerRecord<String, Map<String, UserEvent>> producerRecord =
-                    new ProducerRecord<>(KafkaTopicConstants.UPDATE_PASSWORD_EVENT, objectMapper.convertValue(event, Map.class));
-            log.info("producerRecord ... {}", producerRecord);
-            producer.send(producerRecord);
-            log.info("Sending message ... {}", producerRecord);
+                log.info("event ... {}", event);
+                ProducerRecord<String, Map<String, UserEvent>> producerRecord =
+                        new ProducerRecord<>(KafkaTopicConstants.UPDATE_PASSWORD_EVENT, objectMapper.convertValue(event, Map.class));
+                log.info("producerRecord ... {}", producerRecord);
+                producer.send(producerRecord);
+                log.info("Sending message ... {}", producerRecord);
+            }
+            return userMapper.entityToResponse(updatedUser);
         }
-        return userMapper.entityToResponse(updatedUser);
+        throw new AuthenticatException(ExceptionMessageConstants.EMAIL_DONT_MATCH_ID);
     }
 
 
