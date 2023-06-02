@@ -5,5 +5,7 @@
 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
 
     <include file="/db/changelog/V1.1__create_table_tickets.sql"/>
+    <include file="/db/changelog/V1.2__alter_seatnumber_in_tickets.sql"/>
+    <include file="/db/changelog/V1.3__insert_in_table_ticket.sql"/>
 
 </databaseChangeLog>

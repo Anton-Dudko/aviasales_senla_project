@@ -11,11 +11,14 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
+
+    private final String PATH_TO_CONTROLLER_PACKAGE = "com.aviasalestickets.controller";
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.aviasalestickets.controller"))
+                .apis(RequestHandlerSelectors.basePackage(PATH_TO_CONTROLLER_PACKAGE))
                 .paths(PathSelectors.any())
                 .build();
     }
