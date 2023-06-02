@@ -122,6 +122,11 @@ application:
         template: payment_success
         localization: payment_success
         subject: Aviasales payment success
+      PAYMENT_RETURN_EVENT:
+        topic_name: payment_return_event
+        template: payment_return
+        localization: payment_return
+        subject: Aviasales payment return
       PAYMENT_ERROR_EVENT:
         topic_name: payment_error_event
         template: payment_error
