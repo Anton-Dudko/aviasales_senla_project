@@ -67,7 +67,7 @@ public class GatewayConfig {
                     if (uri.contains("admin")) {
                         f.filter(authFilter.apply(new AuthFilter.Config("true")));
                         handlePathRewriting(f, path, uri);
-                    } else if (uri.contains("users/{id}")) {
+                    } else if (uri.contains("users/${id}")) {
                         f.filter(userIdFilter.apply(new UserIdFilter.Config()));
                         handlePathRewriting(f, path, uri);
                     } else if (uri.contains("guest")) {
