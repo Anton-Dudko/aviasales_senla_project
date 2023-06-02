@@ -11,4 +11,5 @@ public final class ExceptionMessageConstants {
     public static final String NOT_VALID_EMAIL = "email format is invalid";
     public static final String NOT_VALID_DATE = "the date should be in the past";
     public static final String NOT_VALID_DATE_FORMAT = "invalid date";
+    public static final String EMAIL_DONT_MATCH_ID = "User email dont match id.";
 }
