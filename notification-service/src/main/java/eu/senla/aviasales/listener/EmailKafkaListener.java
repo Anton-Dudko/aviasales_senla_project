@@ -8,7 +8,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import javax.mail.MessagingException;
 
 /**
  * @author Mikhail.Leonovets
@@ -21,13 +20,9 @@ public class EmailKafkaListener {
     private final MessageBuilderService messageBuilderService;
 
     @KafkaListener(topics = "#{templatesConfig.getTopicNames()}", autoStartup = "true")
-    public void listenTo(ConsumerRecord<String, Map<String, Object>> record) throws Exception {
-        try {
-            messageBuilderService.buildAndSend(record);
-        } catch (MessagingException e) {
-            log.warn(e.getMessage());
-            throw new MessagingException(e.getMessage());
-        }
+    public void listenTo(ConsumerRecord<String, Map<String, Object>> record) {
+        log.info("KAFKA EMAIL NOTIFICATION LISTENER ACTIVATED");
+        messageBuilderService.buildAndSend(record.topic(), record.value());
     }
-
 }
+

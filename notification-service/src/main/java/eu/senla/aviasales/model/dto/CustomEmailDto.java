@@ -10,7 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CustomEmailDto {
-    private String topic;
+    private String to;
+    private String subject;
     private String body;
     private String email;
 
