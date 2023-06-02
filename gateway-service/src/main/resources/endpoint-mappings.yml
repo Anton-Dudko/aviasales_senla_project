@@ -15,7 +15,7 @@ endpoint:
     "[/unblock-card]": /admin/cards/unblock
     "[/blocked-cards]": /admin/cards/blocked-cards
     "[/blocked-countries]": /admin/cards/blocked-countries
-    "[/payment]": /payment
+    "[/payment]": /payment/payment
     "[/payment-info/**]": /payment/${id}
     "[/payment-stat]": /payment/stat
     "[/payment-refund/**]": /payment/refund/${id}
