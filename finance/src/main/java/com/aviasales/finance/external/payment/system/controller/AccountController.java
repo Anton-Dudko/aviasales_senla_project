@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -41,9 +42,9 @@ public class AccountController {
     }
 
     @PatchMapping
-    public void topUpBalance(@RequestParam String cardNumber, @RequestParam double sum) {
+    public void topUpBalance(@RequestParam String cardNumber, @RequestParam BigDecimal sum) {
         BankCard bankCard = bankCardRepository.findBankCardByCardNumber(cardNumber).get();
-        bankCard.setAccountSum(bankCard.getAccountSum() + sum);
+        bankCard.setAccountSum(bankCard.getAccountSum().add(sum));
         bankCardRepository.save(bankCard);
     }
 }

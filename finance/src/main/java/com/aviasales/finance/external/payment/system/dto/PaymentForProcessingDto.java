@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.CreditCardNumber;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.time.YearMonth;
 
 @Data
@@ -22,5 +23,5 @@ public class PaymentForProcessingDto {
     private String cardHolder;
 
     @DecimalMin(value = "0.01", message = "Sum is less than minimal")
-    private double sum;
+    private BigDecimal sum;
 }

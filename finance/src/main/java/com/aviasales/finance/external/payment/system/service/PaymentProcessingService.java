@@ -1,5 +1,6 @@
 package com.aviasales.finance.external.payment.system.service;
 
+import com.aviasales.finance.dto.RefundExternalDto;
 import com.aviasales.finance.external.payment.system.converter.BankCardMapper;
 import com.aviasales.finance.external.payment.system.dto.PaymentForProcessingDto;
 import com.aviasales.finance.external.payment.system.enity.BankCard;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Service
@@ -43,7 +45,17 @@ public class PaymentProcessingService {
             throw new InsufficientBalanceException("Not enough balance to pay");
         }
 
-        bankCard.setAccountSum(bankCard.getAccountSum() - paymentForProcessingDto.getSum());
+        bankCard.setAccountSum(bankCard.getAccountSum().subtract(paymentForProcessingDto.getSum()));
+        bankCardRepository.save(bankCard);
+    }
+
+    public void processRefund(RefundExternalDto refundExternalDto) {
+        logger.info("checking card is exists");
+        BankCard bankCard = bankCardRepository.findBankCardByCardNumber(refundExternalDto
+                .getCardNumber()).orElseThrow(() -> new BankCardNotFoundException("Such Bank card number not found - "
+                + refundExternalDto.getCardNumber()));
+
+        bankCard.setAccountSum(bankCard.getAccountSum().add(refundExternalDto.getAmount()));
         bankCardRepository.save(bankCard);
     }
 
@@ -54,7 +66,7 @@ public class PaymentProcessingService {
                 && Objects.equals(paymentForProcessingDto.getCardHolder(), bankCard.getCardHolder());
     }
 
-    public boolean checkSumCanBePaid(BankCard bankCard, double sumForPaying) {
-        return bankCard.getAccountSum() >= sumForPaying;
+    public boolean checkSumCanBePaid(BankCard bankCard, BigDecimal sumForPaying) {
+        return bankCard.getAccountSum().compareTo(sumForPaying) >= 0;
     }
 }

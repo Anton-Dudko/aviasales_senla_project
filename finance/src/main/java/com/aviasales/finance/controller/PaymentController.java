@@ -5,9 +5,13 @@ import com.aviasales.finance.entity.Payment;
 import com.aviasales.finance.service.BlockingCardService;
 import com.aviasales.finance.service.PaymentService;
 import com.aviasales.finance.service.external.TicketService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -25,21 +29,27 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final BlockingCardService blockingCardService;
     private final TicketService ticketService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public PaymentController(PaymentService paymentService,
-                             BlockingCardService blockingCardService, TicketService ticketService) {
+                             BlockingCardService blockingCardService, TicketService ticketService, ObjectMapper objectMapper) {
         this.paymentService = paymentService;
         this.blockingCardService = blockingCardService;
         this.ticketService = ticketService;
+        this.objectMapper = objectMapper;
     }
 
-    @PostMapping("/payment")
+    @PostMapping
     public ResponseEntity<?> createPayment(@RequestBody @Valid PaymentDto paymentDto, BindingResult bindingResult,
-                                           @CookieValue(name = "username") String username,
-                                           @CookieValue(name = "email") String email,
-                                           @CookieValue(name = "language") String language,
-                                           @CookieValue(name = "id") String userId) {
+                                           @RequestHeader String userDetails) {
+        UserDetailsDto userDetailsDto;
+        try {
+            userDetailsDto = objectMapper.readValue(userDetails, UserDetailsDto.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(new FieldsErrorResponse(bindingResult), HttpStatus.BAD_REQUEST);
         }
@@ -49,19 +59,19 @@ public class PaymentController {
         logger.info("Checking ticket");
         List<TicketInfoDto> ticketInfoDto = ticketService.getTicketInfoForPaying(paymentDto.getTickets());
 
-        Payment payment = paymentService.createPayment(paymentDto, ticketInfoDto, userId);
+        Payment payment = paymentService.createPayment(paymentDto, ticketInfoDto, userDetailsDto.getUserId());
         TransactionDto transactionDto = paymentService.createTransaction(paymentDto, payment.getAmount());
 
         KafkaPaymentNotificationDto kafkaPaymentNotificationDto = new KafkaPaymentNotificationDto();
-        kafkaPaymentNotificationDto.setEmail(email);
-        kafkaPaymentNotificationDto.setUserLanguage(language);
-        kafkaPaymentNotificationDto.setUserName(username);
+        kafkaPaymentNotificationDto.setEmail(userDetailsDto.getEmail());
+        kafkaPaymentNotificationDto.setUserLanguage(userDetailsDto.getLanguage());
+        kafkaPaymentNotificationDto.setUserName(userDetailsDto.getUsername());
         kafkaPaymentNotificationDto.setAmountPayable(payment.getAmount());
 
         paymentService.processPayment(transactionDto, payment, kafkaPaymentNotificationDto);
         ticketService.updateTicketToPaid(paymentDto.getTickets());
 
-        return ResponseEntity.status(HttpStatus.OK).body(new SimpleResponse("Ticket(s) paid. Id - " + paymentDto
+        return ResponseEntity.status(HttpStatus.OK).body(new SimpleResponse("Ticket(s) paid. Ticket Id(s) - " + paymentDto
                 .getTickets().stream().map(Object::toString).collect(Collectors.joining(", "))));
     }
 
@@ -77,13 +87,28 @@ public class PaymentController {
 
 
     @GetMapping("/stat")
-    public List<Payment> getPaymentStat(PaymentFilter paymentFilter) {
-        return paymentService.findPayments(paymentFilter);
+    public PaymentListDto getPaymentStat(PaymentFilter paymentFilter, @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "15") int size,
+                                         @RequestHeader(name = "userDetails") String userDetails) {
+        try {
+            UserDetailsDto userDetailsDto = objectMapper.readValue(userDetails, UserDetailsDto.class);
+            PageRequest pageRequest = PageRequest.of(page, size);
+            return paymentService.findPayments(paymentFilter, pageRequest, userDetailsDto);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
-    @GetMapping("/refund/{id}")
-    public ResponseEntity<?> refundPayment(@PathVariable("id") int paymentId) {
-        //ToDo make refund here
-        return ResponseEntity.notFound().build();
+    @PostMapping("/refund/{id}")
+    public ResponseEntity<?> refundPayment(@PathVariable("id") long paymentId,
+                                           @RequestHeader(name = "userDetails") String userDetails) {
+        try {
+            UserDetailsDto userDetailsDto = objectMapper.readValue(userDetails, UserDetailsDto.class);
+            return paymentService.refundPayment(paymentId, userDetailsDto);
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

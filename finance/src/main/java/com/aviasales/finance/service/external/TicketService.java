@@ -17,6 +17,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 public class TicketService {
     private static final Logger logger = LoggerFactory.getLogger(TicketService.class);
     private final RestTemplate restTemplate;
-    private final String tickerServiceUrl = "http://ticket-service:8080/tickets";
+    private final String tickerServiceUrl = "http://ticket-service:8088/tickets";
 
     @Autowired
     public TicketService(RestTemplate restTemplate) {
@@ -33,9 +34,9 @@ public class TicketService {
     }
 
     public List<TicketInfoDto> getTicketInfo(List<Long> ticketList) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(tickerServiceUrl).
-                queryParam("ids",
-                        ticketList.stream().map(Object::toString).collect(Collectors.joining(",")));
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(tickerServiceUrl)
+                .pathSegment("findByIds")
+                .queryParam("ids", ticketList.stream().map(Object::toString).collect(Collectors.joining(",")));
 
         try {
             ResponseEntity<List<TicketInfoDto>> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,
@@ -48,10 +49,16 @@ public class TicketService {
         }
 
 //        TicketInfoDto ticketInfoDto = new TicketInfoDto();
-//        ticketInfoDto.setId(tickedId);
+//        ticketInfoDto.setId("1");
 //        ticketInfoDto.setPrice(new BigDecimal(100));
 //        ticketInfoDto.setStatus(TicketStatus.FREE);
-
+//
+//        TicketInfoDto ticked2nd = new TicketInfoDto();
+//        ticked2nd.setId("2");
+//        ticked2nd.setPrice(new BigDecimal(250));
+//        ticked2nd.setStatus(TicketStatus.FREE);
+//
+//        return List.of(ticketInfoDto, ticked2nd);
     }
 
     public List<TicketInfoDto> getTicketInfoForPaying(List<Long> ticketList) {
@@ -69,13 +76,27 @@ public class TicketService {
     public void updateTicketToPaid(List<Long> ticketList) {
         logger.info("Update tickets to Paid");
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(tickerServiceUrl)
-                .pathSegment("pay").queryParam("ids",
+                .pathSegment("pay-tickets").queryParam("ticketsId",
                         ticketList.stream().map(Object::toString).collect(Collectors.joining(",")));
         try {
-            ResponseEntity<TicketInfoDto> response = restTemplate.exchange(builder.toUriString(), HttpMethod.POST,
-                    new HttpEntity<>(new HttpHeaders()), TicketInfoDto.class);
+            ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,
+                    new HttpEntity<>(new HttpHeaders()), String.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             logger.error("Error received from ticket service during updating to paid status: " + e.getMessage(), e);
+            throw new TicketServiceException(e.getMessage());
+        }
+    }
+
+    public void updateTicketToRefund(List<Long> ticketList) {
+        logger.info("Update tickets to free");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(tickerServiceUrl)
+                .pathSegment("refund").queryParam("ticketsId",
+                        ticketList.stream().map(Object::toString).collect(Collectors.joining(",")));
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.POST,
+                    new HttpEntity<>(new HttpHeaders()), String.class);
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            logger.error("Error received from ticket service during updating to Free status: " + e.getMessage(), e);
             throw new TicketServiceException(e.getMessage());
         }
     }

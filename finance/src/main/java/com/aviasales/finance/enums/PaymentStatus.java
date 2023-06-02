@@ -3,7 +3,8 @@ package com.aviasales.finance.enums;
 public enum PaymentStatus {
     PENDING(1),
     PAID(2),
-    FAILED(3);
+    FAILED(3),
+    REFUND(4);
 
     private Integer id;
 

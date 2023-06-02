@@ -4,9 +4,11 @@ import com.aviasales.finance.converter.PaymentConverter;
 import com.aviasales.finance.dto.*;
 import com.aviasales.finance.entity.Payment;
 import com.aviasales.finance.enums.PaymentStatus;
+import com.aviasales.finance.enums.UserRole;
 import com.aviasales.finance.exception.ExternalPaymentSystemException;
 import com.aviasales.finance.repository.PaymentRepository;
 import com.aviasales.finance.service.external.KafkaService;
+import com.aviasales.finance.service.external.TicketService;
 import com.aviasales.finance.utils.UrlUtils;
 import com.github.tennaito.rsql.jpa.JpaPredicateVisitor;
 import cz.jirutka.rsql.parser.RSQLParser;
@@ -15,11 +17,10 @@ import cz.jirutka.rsql.parser.ast.RSQLVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -27,11 +28,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -45,16 +44,18 @@ public class PaymentService {
     private final RestTemplate restTemplate;
     private final UrlUtils urlUtils;
     private final KafkaService kafkaService;
-    @Autowired
-    private EntityManager entityManager;
+    private final TicketService ticketService;
+    private final EntityManager entityManager;
 
     @Autowired
-    public PaymentService(PaymentConverter paymentConverter, PaymentRepository paymentRepository, RestTemplate restTemplate, UrlUtils urlUtils, KafkaService kafkaService) {
+    public PaymentService(PaymentConverter paymentConverter, PaymentRepository paymentRepository, RestTemplate restTemplate, UrlUtils urlUtils, KafkaService kafkaService, TicketService ticketService, EntityManager entityManager) {
         this.paymentConverter = paymentConverter;
         this.paymentRepository = paymentRepository;
         this.restTemplate = restTemplate;
         this.urlUtils = urlUtils;
         this.kafkaService = kafkaService;
+        this.ticketService = ticketService;
+        this.entityManager = entityManager;
     }
 
     private ExternalPaymentResponse sendPaymentToExternalPaymentSystem(TransactionDto transactionDto, Payment payment) {
@@ -74,6 +75,7 @@ public class PaymentService {
     public void processPayment(TransactionDto transactionDto, Payment payment,
                                KafkaPaymentNotificationDto kafkaNotification) {
         ExternalPaymentResponse externalPaymentResponse = sendPaymentToExternalPaymentSystem(transactionDto, payment);
+        kafkaNotification.setPaymentDate(LocalDate.now());
         if (externalPaymentResponse.hasException()) {
             logger.warn("Payment failed via external service, updating payment status to failed, payment id - "
                     + payment.getId());
@@ -82,7 +84,7 @@ public class PaymentService {
             kafkaNotification.setPaymentInfo("payment failed via card number - " + transactionDto.getCardNumber());
             kafkaService.sendErrorMessage(kafkaNotification);
             throw new ExternalPaymentSystemException("Error received from external payment service: " +
-                    externalPaymentResponse.getResponseBody());
+                    externalPaymentResponse.getException().getMessage());
         }
 
         logger.info("Payment done via external service, updating payment status to paid, payment id - "
@@ -93,7 +95,7 @@ public class PaymentService {
         kafkaService.sendSuccessMessage(kafkaNotification);
     }
 
-    public Payment createPayment(PaymentDto paymentDto, List<TicketInfoDto> ticketList, String userId) {
+    public Payment createPayment(PaymentDto paymentDto, List<TicketInfoDto> ticketList, long userId) {
         Payment payment = paymentConverter.convertToEntity(paymentDto);
         payment.setPaymentCreationDateTime(LocalDateTime.now());
         payment.setPaymentStatus(PaymentStatus.PENDING);
@@ -120,8 +122,13 @@ public class PaymentService {
         return paymentRepository.findById(id);
     }
 
-    public List<Payment> findPayments(PaymentFilter filter) {
+    public PaymentListDto findPayments(PaymentFilter filter, PageRequest pageRequest, UserDetailsDto userDetailsDto) {
         Specification<Payment> spec = Specification.where(null);
+
+        if (userDetailsDto.getRole().equals(UserRole.ROLE_USER)) {
+            spec = spec.and((root, query, builder) ->
+                    builder.equal(root.get("userId"), userDetailsDto.getUserId()));
+        }
 
         if (filter.getTicketId() != null) {
             spec = spec.and((root, query, criteriaBuilder) ->
@@ -158,7 +165,50 @@ public class PaymentService {
 
         }
 
-        return paymentRepository.findAll(spec);
+        Page<Payment> payments = paymentRepository.findAll(spec, pageRequest);
+        PaymentListDto paymentListDto = new PaymentListDto();
+        paymentListDto.setPayments(payments.getContent());
+        paymentListDto.setTotal(payments.getTotalElements());
+        return paymentListDto;
+    }
+
+    public ResponseEntity<?> refundPayment(long id, UserDetailsDto userDetailsDto) {
+        Optional<Payment> paymentOpt = paymentRepository.findByIdAndPaymentStatus(id, PaymentStatus.PAID);
+        logger.info("Checking payment exists");
+        if (paymentOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(new SimpleErrorResponse("No such payment"));
+        }
+
+        Payment payment = paymentOpt.get();
+        logger.info("Checking user match");
+        if (userDetailsDto.getRole().equals(UserRole.ROLE_USER) && !payment.getId().equals(userDetailsDto.getUserId())) {
+            return ResponseEntity.badRequest().body(new SimpleErrorResponse("This payment was made by other user"));
+        }
+
+        RefundExternalDto refundExternalDto = new RefundExternalDto(payment.getCardNumber(), payment.getAmount());
+        ExternalPaymentResponse externalPaymentResponse = sendRefundToExternalPaymentSystem(refundExternalDto);
+        if (externalPaymentResponse.hasException()) {
+            return ResponseEntity.badRequest().body(new SimpleErrorResponse("Error during refund received from external payment system - "
+                    + externalPaymentResponse.getException().getMessage()));
+        }
+
+        payment.setPaymentStatus(PaymentStatus.REFUND);
+        paymentRepository.save(payment);
+        ticketService.updateTicketToRefund(payment.getTickets());
+        return ResponseEntity.status(HttpStatus.OK).body(new SimpleResponse("Refund was made for payment - " + payment.getId()));
+    }
+
+    public ExternalPaymentResponse sendRefundToExternalPaymentSystem(RefundExternalDto refundExternalDto) {
+        logger.info("Sending refund transaction to payment external system");
+        String baseUrl = urlUtils.getRootUrl();
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUrl + "/external/payment/refund");
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(builder.toUriString(), HttpMethod.POST,
+                    new HttpEntity<>(refundExternalDto, new HttpHeaders()), String.class);
+            return new ExternalPaymentResponse(responseEntity.getBody());
+        } catch (HttpClientErrorException | HttpServerErrorException paymentExternalException) {
+            return new ExternalPaymentResponse(paymentExternalException, paymentExternalException.getResponseBodyAsString());
+        }
     }
 
 }
