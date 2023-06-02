@@ -13,4 +13,6 @@ public class TicketsCreateRequest {
     Long tripId;
     int countTicketsFirstClass;
     int countTicketsSecondClass;
+    double firstClassPrice;
+    double secondClassPrice;
 }
