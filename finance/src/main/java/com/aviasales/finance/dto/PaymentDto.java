@@ -13,7 +13,6 @@ import java.util.List;
 
 @Data
 public class PaymentDto {
-    @NotBlank(message = "Ticked it field is mandatory")
     @Size(min = 1, max = 10, message = "Number of tickets to pay should be more than 1 and less than 10")
     private List<Long> tickets;
     @CreditCardNumber(message = "Credit card number is not valid")

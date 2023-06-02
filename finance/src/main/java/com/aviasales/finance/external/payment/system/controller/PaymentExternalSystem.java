@@ -1,5 +1,6 @@
 package com.aviasales.finance.external.payment.system.controller;
 
+import com.aviasales.finance.dto.RefundExternalDto;
 import com.aviasales.finance.external.payment.system.dto.PaymentForProcessingDto;
 import com.aviasales.finance.external.payment.system.service.PaymentProcessingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,5 +25,11 @@ public class PaymentExternalSystem {
     public ResponseEntity<?> makePayment(@RequestBody PaymentForProcessingDto paymentForProcessingDto) {
         paymentProcessingService.processPayment(paymentForProcessingDto);
         return ResponseEntity.status(HttpStatus.OK).body("Payment done");
+    }
+
+    @PostMapping("/refund")
+    public ResponseEntity<?> makeRefund(@RequestBody RefundExternalDto refundExternalDto) {
+        paymentProcessingService.processRefund(refundExternalDto);
+        return ResponseEntity.status(HttpStatus.OK).body("Refund done");
     }
 }

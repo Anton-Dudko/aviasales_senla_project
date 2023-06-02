@@ -29,7 +29,8 @@ public class Payment {
     @CollectionTable(name="payment_ticket", joinColumns=@JoinColumn(name="payment_id"))
     @Column(name="ticket_id")
     private List<Long> tickets;
-    private String userId;
+    @Column(name = "user_id")
+    private Long userId;
     private String cardNumber;
     private PaymentStatus paymentStatus;
 

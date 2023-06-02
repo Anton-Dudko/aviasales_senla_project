@@ -1,16 +1,16 @@
 package com.aviasales.finance.service.external;
 
 import com.aviasales.finance.dto.KafkaPaymentNotificationDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
+
+import java.util.Map;
 
 @Service
 public class KafkaService {
@@ -21,10 +21,12 @@ public class KafkaService {
     private String topicSuccess;
     @Value("${finance.kafka.notification.topic.error}")
     private String topicError;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public KafkaService(KafkaTemplate<String, Object> kafkaTemplate) {
+    public KafkaService(KafkaTemplate<String, Object> kafkaTemplate, ObjectMapper objectMapper) {
         this.kafkaTemplate = kafkaTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @Async
@@ -56,6 +58,7 @@ public class KafkaService {
 //    }
 
     public void sendMessage(String topic, KafkaPaymentNotificationDto message) {
-        kafkaTemplate.send(topic, message);
+        Map<String, Object> map = objectMapper.convertValue(message, Map.class);
+        kafkaTemplate.send(topic, map);
     }
 }

@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public class BankCard {
     private YearMonth cardDate;
     private String cvv;
     private String cardHolder;
-    private double accountSum;
+    private BigDecimal accountSum;
 
     @Override
     public boolean equals(Object o) {
