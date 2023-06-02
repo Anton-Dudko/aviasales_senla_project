@@ -15,6 +15,7 @@ import static eu.senla.aviasales.model.constant.Topic.CANCELED_TICKET_RESERVATIO
 import static eu.senla.aviasales.model.constant.Topic.NEW_TICKET_RESERVATION_EVENT;
 import static eu.senla.aviasales.model.constant.Topic.NEW_TRIP_EVENT;
 import static eu.senla.aviasales.model.constant.Topic.PAYMENT_ERROR_EVENT;
+import static eu.senla.aviasales.model.constant.Topic.PAYMENT_RETURN_EVENT;
 import static eu.senla.aviasales.model.constant.Topic.PAYMENT_SUCCESS_EVENT;
 import static eu.senla.aviasales.model.constant.Topic.TRIP_CANCELED_EVENT;
 import static eu.senla.aviasales.model.constant.Topic.USER_REGISTERED_EVENT;
@@ -37,6 +38,12 @@ public class TestController {
     @PostMapping("/payment-success")
     public void testPaymentSuccess(@RequestBody Map<String, Object> dto) {
         usReg.send(PAYMENT_SUCCESS_EVENT, dto);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/payment-return")
+    public void testPaymentReturn(@RequestBody Map<String, Object> dto) {
+        usReg.send(PAYMENT_RETURN_EVENT, dto);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
