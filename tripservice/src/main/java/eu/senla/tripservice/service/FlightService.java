@@ -24,7 +24,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -242,21 +241,21 @@ public class FlightService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<TicketsCreateRequest> request = new HttpEntity<>(ticketsCreateRequest, headers);
-        String createTicketsRequestUrl = "http://ticket-service:8080/tickets/generate";
-
+        String createTicketsRequestUrl = "http://ticket-service:8088/tickets/generate";
+        String receivedMessage;
         try {
-            restTemplate.postForObject(createTicketsRequestUrl, request, ResponseEntity.class);
+            receivedMessage = restTemplate.postForObject(createTicketsRequestUrl, request, String.class);
         } catch (Exception e) {
             throw new RequestException("Ticket not created: " + e.getMessage());
         }
-
+        log.info("FlightService-makeCreateTicketsRequest-receivedMessage: " + receivedMessage);
     }
 
     protected TicketsResponse makeGetTicketsRequest(long id) {
         log.info("Flight-service-makeGetTicketsRequest");
         RestTemplate restTemplate = new RestTemplate();
 
-        String getTicketsRequestUrl = "http://ticket-service:8080/tickets?tripId=" + id;
+        String getTicketsRequestUrl = "http://ticket-service:8088/tickets?tripId=" + id;
 
         TicketsResponse response;
 
@@ -278,6 +277,7 @@ public class FlightService {
         Flight flight = findFlightById(flightId);
         Airplane airplane = flight.getAirplane();
 
+        double firstClassTicketSurcharge = 1.2;
         int defaultFirstClassPercent = 30;
         double defaultTicketPrice = (airplane.getNumberOfSeats() * 4 + airplane.getAirplaneId()) / 2.0;
         double secondClassPriceCoefficient = 0.8;
@@ -292,7 +292,8 @@ public class FlightService {
 
         double secondClassPrice = Math.ceil(price * secondClassPriceCoefficient);
 
-        return new TicketsCreateRequest(flightId, firstClassSeatsNumber, secondClassSeatsNumber);
+        return new TicketsCreateRequest(flightId, firstClassSeatsNumber, secondClassSeatsNumber,
+                secondClassPrice * firstClassTicketSurcharge, secondClassPrice);
     }
 
     private boolean isFlightExist(Flight flightToCheck) {
