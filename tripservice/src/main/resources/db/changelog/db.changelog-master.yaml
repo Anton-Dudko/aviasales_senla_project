@@ -9,3 +9,7 @@ databaseChangeLog:
       file: db/changelog/changeset/insert-into-airplanes-table.sql
   - include:
       file: db/changelog/changeset/create-subscriptions-table.sql
+  - include:
+      file: db/changelog/changeset/insert-into-trips-table.sql
+  - include:
+      file: db/changelog/changeset/insert-into-flights-table.sql

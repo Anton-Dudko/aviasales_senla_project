@@ -1,5 +1,5 @@
 --luquibase formatted sql
---changeset NikitaNasevich:create-airplane-table
+--changeset NikitaNasevich:insert-into-airplane-table
 
 INSERT INTO airplanes (model, number_of_seats, socket, media, wi_fi, seat_pitch, seat_width, chair_scheme)
 VALUES ('Boeing 737', 40, false, false, false, 36, 36, '3-3');
