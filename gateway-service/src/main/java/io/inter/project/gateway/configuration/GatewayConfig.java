@@ -28,11 +28,11 @@ public class GatewayConfig {
     private final String tripServiceHost;
     private final String notificationServiceHost;
 
-    private final Map<String, String> userService = new HashMap<>();
-    private final Map<String, String> financeService = new HashMap<>();
-    private final Map<String, String> tripService = new HashMap<>();
-    private final Map<String, String> notificationService = new HashMap<>();
-    private final Map<String, String> ticketsService = new HashMap<>();
+    private final Map<String, String> userService = new LinkedHashMap<>();
+    private final Map<String, String> financeService = new LinkedHashMap<>();
+    private final Map<String, String> tripService = new LinkedHashMap<>();
+    private final Map<String, String> notificationService = new LinkedHashMap<>();
+    private final Map<String, String> ticketsService = new LinkedHashMap<>();
     private final List<String> exclusionList = new ArrayList<>();
 
     private final Map<String, Map<String, String>> mappings;

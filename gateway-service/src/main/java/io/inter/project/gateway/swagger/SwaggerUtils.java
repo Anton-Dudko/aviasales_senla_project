@@ -73,15 +73,13 @@ public class SwaggerUtils {
     }
 
     private Map<String, Path> createNewPaths(String serviceName, Swagger swagger) {
-        Map<String, Path> newPaths = new LinkedHashMap<>();
+        Map<String, Path> newPaths = swagger.getPaths();
         gatewayConfig.getMappings().get(serviceName).forEach((key, value) -> {
             String newValue = value.replace("$", "");
             String newKey = key.replace("**", "{id}");
-            swagger.getPaths().forEach((url, path) -> {
-                if (url.equals(newValue)) {
-                    newPaths.put(newKey, path);
-                }
-            });
+            Path oldPath = swagger.getPaths().get(newValue);
+            newPaths.remove(newValue);
+            newPaths.put(newKey, oldPath);
         });
         return newPaths;
     }
