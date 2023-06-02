@@ -47,7 +47,6 @@ public class TicketService {
     }
 
     public TicketResponseWithCount search(TicketRequest request) {
-        log.info(request.toString());
         return Optional.ofNullable(request)
                 .map(req -> criteriaTicketService.findAll(request.getUserId(), request.getStatus(), request.getTripId(), request.getFio(), request.getId()))
                 .map(ticketMapper::convertListEntityToDtoWithCount)

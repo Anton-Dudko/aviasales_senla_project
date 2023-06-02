@@ -10,6 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketResponseWithCount {
-    int count;
-    List<TicketResponse> list;
+    private int count;
+    private List<TicketResponse> list;
 }
