@@ -1,10 +1,11 @@
-package eu.senla.userservice.service;
+package eu.senla.userservice.dao;
 
 import eu.senla.common.enam.Language;
 import eu.senla.common.enam.Role;
 import eu.senla.userservice.entity.User;
 import eu.senla.userservice.request.UserFindRequest;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,18 +22,18 @@ public class UserSpecification implements Specification<User> {
     @Override
     public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
-        if (request.getEmail() != null && !request.getEmail().isEmpty()) {
+        if (StringUtils.isNotEmpty(request.getEmail())) {
             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("email")),
                     "%" + request.getEmail().toLowerCase() + "%"));
         }
-        if (request.getUsername() != null && !request.getUsername().isEmpty()) {
+        if (StringUtils.isNotEmpty(request.getUsername())) {
             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("username")),
                     "%" + request.getUsername().toLowerCase() + "%"));
         }
-        if (request.getRole() != null) {
+        if (StringUtils.isNotEmpty(request.getRole())) {
             predicates.add(criteriaBuilder.equal(root.get("role"), Role.valueOf(request.getRole())));
         }
-        if (request.getLanguage() != null) {
+        if (StringUtils.isNotEmpty(request.getLanguage())) {
             predicates.add(criteriaBuilder.equal(root.get("language"), Language.valueOf(request.getLanguage())));
         }
         if (request.getDateBirthFrom() != null && request.getDateBirthTo() == null) {

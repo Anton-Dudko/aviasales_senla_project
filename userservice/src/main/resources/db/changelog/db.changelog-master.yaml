@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/changeset/2023-05-13-language-create-table.sql
   - include:
       file: db/changelog/changeset/2023-05-13-user-create-table.sql
+  - include:
+      file: db/changelog/changeset/2023-05-30-user-insert-data.sql

@@ -2,6 +2,7 @@ package eu.senla.userservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.senla.common.enam.Language;
+import eu.senla.userservice.dao.UserSpecification;
 import eu.senla.userservice.entity.User;
 import eu.senla.userservice.exception.ExceptionMessageConstants;
 import eu.senla.userservice.exception.custom.NotFoundException;
@@ -17,6 +18,7 @@ import eu.senla.userservice.response.UserGetPageResponse;
 import eu.senla.userservice.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.data.domain.Page;
@@ -65,16 +67,16 @@ public class UserService {
         log.info("Method update");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_FOUND));
-        user.setUsername(request.getUsername() != null
+        user.setUsername(StringUtils.isNotEmpty(request.getUsername())
                 ? request.getUsername()
                 : user.getUsername());
-        user.setPassword(request.getPassword() != null
+        user.setPassword(StringUtils.isNotEmpty(request.getPassword())
                 ? passwordEncoder.encode(request.getPassword())
                 : user.getPassword());
-        user.setDateBirth(request.getDateBirth() != null
+        user.setDateBirth(StringUtils.isNotEmpty(request.getDateBirth())
                 ? LocalDate.parse(request.getDateBirth())
                 : user.getDateBirth());
-        user.setLanguage(request.getLanguage() != null
+        user.setLanguage(StringUtils.isNotEmpty(request.getLanguage())
                 ? Language.valueOf(request.getLanguage())
                 : user.getLanguage());
         User updatedUser = userRepository.save(user);
