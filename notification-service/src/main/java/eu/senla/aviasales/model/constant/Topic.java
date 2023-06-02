@@ -7,6 +7,7 @@ package eu.senla.aviasales.model.constant;
 public interface Topic {
     String USER_REGISTERED_EVENT = "user_registered_event";
     String USER_RESET_PASSWORD_EVENT = "user_reset_password_event";
+    String USER_UPDATE_PASSWORD_EVENT = "user_update_password_event";
     String NEW_TRIP_EVENT = "new_trip_event";
     String TRIP_CANCELED_EVENT = "trip_canceled_event";
     String NEW_TICKET_RESERVATION_EVENT = "new_ticket_reservation_event";

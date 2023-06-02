@@ -27,20 +27,14 @@ spring:
           email: senla.aviasales.may2023@gmail.com
 
   datasource:
-    url: jdbc:postgresql://notification-service-db/senla_aviasales_notification_service
+    url: jdbc:postgresql://notification-service-db/senla_aviasales_notification_service?createDatabaseIfNotExist=true
     username: postgres
     password: 1995
     driver-class-name: org.postgresql.Driver
-    jpa:
-      hibernate:
-        ddl-auto: validate
-      properties:
-        hibernate:
-          format_sql: true
-          jdbc:
-            batch_size: 100
-          order_inserts: true
-      show-sql: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
 
   kafka:
     properties:
@@ -98,6 +92,11 @@ application:
         template: user_reset_password
         localization: user_reset_password
         subject: Aviasales reset password
+      USER_UPDATE_PASSWORD_EVENT:
+        topic_name: user_update_password_event
+        template: user_update_password
+        localization: user_update_password
+        subject: Aviasales update password
       NEW_TRIP_EVENT:
         topic_name: new_trip_event
         template: new_trip

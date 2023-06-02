@@ -1,13 +1,5 @@
 package eu.senla.aviasales.controller;
 
-import static eu.senla.aviasales.model.constant.Topic.CANCELED_TICKET_RESERVATION_EVENT;
-import static eu.senla.aviasales.model.constant.Topic.NEW_TICKET_RESERVATION_EVENT;
-import static eu.senla.aviasales.model.constant.Topic.NEW_TRIP_EVENT;
-import static eu.senla.aviasales.model.constant.Topic.PAYMENT_ERROR_EVENT;
-import static eu.senla.aviasales.model.constant.Topic.PAYMENT_SUCCESS_EVENT;
-import static eu.senla.aviasales.model.constant.Topic.TRIP_CANCELED_EVENT;
-import static eu.senla.aviasales.model.constant.Topic.USER_REGISTERED_EVENT;
-import static eu.senla.aviasales.model.constant.Topic.USER_RESET_PASSWORD_EVENT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -18,6 +10,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+
+import static eu.senla.aviasales.model.constant.Topic.CANCELED_TICKET_RESERVATION_EVENT;
+import static eu.senla.aviasales.model.constant.Topic.NEW_TICKET_RESERVATION_EVENT;
+import static eu.senla.aviasales.model.constant.Topic.NEW_TRIP_EVENT;
+import static eu.senla.aviasales.model.constant.Topic.PAYMENT_ERROR_EVENT;
+import static eu.senla.aviasales.model.constant.Topic.PAYMENT_SUCCESS_EVENT;
+import static eu.senla.aviasales.model.constant.Topic.TRIP_CANCELED_EVENT;
+import static eu.senla.aviasales.model.constant.Topic.USER_REGISTERED_EVENT;
+import static eu.senla.aviasales.model.constant.Topic.USER_RESET_PASSWORD_EVENT;
+import static eu.senla.aviasales.model.constant.Topic.USER_UPDATE_PASSWORD_EVENT;
 
 /**
  * @author Mikhail.Leonovets
@@ -53,6 +55,12 @@ public class TestController {
     @PostMapping("/us-reset")
     public void testUserReset(@RequestBody Map<String, Object> dto) {
         usReg.send(USER_RESET_PASSWORD_EVENT, dto);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/us-update")
+    public void testUserUpdate(@RequestBody Map<String, Object> dto) {
+        usReg.send(USER_UPDATE_PASSWORD_EVENT, dto);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

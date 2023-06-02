@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   userservice_db:
-    image: postgres:13.1-alpine
+    image: postgres:13.3
     container_name: userservice-postgredb
     ports:
       - 32760:5432
@@ -171,6 +171,8 @@ services:
       - backend
     ports:
       - "5434:5434"
+    volumes:
+      - ~/app/postgresql:/data
   notification-service:
     build: ./notification-service
     ports:
