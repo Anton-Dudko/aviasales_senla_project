@@ -97,6 +97,11 @@ application:
         template: user_update_password
         localization: user_update_password
         subject: Aviasales update password
+      CUSTOM_EVENT:
+        topic_name: custom_admin_event
+        template: custom_email
+        localization: custom_email
+        subject: Custom admin email
       NEW_TRIP_EVENT:
         topic_name: new_trip_event
         template: new_trip

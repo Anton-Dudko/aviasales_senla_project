@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static eu.senla.aviasales.model.constant.EmailType.CUSTOM_EMAIL_TYPE;
 
 /**
  * @author Mikhail.Leonovets
@@ -63,13 +62,6 @@ public class MessageBuilderServiceImpl implements MessageBuilderService {
     public void buildAndSend(final EmailSent emailSent) {
         emailSent.setSentDate(new Date());
         try {
-            if (CUSTOM_EMAIL_TYPE.equals(emailSent.getTemplateType())) {
-                emailService.sendEmail(emailSent.getReceiver(), emailSent.getSubject(), (String) emailSent.getTemplateVariables()
-                        .get("custom_body"));
-                emailSent.setIsSent(true);
-                emailSentService.update(emailSent);
-                return;
-            }
             Map<String, String> builtHtmlWithSubject = buildHtmlWithSubject(emailSent.getTemplateType(), emailSent.getTemplateVariables());
             emailService.sendEmail(emailSent.getReceiver(), builtHtmlWithSubject.get("subject"), builtHtmlWithSubject.get("html"));
             emailSent.setIsSent(true);
@@ -117,7 +109,7 @@ public class MessageBuilderServiceImpl implements MessageBuilderService {
                         + "_"
                         + language.toLowerCase()
                         + ".json"
-        ).getInputStream(), new TypeReference<Map<String, Object>>() {
+        ).getInputStream(), new TypeReference<>() {
         });
     }
 }

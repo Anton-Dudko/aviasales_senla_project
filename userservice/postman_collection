@@ -1,0 +1,1147 @@
+{
+	"info": {
+		"_postman_id": "82c8ae3f-2af5-4d8c-9f4e-564256b1901e",
+		"name": "aviasales userservice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18006981"
+	},
+	"item": [
+		{
+			"name": "create user3(with role USER in Request)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"UserName1\",\r\n    \"email\": \"pin007@tut.by\",\r\n    \"password\": \"user1\",\r\n    \"role\": \"ROLE_USER\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user4 (without role in Request)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"username2\",\r\n    \"email\": \"olga.glavdel@gmail.com\",\r\n    \"password\": \"pass2\",\r\n    \"dateBirth\": \"2010-10-10\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user3 400 (without email)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"username3\",\r\n    \"password\": \"pass3\",\r\n    \"dateBirth\": \"1988-10-31\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user3 400 (without username)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"email3@tut.by\",\r\n    \"password\": \"pass3\",\r\n    \"dateBirth\": \"1988-10-31\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user3 400(with wrong format email)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"username3\",\r\n    \"email\": \"email3\",\r\n    \"password\": \"pass2\",\r\n    \"dateBirth\": \"1988-10-31\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user_if_exist_username 401",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"UserName1\",\r\n    \"email\": \"email1@tut.by\",\r\n    \"password\": \"pass1\",\r\n    \"dateBirth\": \"2010-10-31\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user_if_exist_email 401",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"username990\",\r\n    \"email\": \"pin007@tut.by\",\r\n    \"password\": \"pass1\",\r\n    \"dateBirth\": \"2010-10-31\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login user3",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"pin007@tut.by\",\r\n    \"password\": \"user1\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login user4",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"olga.glavdel@gmail.com\",\r\n    \"password\": \"pass2\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login user 404 (wrong email)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"email11@tut.by\",\r\n    \"password\": \"pass1\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login user 401 (wrong passwordl)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"pin007@tut.by\",\r\n    \"password\": \"passssfsa1\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findById 403 ROLE_USER",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZTEiLCJleHAiOjE2ODY1Nzk1OTAsInJvbGUiOiJST0xFX1VTRVIifQ.AFHFVo_LQxnfb1-CMGAAHYSqtHZ968577Ibh8FZ84L0fUWPf0hupqBj6G2vF14RhQxjosOBOCFniT2QOlpk6OQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/find-by-id/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"find-by-id",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findAllUsersInPage 403 ROLE_USER",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZTEiLCJleHAiOjE2ODY1Nzk1OTAsInJvbGUiOiJST0xFX1VTRVIifQ.AFHFVo_LQxnfb1-CMGAAHYSqtHZ968577Ibh8FZ84L0fUWPf0hupqBj6G2vF14RhQxjosOBOCFniT2QOlpk6OQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/search",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete user 403 ROLE_USER",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZTEiLCJleHAiOjE2ODY1Nzk1OTAsInJvbGUiOiJST0xFX1VTRVIifQ.AFHFVo_LQxnfb1-CMGAAHYSqtHZ968577Ibh8FZ84L0fUWPf0hupqBj6G2vF14RhQxjosOBOCFniT2QOlpk6OQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/deletion/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"deletion",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createAdmin 403 (ROLE_USER)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZTEiLCJleHAiOjE2ODY1Nzk1OTAsInJvbGUiOiJST0xFX1VTRVIifQ.AFHFVo_LQxnfb1-CMGAAHYSqtHZ968577Ibh8FZ84L0fUWPf0hupqBj6G2vF14RhQxjosOBOCFniT2QOlpk6OQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin33\",\r\n    \"email\": \"admin33@mail.ru\",\r\n    \"password\": \"admin2\",\r\n    \"dateBirth\": \"1986-05-20\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/admin-reg",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin-reg"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update user2  with ROLE_USER",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZTEiLCJleHAiOjE2ODY1Nzk1OTAsInJvbGUiOiJST0xFX1VTRVIifQ.AFHFVo_LQxnfb1-CMGAAHYSqtHZ968577Ibh8FZ84L0fUWPf0hupqBj6G2vF14RhQxjosOBOCFniT2QOlpk6OQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"NEW\",\r\n    \"email\": \"pin007@tuuuuuut.by\",\r\n    \"password\": \"new\",\r\n    \"dateBirth\": \"1986-05-20\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/update/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"update",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update user2 403 with ROLE_USER",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZTEiLCJleHAiOjE2ODY1Nzk1OTAsInJvbGUiOiJST0xFX1VTRVIifQ.AFHFVo_LQxnfb1-CMGAAHYSqtHZ968577Ibh8FZ84L0fUWPf0hupqBj6G2vF14RhQxjosOBOCFniT2QOlpk6OQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"NEW\",\r\n    \"email\": \"pin007@tuuuuuut.by\",\r\n    \"password\": \"new\",\r\n    \"dateBirth\": \"1986-05-20\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/update/3",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"update",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create admin (with role in Request)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"Admin1\",\r\n    \"email\": \"olga.glaaaavdel@gmail.com\",\r\n    \"dateBirth\": \"2009-09-09\",\r\n    \"password\": \"admin1\",\r\n    \"role\": \"ROLE_ADMIN\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "saveAdmin admin1 with token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin2\",\r\n    \"email\": \"admin2@maail.ru\",\r\n    \"dateBirth\": \"2008-08-08\",\r\n    \"password\": \"admin2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"olga.glaaaavdel@gmail.com\",\r\n    \"password\": \"admin1\"    \r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findById ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/find-by-id/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"find-by-id",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findAllAdminInPage ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"role\": \"ROLE_ADMIN\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/search",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findAllUserInPage ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"role\": \"ROLE_USER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/search",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findAllENPage ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"language\": \"EN\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/search",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findAllRUPage ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"language\": \"RU\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/search",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findAllByDateBirthToPage ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dateBirthTo\": \"2020-12-22\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/search",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findAllByDateBirthFromPage ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dateBirthFrom\": \"2000-08-01\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/search",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findAllByDateBirthBetweenPage ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dateBirthFrom\": \"1990-12-12\",\r\n    \"dateBirthTo\":\"2009-09-09\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/search",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findAllUsernameLikePage ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"user\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/search",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findAllEmailLikePage ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"language\": \"EN\",\r\n    \"email\": \"olga\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/search",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findAllUsernameAndEmailLikePage ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"olg\",\r\n    \"username\": \"use\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/search",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update with ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"userNEWNEWыаыаыаыва\",\r\n    \"email\": \"pin007@tut.by\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/update/3",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"update",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update password  with ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"userNEWNEWыаыаыаыва\",\r\n    \"password\": \"111\",\r\n    \"email\": \"pin007@tut.by\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/update/3",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"update",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete user ROLE_ADMIN",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/deletion/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"deletion",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new-password ",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/guest/new-password/?email=pin007@tut.by",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"guest",
+						"new-password",
+						""
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "pin007@tut.by"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "***************************",
+			"request": {
+				"method": "OPTIONS",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		}
+	]
+}

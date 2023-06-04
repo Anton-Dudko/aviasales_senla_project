@@ -21,13 +21,13 @@ public class SmtpEmailService implements EmailService {
     private final JavaMailSender javaMailSender;
 
     @Override
-    public void sendEmail(String to, String subject, String htmlBody) throws MessagingException {
-        log.info("Sending email to: " + to
+    public void sendEmail(String email, String subject, String htmlBody) throws MessagingException {
+        log.info("Sending email to: " + email
                 + ". Subject: "
                 + subject);
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-        helper.setTo(to);
+        helper.setTo(email);
         helper.setSubject(subject);
         helper.setText(htmlBody, true);
         javaMailSender.send(message);

@@ -9,4 +9,6 @@ public class ExceptionMessageConstants {
     public static String EMAIL_CANNOT_BE_EMPTY = "Email cannot be null!";
     public static String NAME_CANNOT_BE_NULL = "Name cannot be null!";
 
+    public static final String NOT_VALID_EMAIL = "email format is invalid";
+
 }
