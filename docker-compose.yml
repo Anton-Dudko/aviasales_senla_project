@@ -160,25 +160,30 @@ services:
       - eureka-service
   #gateway microservice end
 
-  #notification microservice start
   notification-service-db:
-    image: postgres:13.1-alpine
+    image: mongo
+    hostname: ${MONGODB_HOST}
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=1995
-      - POSTGRES_DB=senla_aviasales_notification_service
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    ports:
+      - "27017:27017"
+    volumes:
+      - ~/app/mongo:/data
     networks:
       - backend
-    ports:
-      - "5434:5434"
-    volumes:
-      - ~/app/postgresql:/data
+
   notification-service:
     build: ./notification-service
     ports:
       - "8087:8087"
     environment:
       cloud.eureka-host: eurekaserver
+      DATABASESERVER_PORT: "27017:27017"
+      SPRING_DATASOURCE_URL: mongodb://notification-service-db:27017/emailnotification
+      SPRING_DATASOURCE_USER: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_DATASOURCE_DB: emailnotification
     networks:
       - backend
     restart: always
