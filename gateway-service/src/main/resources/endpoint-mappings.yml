@@ -39,7 +39,7 @@ endpoint:
 
   notificationService:
     "[/find-emails]": /api/admin/email
-    "[/send-email]": /api/admin/email
+    "[/send-email]": /api/admin/send
     "[/send-again/**]": /api/admin/${id}
 
   ticketsService:
