@@ -9,6 +9,15 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@localhost:27017/emailnotification
+      database: emailnotification
+      host: localhost
+      password: admin
+      username: admin
+      port: 27017
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -25,16 +34,6 @@ spring:
         encoding: UTF-8
         from:
           email: senla.aviasales.may2023@gmail.com
-
-  datasource:
-    url: jdbc:postgresql://notification-service-db/senla_aviasales_notification_service?createDatabaseIfNotExist=true
-    username: postgres
-    password: 1995
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    generate-ddl: true
 
   kafka:
     properties:

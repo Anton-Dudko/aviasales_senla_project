@@ -7,22 +7,25 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-@Slf4j
-@Component
+/**
+ * @author Mikhail.Leonovets
+ * @since 05/2023
+ */
 @RequiredArgsConstructor
-public class KafkaService {
+@Slf4j
+@Service
+public class SendToKafkaService {
 
     private final Producer<String, Map<String, CustomEmailDto>> producer;
     private final ObjectMapper objectMapper;
 
-
-    public void send(CustomEmailDto event) {
+    public void sendCustomEmail(final CustomEmailDto customEmailDto) {
         ProducerRecord<String, Map<String, CustomEmailDto>> producerRecord =
-                new ProducerRecord<>(KafkaTopicConstants.CUSTOM_EMAIL_TYPE, objectMapper.convertValue(event, Map.class));
+                new ProducerRecord<>(KafkaTopicConstants.CUSTOM_EMAIL_TYPE, objectMapper.convertValue(customEmailDto, Map.class));
         producer.send(producerRecord);
         log.info("Sending message ... {}", producerRecord);
     }

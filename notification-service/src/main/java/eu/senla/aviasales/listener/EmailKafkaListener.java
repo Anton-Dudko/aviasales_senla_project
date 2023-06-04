@@ -1,6 +1,6 @@
 package eu.senla.aviasales.listener;
 
-import eu.senla.aviasales.service.MessageBuilderService;
+import eu.senla.aviasales.service.SendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -17,12 +17,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 public class EmailKafkaListener {
-    private final MessageBuilderService messageBuilderService;
+
+    private final SendService sendService;
 
     @KafkaListener(topics = "#{templatesConfig.getTopicNames()}", autoStartup = "true")
-    public void listenTo(ConsumerRecord<String, Map<String, Object>> record) {
+    public void listenTo(ConsumerRecord<String, Map<String, Object>> consumerRecord) {
         log.info("KAFKA EMAIL NOTIFICATION LISTENER ACTIVATED");
-        messageBuilderService.buildAndSend(record.topic(), record.value());
+        sendService.sendEmail(consumerRecord);
     }
 }
 
