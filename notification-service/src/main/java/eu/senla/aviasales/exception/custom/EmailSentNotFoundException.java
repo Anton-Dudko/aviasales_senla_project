@@ -1,4 +1,4 @@
-package eu.senla.aviasales.exception;
+package eu.senla.aviasales.exception.custom;
 
 /**
  * @author Mikhail.Leonovets

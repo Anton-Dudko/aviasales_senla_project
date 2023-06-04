@@ -1,10 +1,9 @@
 package eu.senla.aviasales.service.impl;
 
-import static eu.senla.aviasales.model.constant.message.EmailType.CUSTOM_EMAIL_TYPE;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.senla.aviasales.config.TemplatesConfig;
-import eu.senla.aviasales.exception.TopicNotFoundException;
+import eu.senla.aviasales.exception.custom.TopicNotFoundException;
 import eu.senla.aviasales.model.entity.EmailSent;
 import eu.senla.aviasales.service.EmailSentService;
 import eu.senla.aviasales.service.EmailService;
@@ -16,11 +15,13 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import javax.mail.MessagingException;
+
+import static eu.senla.aviasales.model.constant.EmailType.CUSTOM_EMAIL_TYPE;
 
 /**
  * @author Mikhail.Leonovets
