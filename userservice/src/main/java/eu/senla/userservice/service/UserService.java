@@ -1,6 +1,6 @@
 package eu.senla.userservice.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.senla.common.enam.Language;
 import eu.senla.userservice.dao.UserSpecification;
 import eu.senla.userservice.entity.User;
@@ -8,7 +8,6 @@ import eu.senla.userservice.exception.ExceptionMessageConstants;
 import eu.senla.userservice.exception.custom.AuthenticatException;
 import eu.senla.userservice.exception.custom.NotFoundException;
 import eu.senla.userservice.kafka.KafkaTopicConstants;
-import eu.senla.userservice.kafka.UserEvent;
 import eu.senla.userservice.mapper.UserMapper;
 import eu.senla.userservice.repository.UserRepository;
 import eu.senla.userservice.request.UserFindRequest;
@@ -20,8 +19,6 @@ import eu.senla.userservice.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -39,8 +35,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final Producer<String, Map<String, UserEvent>> producer;
-    private final ObjectMapper objectMapper;
+    private final KafkaService kafkaService;
 
     public UserGetPageResponse findBySpecification(UserFindRequest request, Pageable pageable) {
         log.info("Method findBySpecification");
@@ -84,19 +79,7 @@ public class UserService {
             User updatedUser = userRepository.save(user);
 
             if (request.getPassword() != null) {
-                UserEvent event = UserEvent.builder()
-                        .userName(updatedUser.getUsername())
-                        .userLanguage(updatedUser.getLanguage().name().toLowerCase())
-                        .email(updatedUser.getEmail())
-                        .newPassword(request.getPassword())
-                        .build();
-
-                log.info("event ... {}", event);
-                ProducerRecord<String, Map<String, UserEvent>> producerRecord =
-                        new ProducerRecord<>(KafkaTopicConstants.UPDATE_PASSWORD_EVENT, objectMapper.convertValue(event, Map.class));
-                log.info("producerRecord ... {}", producerRecord);
-                producer.send(producerRecord);
-                log.info("Sending message ... {}", producerRecord);
+                kafkaService.sendToTopic(KafkaTopicConstants.UPDATE_PASSWORD_EVENT, user, request.getPassword());
             }
             return userMapper.entityToResponse(updatedUser);
         }

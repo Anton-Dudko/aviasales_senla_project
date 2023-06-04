@@ -1,7 +1,6 @@
 package eu.senla.aviasales.service.impl;
 
-import static eu.senla.aviasales.model.constant.message.EmailType.CUSTOM_EMAIL_TYPE;
-import eu.senla.aviasales.exception.EmailSentNotFoundException;
+import eu.senla.aviasales.exception.custom.EmailSentNotFoundException;
 import eu.senla.aviasales.model.dto.CustomEmailDto;
 import eu.senla.aviasales.model.entity.EmailSent;
 import eu.senla.aviasales.service.AdminEmailService;
@@ -11,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import javax.mail.MessagingException;
+import java.util.Map;
+
+import static eu.senla.aviasales.model.constant.EmailType.CUSTOM_EMAIL_TYPE;
 
 /**
  * @author Mikhail.Leonovets

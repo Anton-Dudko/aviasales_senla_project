@@ -1,6 +1,6 @@
 package eu.senla.aviasales.config;
 
-import eu.senla.aviasales.exception.TopicNotFoundException;
+import eu.senla.aviasales.exception.custom.TopicNotFoundException;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -34,7 +34,6 @@ public class TemplatesConfig {
                 .filter(topic -> topic.getTopicName().equals(topicName))
                 .findFirst().orElseThrow(() -> new TopicNotFoundException("Cannot find topic: " + topicName + "."));
     }
-
     public static class Topic {
         private String topicName;
         private String template;

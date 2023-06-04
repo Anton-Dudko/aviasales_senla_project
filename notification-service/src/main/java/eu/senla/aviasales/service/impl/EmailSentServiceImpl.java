@@ -1,6 +1,6 @@
 package eu.senla.aviasales.service.impl;
 
-import eu.senla.aviasales.exception.EmailSentNotFoundException;
+import eu.senla.aviasales.exception.custom.EmailSentNotFoundException;
 import eu.senla.aviasales.model.entity.EmailSent;
 import eu.senla.aviasales.repository.EmailSentRepository;
 import eu.senla.aviasales.service.EmailSentService;

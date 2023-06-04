@@ -1,6 +1,6 @@
 package eu.senla.aviasales.service;
 
-import eu.senla.aviasales.exception.EmailSentNotFoundException;
+import eu.senla.aviasales.exception.custom.EmailSentNotFoundException;
 import eu.senla.aviasales.model.entity.EmailSent;
 
 import java.util.Date;

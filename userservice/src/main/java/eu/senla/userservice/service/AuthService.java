@@ -1,13 +1,11 @@
 package eu.senla.userservice.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.senla.common.enam.Role;
 import eu.senla.userservice.entity.User;
 import eu.senla.userservice.exception.ExceptionMessageConstants;
 import eu.senla.userservice.exception.custom.AuthenticatException;
 import eu.senla.userservice.exception.custom.NotFoundException;
 import eu.senla.userservice.kafka.KafkaTopicConstants;
-import eu.senla.userservice.kafka.UserEvent;
 import eu.senla.userservice.mapper.UserMapper;
 import eu.senla.userservice.repository.UserRepository;
 import eu.senla.userservice.request.LoginRequest;
@@ -19,12 +17,9 @@ import eu.senla.userservice.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -34,9 +29,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final UserRepository repository;
-
-    private final Producer<String, Map<String, UserEvent>> producer;
-    private final ObjectMapper objectMapper;
+    private final KafkaService kafkaService;
 
     public AuthResponse createUser(UserRequest request) {
         log.info("...method createUser");
@@ -52,17 +45,7 @@ public class AuthService {
         user.setRefreshToken(generateRefreshToken(user));
         user = repository.save(user);
 
-        UserEvent event = UserEvent.builder()
-                .userName(user.getUsername())
-                .userLanguage(user.getLanguage().name().toLowerCase())
-                .email(user.getEmail())
-                .build();
-        log.info("event ... {}", event);
-        ProducerRecord<String, Map<String, UserEvent>> producerRecord =
-                new ProducerRecord<>(KafkaTopicConstants.REGISTERED_EVENT, objectMapper.convertValue(event, Map.class));
-        log.info("producerRecord ... {}", producerRecord);
-        producer.send(producerRecord);
-        log.info("Sending message ... {}", producerRecord);
+        kafkaService.sendToTopic(KafkaTopicConstants.REGISTERED_EVENT, user);
 
         return AuthResponse.builder()
                 .accessToken(user.getAccessToken())
@@ -125,19 +108,7 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(password));
         user = repository.save(user);
 
-        UserEvent event = UserEvent.builder()
-                .userName(user.getUsername())
-                .userLanguage(user.getLanguage().name().toLowerCase())
-                .email(user.getEmail())
-                .newPassword(password)
-                .build();
-
-        log.info("event ... {}", event);
-        ProducerRecord<String, Map<String, UserEvent>> producerRecord =
-                new ProducerRecord<>(KafkaTopicConstants.RESET_PASSWORD_EVENT, objectMapper.convertValue(event, Map.class));
-        log.info("producerRecord ... {}", producerRecord);
-        producer.send(producerRecord);
-        log.info("Sending message ... {}", producerRecord);
+        kafkaService.sendToTopic(KafkaTopicConstants.RESET_PASSWORD_EVENT, user, password);
 
         return PasswordResponse.builder()
                 .password(password)
