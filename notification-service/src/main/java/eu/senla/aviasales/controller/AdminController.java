@@ -41,7 +41,7 @@ public class AdminController {
         return ResponseEntity.ok(emailSentService.findAllByCriteria(startDate, endDate, templateType, email, page, limit));
     }
 
-    @PostMapping("/email")
+    @PostMapping("/send")
     public ResponseEntity<?> sendEmail(@RequestBody CustomEmailDto customEmailDto) {
         adminEmailService.sendCustomEmail(customEmailDto);
         return ResponseEntity.ok("Email sent");
