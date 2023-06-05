@@ -2,6 +2,7 @@ package eu.senla.userservice.controller;
 
 import eu.senla.userservice.request.LoginRequest;
 import eu.senla.userservice.request.UserRequest;
+import eu.senla.userservice.request.UserUpdateRequest;
 import eu.senla.userservice.response.AuthResponse;
 import eu.senla.userservice.response.PasswordResponse;
 import eu.senla.userservice.service.AuthService;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 
 @Slf4j
 @RestController
@@ -36,8 +36,8 @@ public class GuestController {
     }
 
     @PostMapping("/new-password")
-    public PasswordResponse generatePassword(@Valid @Email String email) {
+    public PasswordResponse generatePassword(@Valid @RequestBody UserUpdateRequest request) {
         log.info("...Method generatePassword");
-        return authService.generatePassword(email);
+        return authService.generatePassword(request);
     }
 }

@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -21,11 +23,16 @@ import java.util.Map;
 @ToString
 @Document("emailnotification")
 public class EmailNotification {
-    @Id
-    private Long id;
+    @MongoId
+    private ObjectId id;
+    @Field
     private String templateType;
+    @Field
     private String subject;
+    @Field
     private String receiver;
+    @Field
     private Map<String, Object> templateVariables = new HashMap<>();
+    @Field
     private LocalDate dateFirstSend;
 }

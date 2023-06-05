@@ -1,4 +1,4 @@
-package eu.senla.aviasales.service.impl;
+package eu.senla.aviasales.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +31,7 @@ public class MessageBuilder {
     private final ObjectMapper objectMapper;
 
     public Map<String, String> build(EmailNotification emailNotification) {
+        log.info("... method build");
         try {
             setMissedLanguageField(emailNotification.getTemplateVariables());
             Map<String, String> result = new HashMap<>();

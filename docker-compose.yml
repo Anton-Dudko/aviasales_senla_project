@@ -21,7 +21,7 @@ services:
       retries: 5
 
   userservice:
-    image: oglavdel/userservice
+    image: oglavdel/userservice:2.0
     container_name: userservice
     #    build:
     #      context: ./userservice
@@ -162,10 +162,12 @@ services:
 
   notification-service-db:
     image: mongo
-    hostname: ${MONGODB_HOST}
+    container_name: notification-mongo
+    hostname: localhost
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=emailnotification
     ports:
       - "27017:27017"
     volumes:
@@ -179,18 +181,20 @@ services:
       - "8087:8087"
     environment:
       cloud.eureka-host: eurekaserver
-      DATABASESERVER_PORT: "27017:27017"
-      SPRING_DATASOURCE_URL: mongodb://notification-service-db:27017/emailnotification
-      SPRING_DATASOURCE_USER: admin
-      SPRING_DATASOURCE_PASSWORD: admin
-      SPRING_DATASOURCE_DB: emailnotification
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+      SPRING_DATA_MONGODB_DATABASE: emailnotification
+      SERVER_PORT: 8087
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_HOST: notification-service-db
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin@mongo:27017/emailnotification
     networks:
       - backend
-    restart: always
+    restart: unless-stopped
     depends_on:
       - notification-service-db
-      - kafka
       - eureka-service
+
   kafka:
     image: 'bitnami/kafka:2'
     ports:

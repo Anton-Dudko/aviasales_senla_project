@@ -10,6 +10,7 @@ import eu.senla.userservice.mapper.UserMapper;
 import eu.senla.userservice.repository.UserRepository;
 import eu.senla.userservice.request.LoginRequest;
 import eu.senla.userservice.request.UserRequest;
+import eu.senla.userservice.request.UserUpdateRequest;
 import eu.senla.userservice.response.AuthResponse;
 import eu.senla.userservice.response.PasswordResponse;
 import eu.senla.userservice.response.UserResponse;
@@ -99,7 +100,9 @@ public class AuthService {
     }
 
 
-    public PasswordResponse generatePassword(String email) {
+    public PasswordResponse generatePassword(UserUpdateRequest request) {
+        String email = request.getEmail();
+        log.info("... email {}", email);
         User user = repository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_REGISTRATE));
         user.setAccessToken(generateAccessToken(user));

@@ -27,6 +27,6 @@ public class SendToKafkaService {
         ProducerRecord<String, Map<String, CustomEmailDto>> producerRecord =
                 new ProducerRecord<>(KafkaTopicConstants.CUSTOM_EMAIL_TYPE, objectMapper.convertValue(customEmailDto, Map.class));
         producer.send(producerRecord);
-        log.info("Sending message ... {}", producerRecord);
+        log.info("...method sendCustomEmail {}", producerRecord);
     }
 }
