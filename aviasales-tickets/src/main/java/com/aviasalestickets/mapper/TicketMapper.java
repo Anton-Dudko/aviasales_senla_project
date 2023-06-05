@@ -3,13 +3,17 @@ package com.aviasalestickets.mapper;
 import com.aviasalestickets.model.Ticket;
 import com.aviasalestickets.model.TicketStatus;
 import com.aviasalestickets.model.TicketType;
+import com.aviasalestickets.model.dto.KafkaTicketDto;
 import com.aviasalestickets.model.dto.TicketRequest;
 import com.aviasalestickets.model.dto.TicketResponse;
 import com.aviasalestickets.model.dto.TicketResponseWithCount;
+import com.aviasalestickets.model.dto.trip.FlightInfoDto;
+import com.aviasalestickets.model.dto.user.UserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 
 @Component
@@ -64,6 +68,18 @@ public class TicketMapper {
                 .status(TicketStatus.FREE)
                 .tripId(tripId)
                 .type(ticketType)
+                .build();
+    }
+
+    public KafkaTicketDto buildKafkaTicketDto(FlightInfoDto flightInfoDto, String price, UserDetails userDetails){
+        return KafkaTicketDto.builder()
+                .userLanguage(userDetails.getLanguage())
+                .email(userDetails.getEmail())
+                .userName(userDetails.getUsername())
+                .from(flightInfoDto.getTrip().getDepartureCity())
+                .to(flightInfoDto.getTrip().getArrivalCity())
+                .price(price)
+                .ticketDate(LocalDate.now().toString())
                 .build();
     }
 }
