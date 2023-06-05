@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfig {
 
-    private final String PATH_TO_CONTROLLER_PACKAGE = "com.aviasalestickets.controller";
+    private final static String PATH_TO_CONTROLLER_PACKAGE = "com.aviasalestickets.controller";
 
     @Bean
     public Docket api() {
