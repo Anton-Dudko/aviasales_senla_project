@@ -62,6 +62,7 @@ public class KafkaService {
                 long userId = subscription.getUserId();
                 KafkaFlightDTO kafkaFlightDTO = createKafkaFlightDTO(userId, flightId, tripId, departureDate);
                 if (kafkaFlightDTO != null) {
+                    log.info("KafkaService-newEvent-send new event to kafka");
                     sendKafkaNewEvent(eventName, kafkaFlightDTO);
                 }
             }
@@ -73,9 +74,9 @@ public class KafkaService {
         UserDetails user = makeRequestForUserDetails(userId);
         KafkaFlightDTO flightDTO = null;
         if (user != null && user.getLanguage() != null && user.getEmail() != null && user.getUsername() != null) {
-            log.info("KafkaService-createKafkaFlightDTO: got response from user-service");
+            log.info("KafkaService-createKafkaFlightDTO: got response from user-service: " + user);
             TicketsResponse tickets = flightService.makeGetTicketsRequest(flightId);
-            if (tickets.getTickets() != null || !tickets.getTickets().isEmpty()) {
+            if (tickets.getCount() != 0) {
                 log.info("KafkaService-createKafkaFlightDTO: got response from ticket-service");
                 flightService.sortTickets(tickets.getTickets());
                 Trip trip = tripService.findTripById(tripId);
@@ -87,13 +88,16 @@ public class KafkaService {
                 flightDTO.setTo(trip.getArrivalCity());
                 flightDTO.setTripDate(departureDate);
                 flightDTO.setPrice(tickets.getTickets().get(0).getPrice());
+            } else {
+                log.info("KafkaService-createKafkaFlightDTO: wrong answer for ticket-service");
+                throw new RequestException(tickets.getMessage());
             }
         }
         return flightDTO;
     }
 
     public void sendKafkaNewEvent(String eventName, KafkaFlightDTO flightDTO) {
-        log.info("KafkaService-sentKafkaNewEvent");
+        log.info("KafkaService-sendKafkaNewEvent");
         ProducerRecord<String, Map<String, KafkaFlightDTO>> producerRecord =
                 new ProducerRecord<>(eventName, objectMapper.convertValue(flightDTO, Map.class));
         producer.send(producerRecord);

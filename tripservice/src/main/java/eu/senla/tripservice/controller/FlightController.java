@@ -47,7 +47,7 @@ public class FlightController {
         return flightService.findAll(pageRequest);
     }
 
-    @GetMapping("/guest/find")
+    @PostMapping("/guest/find")
     public ListFlightsResponse findBySpec(@RequestParam(defaultValue = "0") int page,
                                           @RequestParam(defaultValue = "20") int size,
                                           @RequestBody @Valid FindFlightRequest flightRequest,
@@ -71,7 +71,7 @@ public class FlightController {
     }
 
     @DeleteMapping("/admin/delete/{id}")
-    public ResponseEntity<Flight> delete(@PathVariable("id") long id) {
+    public ResponseEntity<?> delete(@PathVariable("id") long id) {
         return ResponseEntity.status(HttpStatus.OK).body(flightService.delete(id));
     }
 

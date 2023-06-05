@@ -49,5 +49,4 @@ public class Flight {
 
     @Column(name = "canceled")
     private boolean canceled;
-
 }

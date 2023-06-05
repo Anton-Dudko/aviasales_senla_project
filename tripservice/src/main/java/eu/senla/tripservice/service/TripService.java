@@ -78,7 +78,7 @@ public class TripService {
                 .stream()
                 .map(mapper::mapTripToTripResponse)
                 .collect(Collectors.toList()));
-        listTripsResponse.setTotal(tripRepository.count());
+        listTripsResponse.setTotal(listTripsResponse.getTripFullDataResponseList().size());
         return listTripsResponse;
     }
 
@@ -99,12 +99,14 @@ public class TripService {
     }
 
     @Transactional
-    public Trip delete(long id) {
+    public TripFullDataResponse delete(long id) {
         log.info("TripService-deleteById: " + id);
         Trip trip = findTripById(id);
         tripRepository.deleteById(id);
         log.info("Trip with id: " + id + " was deleted");
-        return trip;
+        TripFullDataResponse response = mapper.mapTripToTripFullDataResponse(trip);
+        response.setMessage("Trip was deleted");
+        return response;
     }
 
     private boolean isTripExist(String departureCity, String arrivalCity) {
