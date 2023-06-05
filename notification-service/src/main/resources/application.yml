@@ -11,12 +11,11 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://admin:admin@localhost:27017/emailnotification
-      database: emailnotification
       host: localhost
+      port: 27017
+      database: emailnotification
       password: admin
       username: admin
-      port: 27017
 
   mail:
     host: smtp.gmail.com

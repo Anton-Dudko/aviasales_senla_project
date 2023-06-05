@@ -8,6 +8,7 @@ import eu.senla.userservice.exception.custom.NotFoundException;
 import eu.senla.userservice.repository.UserRepository;
 import eu.senla.userservice.request.LoginRequest;
 import eu.senla.userservice.request.UserRequest;
+import eu.senla.userservice.request.UserUpdateRequest;
 import eu.senla.userservice.response.AuthResponse;
 import eu.senla.userservice.response.PasswordResponse;
 import eu.senla.userservice.response.UserResponse;
@@ -201,7 +202,7 @@ class AuthServiceTest {
     @Test
     void givenEmail_generatePassword_returnPasswordResponse() {
         authService.createUser(userRequest);
-        PasswordResponse response = authService.generatePassword(EMAIL);
+        PasswordResponse response = authService.generatePassword(UserUpdateRequest.builder().email(EMAIL).build());
         AuthResponse authResponse = authService.authenticateUser(LoginRequest.builder()
                 .email(EMAIL)
                 .password(response.getPassword())
@@ -221,7 +222,7 @@ class AuthServiceTest {
     @Test
     void givenEmail_generatePasswordNotExistEmail_returnNotFoundException() {
         Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
-            authService.generatePassword(EMAIL);
+            authService.generatePassword(UserUpdateRequest.builder().email(EMAIL).build());
         });
 
         String expectedMessage = ExceptionMessageConstants.USER_NOT_REGISTRATE;
