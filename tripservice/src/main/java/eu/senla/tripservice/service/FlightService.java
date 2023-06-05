@@ -236,6 +236,11 @@ public class FlightService {
         return flightInfo;
     }
 
+    public List<Flight> findAllByIds(List<Long> ids) {
+        log.info("FlightService-findByIds");
+        return flightRepository.findAllById(ids);
+    }
+
     private void makeCreateTicketsRequest(TicketsCreateRequest ticketsCreateRequest) {
         log.info("FlightService-makeCreateTicketsRequest");
         RestTemplate restTemplate = new RestTemplate();

@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/flights")
@@ -73,6 +74,11 @@ public class FlightController {
     @DeleteMapping("/admin/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") long id) {
         return ResponseEntity.status(HttpStatus.OK).body(flightService.delete(id));
+    }
+
+    @GetMapping("/findByIds")
+    public List<Flight> findByIds(@RequestParam("ids") List<Long> ids) {
+        return flightService.findAllByIds(ids);
     }
 
     private void validate(BindingResult bindingResult) {
