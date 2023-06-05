@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
+
 @AllArgsConstructor
 public class FlightSpecification implements Specification<Flight> {
 
@@ -23,13 +25,13 @@ public class FlightSpecification implements Specification<Flight> {
     public Predicate toPredicate(Root<Flight> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
 
-        if (request.getDepartureCity() != null && !request.getDepartureCity().isEmpty()) {
+        if (isNotEmpty(request.getDepartureCity())) {
             predicates.add(criteriaBuilder.equal(root.get("trip").get("departureCity"), request.getDepartureCity()));
         }
-        if (request.getArrivalCity() != null && !request.getArrivalCity().isEmpty()) {
+        if (isNotEmpty(request.getArrivalCity())) {
             predicates.add(criteriaBuilder.equal(root.get("trip").get("arrivalCity"), request.getArrivalCity()));
         }
-        if (request.getDepartureDate() != null && !request.getDepartureDate().isEmpty()) {
+        if (isNotEmpty(request.getDepartureDate())) {
             LocalDateTime departureDate = TimeFormatter.formatStringToDateTime(request.getDepartureDate());
             predicates.add(criteriaBuilder.between(root.get("departureDateTime"), departureDate, departureDate.plusDays(1)));
         }

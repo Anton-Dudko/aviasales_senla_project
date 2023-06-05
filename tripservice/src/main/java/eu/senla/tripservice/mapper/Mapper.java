@@ -76,6 +76,7 @@ public class Mapper {
                 .flightNumber(flight.getFlightNumber())
                 .departureDateTime(flight.getDepartureDateTime())
                 .arrivalDateTime(flight.getArrivalDateTime())
+                .duration(flight.getDuration())
                 .meal(flight.isMeal())
                 .handLuggage(flight.isHandLuggage())
                 .luggage(flight.isLuggage())

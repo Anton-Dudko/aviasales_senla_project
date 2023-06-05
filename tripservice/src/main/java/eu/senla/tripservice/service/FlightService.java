@@ -94,7 +94,7 @@ public class FlightService {
                 .stream()
                 .map(mapper::mapFlightToFlightFullDataResponse)
                 .collect(Collectors.toList()));
-        listFlightsFullDataResponse.setTotal(flightRepository.count());
+        listFlightsFullDataResponse.setTotal(listFlightsFullDataResponse.getTripResponseList().size());
         return listFlightsFullDataResponse;
     }
 
@@ -219,12 +219,14 @@ public class FlightService {
     }
 
     @Transactional
-    public Flight delete(long id) {
+    public FlightFullDataResponse delete(long id) {
         log.info("FlightService-delete, id: " + id);
         Flight flightToDelete = findFlightById(id);
         flightRepository.deleteById(id);
         log.info("Flight id: " + id + " was deleted");
-        return flightToDelete;
+        FlightFullDataResponse response = mapper.mapFlightToFlightFullDataResponse(flightToDelete);
+        response.setMessage("Flight was deleted");
+        return response;
     }
 
     public FlightInfo info(long id) {
@@ -246,7 +248,7 @@ public class FlightService {
         try {
             receivedMessage = restTemplate.postForObject(createTicketsRequestUrl, request, String.class);
         } catch (Exception e) {
-            throw new RequestException("Ticket not created: " + e.getMessage());
+            throw new RequestException("Ticket not created");
         }
         log.info("FlightService-makeCreateTicketsRequest-receivedMessage: " + receivedMessage);
     }

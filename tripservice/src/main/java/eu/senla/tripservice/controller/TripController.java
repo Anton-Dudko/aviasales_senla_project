@@ -61,7 +61,7 @@ public class TripController {
     }
 
     @DeleteMapping("/admin/delete/{id}")
-    public ResponseEntity<Trip> delete(@PathVariable("id") long id) {
+    public ResponseEntity<TripFullDataResponse> delete(@PathVariable("id") long id) {
         return ResponseEntity.status(HttpStatus.OK).body(tripService.delete(id));
     }
 
