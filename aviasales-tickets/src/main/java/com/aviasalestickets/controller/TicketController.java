@@ -2,6 +2,7 @@ package com.aviasalestickets.controller;
 
 import com.aviasalestickets.model.Ticket;
 import com.aviasalestickets.model.dto.*;
+import com.aviasalestickets.model.dto.user.UserDetails;
 import com.aviasalestickets.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +41,9 @@ public class TicketController {
     }
 
     @PostMapping("/booking")
-    public ResponseEntity<?> bookingTicket(@RequestBody BookingRequest request) {
-        ticketService.bookTicket(request.getId(), request.getUserId());
-        return ResponseEntity.status(HttpStatus.OK).body("Ticket number - " + request.getId() + " booked!");
+    public BookTicketResponse bookingTicket(@RequestBody BookingRequest request, @RequestHeader("userDetails") String userDetails) {
+        log.info(userDetails.toString());
+        return ticketService.bookTicket(request.getId(), request.getUserId(), userDetails);
     }
 
     @GetMapping("/pay-tickets")
@@ -51,8 +52,8 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
-        ticketService.deleteReservation(id);
+    public ResponseEntity<?> deleteReservation(@PathVariable Long id, @RequestHeader("userDetails") String userDetails) {
+        ticketService.deleteReservation(id, userDetails);
         return ResponseEntity.status(HttpStatus.OK).body("Ticket number - " + id + " deleted!");
     }
 
