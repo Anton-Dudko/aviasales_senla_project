@@ -1,7 +1,9 @@
 package eu.senla.tripservice.response.flight;
 
 import eu.senla.tripservice.util.time.TimeFormatter;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 

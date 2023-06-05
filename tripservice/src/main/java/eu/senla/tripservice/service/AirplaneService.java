@@ -18,8 +18,8 @@ public class AirplaneService {
     }
 
     public Airplane findById(long id) {
-      log.info("AirplaneService-findById: " + id);
-      return airplaneRepository.findById(id).
-              orElseThrow(() -> new AirplaneNotFoundException("Airplane with id: " + id + " not found"));
+        log.info("AirplaneService-findById: " + id);
+        return airplaneRepository.findById(id).
+                orElseThrow(() -> new AirplaneNotFoundException("Airplane with id: " + id + " not found"));
     }
 }
