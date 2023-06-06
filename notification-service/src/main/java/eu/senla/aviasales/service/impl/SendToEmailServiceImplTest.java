@@ -17,14 +17,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Mikhail.Leonovets
- * @since 05/2023
- */
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class SendToEmailServiceImpl implements SendService {
+public class SendToEmailServiceImplTest implements SendService {
     @Value("${email.send.count}")
     private Integer maxCountSending;
 
@@ -32,24 +28,24 @@ public class SendToEmailServiceImpl implements SendService {
     private final MessageBuilder messageBuilder;
     private final EmailNotificationService service;
 
+    private int tempCount = 0;
+    private int countException = 3;
 
     @Override
     public void sendEmail(EmailNotification emailNotification) {
-        log.info("... method sendEmail ");
         Map<String, String> htmlWithSubject = messageBuilder.build(emailNotification);
         emailNotification.setSubject(htmlWithSubject.get("subject"));
         try {
             sendEmail((String) emailNotification.getTemplateVariables().get("email"),
                     htmlWithSubject.get("subject"), htmlWithSubject.get("html"));
-            //при повторном отправлении удаляем из БД
             if (emailNotification.getDateFirstSend() != null) {
+                log.info("... DELETE FROM DB AFTER SENDING");
                 service.delete(emailNotification);
             }
-
         } catch (Exception e) {
-            log.warn("... notification don't sent ");
-            //сохраняем в БД если до этого там нотификации не было
+            log.warn("... EXCEPTION {}", e.getMessage());
             if (emailNotification.getDateFirstSend() == null) {
+                log.info("... SAVE IN DB FIRST TIME");
                 emailNotification.setDateFirstSend(LocalDate.now());
                 service.save(emailNotification);
             }
@@ -58,14 +54,17 @@ public class SendToEmailServiceImpl implements SendService {
 
     @Override
     public void sendEmail(String email, String subject, String htmlBody) throws MessagingException {
-        log.info("... Method sendEmail. Sending email to: {}. Subject: {}", email, subject);
+        while (tempCount < countException) {
+            log.warn("... COUNT_EXCEPTION {}", tempCount);
+            throw new RuntimeException("***************************************");
+        }
+
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setTo(email);
         helper.setSubject(subject);
         helper.setText(htmlBody, true);
         javaMailSender.send(message);
-        log.info("... sent");
     }
 
     @Scheduled(fixedDelayString = "${email.send.interval}")
@@ -73,14 +72,22 @@ public class SendToEmailServiceImpl implements SendService {
         log.info("... method sendWrongLetter");
         List<EmailNotification> list = service.findAll();
         if (!list.isEmpty()) {
+            tempCount++;
+            log.info("... THERE ARE SOME NOT SENT NOTIFICATION");
+            for (EmailNotification en : list) {
+                log.info(en.toString());
+            }
             list.forEach(e -> {
                 sendEmail(e);
                 e.setCountTrySend(e.getCountTrySend() + 1);
-                //проверка на мах число попыток отправлений
                 if (e.getCountTrySend() >= maxCountSending) {
                     service.delete(e);
                 }
             });
         }
+        if (list.isEmpty()) {
+            tempCount = 0;
+        }
+        log.info("... exit method sendWrongLetter");
     }
 }

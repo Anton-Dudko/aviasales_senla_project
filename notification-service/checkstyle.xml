@@ -113,7 +113,7 @@
         <module name="ArrayTypeStyle"/>
         <module name="TodoComment"/>
         <module name="UpperEll"/>
-        <!--        <module name="CommentsIndentation"/>-->
+<!--        <module name="CommentsIndentation"/>-->
         <module name="TrailingComment"/>
 
         <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->

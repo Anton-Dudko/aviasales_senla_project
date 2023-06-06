@@ -1,6 +1,6 @@
 package eu.senla.aviasales.config;
 
-import eu.senla.aviasales.model.dto.CustomEmailDto;
+import eu.senla.aviasales.request.CustomEmailRequest;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -32,17 +32,17 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, Map<String, CustomEmailDto>> producerFactory() {
+    public ProducerFactory<String, Map<String, CustomEmailRequest>> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public Producer<String, Map<String, CustomEmailDto>> producer() {
+    public Producer<String, Map<String, CustomEmailRequest>> producer() {
         return producerFactory().createProducer();
     }
 
     @Bean
-    public KafkaTemplate<String, Map<String, CustomEmailDto>> kafkaTemplate() {
+    public KafkaTemplate<String, Map<String, CustomEmailRequest>> kafkaTemplate() {
         return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(producerConfigs()));
     }
 }

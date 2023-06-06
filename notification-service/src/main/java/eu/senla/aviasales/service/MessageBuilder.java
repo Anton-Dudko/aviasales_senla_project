@@ -3,8 +3,8 @@ package eu.senla.aviasales.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.senla.aviasales.config.TemplatesConfig;
+import eu.senla.aviasales.entity.EmailNotification;
 import eu.senla.aviasales.exception.custom.TopicNotFoundException;
-import eu.senla.aviasales.model.entity.EmailNotification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -37,11 +37,7 @@ public class MessageBuilder {
             Map<String, String> result = new HashMap<>();
             TemplatesConfig.Topic topic = templatesConfig.getTopicByName(emailNotification.getTemplateType());
             result.put("subject", topic.getSubject());
-            log.info("Building an email. Receiver: "
-                    + emailNotification.getTemplateVariables().get("email")
-                    + ". Subject: "
-                    + topic.getSubject()
-                    + ".");
+            log.info("Building an email. Receiver: {}. Subject: {}.", emailNotification.getTemplateVariables().get("email"), topic.getSubject());
             Context context = new Context();
             context.setVariables(emailNotification.getTemplateVariables());
             context.setVariables(getLocalizationVariables(topic, (String) emailNotification.getTemplateVariables().get("userLanguage")));
@@ -51,20 +47,6 @@ public class MessageBuilder {
             throw new RuntimeException(e);
         }
     }
-
-//    public void buildAndSend(final EmailNotification emailNotification) {
-//        emailNotification.setDateFirstSend(LocalDate.now());
-//        try {
-//            log.info("... templateVariables " + emailNotification.getTemplateVariables());
-//            Map<String, String> builtHtmlWithSubject = buildHtmlWithSubject(emailNotification.getTemplateType(), emailNotification.getTemplateVariables());
-//            sendService.sendEmail(emailNotification.getReceiver(), builtHtmlWithSubject.get("subject"), builtHtmlWithSubject.get("html"));
-//            emailNotificationRepository.delete(emailNotification);
-//        } catch (TopicNotFoundException | IOException | MessagingException e) {
-//            log.warn("Unexpected error: "
-//                    + e.getMessage()
-//                    + ". Cannot send the email.");
-//        }
-//    }
 
     private void setMissedLanguageField(Map<String, Object> dtoVariables) {
         if (dtoVariables.get("userLanguage") == null

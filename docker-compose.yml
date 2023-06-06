@@ -187,7 +187,7 @@ services:
       SERVER_PORT: 8087
       SPRING_DATA_MONGODB_PORT: 27017
       SPRING_DATA_MONGODB_HOST: notification-service-db
-      ME_CONFIG_MONGODB_URL: mongodb://admin:admin@mongo:27017/emailnotification
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin@mongo:27017/emailnotification?authSource=admin
     networks:
       - backend
     restart: unless-stopped

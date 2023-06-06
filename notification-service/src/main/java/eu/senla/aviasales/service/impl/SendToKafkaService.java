@@ -1,8 +1,9 @@
 package eu.senla.aviasales.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.senla.aviasales.model.constant.KafkaTopicConstants;
-import eu.senla.aviasales.model.dto.CustomEmailDto;
+import eu.senla.aviasales.kafka.KafkaTopicConstants;
+import eu.senla.aviasales.request.CustomEmailRequest;
+import eu.senla.aviasales.response.SendResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
@@ -20,13 +21,18 @@ import java.util.Map;
 @Service
 public class SendToKafkaService {
 
-    private final Producer<String, Map<String, CustomEmailDto>> producer;
+    private final Producer<String, Map<String, CustomEmailRequest>> producer;
     private final ObjectMapper objectMapper;
 
-    public void sendCustomEmail(final CustomEmailDto customEmailDto) {
-        ProducerRecord<String, Map<String, CustomEmailDto>> producerRecord =
-                new ProducerRecord<>(KafkaTopicConstants.CUSTOM_EMAIL_TYPE, objectMapper.convertValue(customEmailDto, Map.class));
+    public SendResponse sendCustomEmail(final CustomEmailRequest customEmailRequest) {
+        ProducerRecord<String, Map<String, CustomEmailRequest>> producerRecord =
+                new ProducerRecord<>(KafkaTopicConstants.CUSTOM_EMAIL_TYPE, objectMapper.convertValue(customEmailRequest, Map.class));
         producer.send(producerRecord);
         log.info("...method sendCustomEmail {}", producerRecord);
+        return SendResponse.builder()
+                .email(customEmailRequest.getEmail())
+                .subject(customEmailRequest.getSubject())
+                .message("Notification sent. ")
+                .build();
     }
 }

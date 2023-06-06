@@ -7,4 +7,5 @@ package eu.senla.aviasales.exception;
 public class ExceptionMessageConstants {
     public static final String NOT_VALID_EMAIL = "email format is invalid";
 
+    public static final String NOTIFICATION_NOT_FOUND = "Notification not found.";
 }

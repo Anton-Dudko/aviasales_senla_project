@@ -1,6 +1,8 @@
 package eu.senla.aviasales.service.impl;
 
-import eu.senla.aviasales.model.entity.EmailNotification;
+import eu.senla.aviasales.entity.EmailNotification;
+import eu.senla.aviasales.exception.ExceptionMessageConstants;
+import eu.senla.aviasales.exception.custom.NotFoundException;
 import eu.senla.aviasales.repository.EmailNotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +22,26 @@ public class EmailNotificationService {
         return repository.save(emailNotification);
     }
 
+    public void delete(EmailNotification emailNotification) {
+        log.info("... method delete");
+        repository.delete(emailNotification);
+    }
+
     public List<EmailNotification> findAll() {
         log.info("... method findAll");
         return repository.findAll();
+    }
+
+    public EmailNotification findById(String id) {
+        log.info("... method findById");
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.NOTIFICATION_NOT_FOUND));
+    }
+
+    public EmailNotification deleteById(String id) {
+        log.info("... method deleteById");
+        EmailNotification emailNotification = findById(id);
+        repository.deleteById(id);
+        return emailNotification;
     }
 }

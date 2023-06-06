@@ -1,4 +1,4 @@
-package eu.senla.aviasales.model.constant;
+package eu.senla.aviasales.kafka;
 
 /**
  * @author Mikhail.Leonovets

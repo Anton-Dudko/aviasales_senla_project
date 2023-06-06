@@ -1,4 +1,4 @@
-package eu.senla.aviasales.model.dto;
+package eu.senla.aviasales.request;
 
 import eu.senla.aviasales.exception.ExceptionMessageConstants;
 import lombok.Data;
@@ -15,7 +15,7 @@ import javax.validation.constraints.Email;
 @Data
 @Getter
 @Setter
-public class CustomEmailDto {
+public class CustomEmailRequest {
     @NonNull
     private String userName;
     @NonNull
