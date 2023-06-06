@@ -1,7 +1,7 @@
 package eu.senla.aviasales.exception;
 
-import eu.senla.aviasales.exception.custom.EmailSentNotFoundException;
 import eu.senla.aviasales.exception.custom.IncorrectDataException;
+import eu.senla.aviasales.exception.custom.NotFoundException;
 import eu.senla.aviasales.exception.custom.TopicNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class NotificationExceptionHandler {
 
-    @ExceptionHandler(EmailSentNotFoundException.class)
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleEmailSentNotFoundException(EmailSentNotFoundException ex) {
+    public ErrorResponse handleEmailSentNotFoundException(NotFoundException ex) {
         log.warn(ex.getMessage());
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }

@@ -1,4 +1,4 @@
-package eu.senla.aviasales.model.entity;
+package eu.senla.aviasales.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,4 +35,6 @@ public class EmailNotification {
     private Map<String, Object> templateVariables = new HashMap<>();
     @Field
     private LocalDate dateFirstSend;
+    @Field
+    private int countTrySend;
 }

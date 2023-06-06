@@ -1,6 +1,6 @@
 package eu.senla.aviasales.repository;
 
-import eu.senla.aviasales.model.entity.EmailNotification;
+import eu.senla.aviasales.entity.EmailNotification;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

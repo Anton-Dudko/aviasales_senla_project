@@ -1,11 +1,11 @@
-package eu.senla.aviasales.mapper;
+package eu.senla.aviasales.mapper.impl;
 
-import eu.senla.aviasales.model.entity.EmailNotification;
+import eu.senla.aviasales.entity.EmailNotification;
+import eu.senla.aviasales.mapper.NotificationMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 @Slf4j
@@ -18,7 +18,6 @@ public class NotificationMapperImpl implements NotificationMapper {
         return EmailNotification.builder()
                 .templateType(consumerRecord.topic())
                 .templateVariables(consumerRecord.value())
-                .dateFirstSend(LocalDate.now())
                 .receiver((String) consumerRecord.value().get("email"))
                 .build();
     }

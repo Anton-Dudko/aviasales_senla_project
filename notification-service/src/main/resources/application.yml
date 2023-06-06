@@ -16,6 +16,7 @@ spring:
       database: emailnotification
       password: admin
       username: admin
+      authentication-database: admin
 
   mail:
     host: smtp.gmail.com
@@ -135,3 +136,8 @@ application:
         template: payment_error
         localization: payment_error
         subject: Aviasales payment error
+
+email:
+  send:
+    interval: PT1M
+    count: 5

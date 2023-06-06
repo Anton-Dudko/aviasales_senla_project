@@ -1,9 +1,8 @@
 package eu.senla.aviasales.service;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
+import eu.senla.aviasales.entity.EmailNotification;
 
 import javax.mail.MessagingException;
-import java.util.Map;
 
 /**
  * @author Mikhail.Leonovets
@@ -11,8 +10,7 @@ import java.util.Map;
  */
 public interface SendService {
 
-
     void sendEmail(String to, String subject, String htmlBody) throws MessagingException;
 
-    void sendEmail(ConsumerRecord<String, Map<String, Object>> consumerRecord);
+    void sendEmail(EmailNotification emailNotification);
 }
