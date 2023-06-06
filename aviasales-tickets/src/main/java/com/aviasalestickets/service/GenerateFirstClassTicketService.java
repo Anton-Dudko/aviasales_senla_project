@@ -21,7 +21,7 @@ public class GenerateFirstClassTicketService implements GenerateTicketService {
     public List<Ticket> generate(GenerateTicketRequest request) {
         List<Ticket> list = new ArrayList<>();
         for (int i = 1; i < request.getCountTicketsFirstClass() + 1; i++) {
-            Ticket ticket = ticketMapper.buildTicket(BigDecimal.valueOf(request.getFirstClassPrice()), i, request.getTripId(), TicketType.FIRST_CLASS);
+            Ticket ticket = ticketMapper.buildTicket(BigDecimal.valueOf(request.getFirstClassPrice()), i, request.getFlightId(), TicketType.FIRST_CLASS);
             list.add(ticket);
         }
         return list;

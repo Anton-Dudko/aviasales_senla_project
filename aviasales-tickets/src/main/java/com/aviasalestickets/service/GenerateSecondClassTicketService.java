@@ -22,7 +22,7 @@ public class GenerateSecondClassTicketService implements GenerateTicketService {
         List<Ticket> list = new ArrayList<>();
         int count = request.getCountTicketsFirstClass() + request.getCountTicketsSecondClass();
         for (int i = request.getCountTicketsFirstClass() + 1; i < count + 1; i++) {
-            Ticket ticket = ticketMapper.buildTicket(BigDecimal.valueOf(request.getSecondClassPrice()), i, request.getTripId(), TicketType.SECOND_CLASS);
+            Ticket ticket = ticketMapper.buildTicket(BigDecimal.valueOf(request.getSecondClassPrice()), i, request.getFlightId(), TicketType.SECOND_CLASS);
             list.add(ticket);
         }
         return list;
