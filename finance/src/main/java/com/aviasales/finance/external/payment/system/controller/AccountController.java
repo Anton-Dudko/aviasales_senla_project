@@ -1,14 +1,18 @@
 package com.aviasales.finance.external.payment.system.controller;
 
+import com.aviasales.finance.dto.FieldsErrorResponse;
 import com.aviasales.finance.external.payment.system.converter.BankCardMapper;
 import com.aviasales.finance.external.payment.system.dto.BankCardDto;
 import com.aviasales.finance.external.payment.system.enity.BankCard;
 import com.aviasales.finance.external.payment.system.repository.BankCardRepository;
+import com.aviasales.finance.external.payment.system.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -18,11 +22,14 @@ public class AccountController {
 
     private final BankCardRepository bankCardRepository;
     private final BankCardMapper bankCardMapper;
+    private final AccountService accountService;
 
     @Autowired
-    public AccountController(BankCardRepository bankCardRepository, BankCardMapper bankCardMapper) {
+    public AccountController(BankCardRepository bankCardRepository, BankCardMapper bankCardMapper,
+                             AccountService accountService) {
         this.bankCardRepository = bankCardRepository;
         this.bankCardMapper = bankCardMapper;
+        this.accountService = accountService;
     }
 
     @GetMapping("/info")
@@ -36,8 +43,12 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createBankCard(@RequestBody BankCardDto bankCardDto) {
-        bankCardRepository.save(bankCardMapper.convertToEntity(bankCardDto));
+    public ResponseEntity<?> createBankCard(@RequestBody @Valid BankCardDto bankCardDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(new FieldsErrorResponse(bindingResult), HttpStatus.BAD_REQUEST);
+        }
+
+        accountService.createBankCard(bankCardMapper.convertToEntity(bankCardDto));
         return ResponseEntity.status(HttpStatus.OK).body("Bank card created - " + bankCardDto.getCardNumber());
     }
 

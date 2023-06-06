@@ -1,4 +1,4 @@
-package com.aviasales.finance.exception;
+package com.aviasales.finance.exception.handler;
 
 import com.aviasales.finance.dto.FieldsErrorResponse;
 import org.springframework.http.HttpStatus;

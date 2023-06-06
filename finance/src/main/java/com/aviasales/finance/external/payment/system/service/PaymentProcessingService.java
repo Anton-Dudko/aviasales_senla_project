@@ -2,10 +2,12 @@ package com.aviasales.finance.external.payment.system.service;
 
 import com.aviasales.finance.dto.RefundExternalDto;
 import com.aviasales.finance.external.payment.system.converter.BankCardMapper;
+import com.aviasales.finance.external.payment.system.dto.BankCardDto;
 import com.aviasales.finance.external.payment.system.dto.PaymentForProcessingDto;
 import com.aviasales.finance.external.payment.system.enity.BankCard;
 import com.aviasales.finance.external.payment.system.exceptions.BankCardNotFoundException;
 import com.aviasales.finance.external.payment.system.exceptions.CardDetailsMismatchException;
+import com.aviasales.finance.external.payment.system.exceptions.ExternalAccountException;
 import com.aviasales.finance.external.payment.system.exceptions.InsufficientBalanceException;
 import com.aviasales.finance.external.payment.system.repository.BankCardRepository;
 import org.slf4j.Logger;
@@ -47,6 +49,11 @@ public class PaymentProcessingService {
 
         bankCard.setAccountSum(bankCard.getAccountSum().subtract(paymentForProcessingDto.getSum()));
         bankCardRepository.save(bankCard);
+    }
+
+    public void createBankCard(BankCardDto bankCardDto) {
+        bankCardRepository.findBankCardByCardNumber(bankCardDto.getCardNumber()).orElseThrow(() ->
+                new ExternalAccountException("Such bank card already created"));
     }
 
     public void processRefund(RefundExternalDto refundExternalDto) {

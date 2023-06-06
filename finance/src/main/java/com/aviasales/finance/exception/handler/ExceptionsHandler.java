@@ -1,7 +1,8 @@
-package com.aviasales.finance.exception;
+package com.aviasales.finance.exception.handler;
 
 import com.aviasales.finance.controller.PaymentController;
 import com.aviasales.finance.dto.SimpleErrorResponse;
+import com.aviasales.finance.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,16 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(TicketServiceException.class)
     public ResponseEntity<Object> handleTicketServiceException(TicketServiceException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SimpleErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(UserDetailsException.class)
+    public ResponseEntity<Object> handleUserDetailsException(UserDetailsException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new SimpleErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(TripServiceException.class)
+    public ResponseEntity<Object> handleTripServiceException(TripServiceException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SimpleErrorResponse(ex.getMessage()));
     }
 }

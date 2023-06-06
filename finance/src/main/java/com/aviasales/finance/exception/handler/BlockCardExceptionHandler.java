@@ -1,6 +1,7 @@
-package com.aviasales.finance.exception;
+package com.aviasales.finance.exception.handler;
 
 import com.aviasales.finance.dto.SimpleErrorResponse;
+import com.aviasales.finance.exception.BlockedCardException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
