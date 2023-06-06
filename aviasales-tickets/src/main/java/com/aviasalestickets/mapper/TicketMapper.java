@@ -25,7 +25,7 @@ public class TicketMapper {
         ticket.setFio(request.getFio());
         ticket.setPrice(request.getPrice());
         ticket.setUserId(request.getUserId());
-        ticket.setTripId(request.getTripId());
+        ticket.setFlightId(request.getFlightId());
         ticket.setType(TicketType.valueOf(request.getType()));
         ticket.setStatus(TicketStatus.valueOf(request.getStatus()));
         return ticket;
@@ -35,7 +35,7 @@ public class TicketMapper {
         TicketResponse ticketResponse = new TicketResponse();
         ticketResponse.setId(ticket.getId());
         ticketResponse.setUserId(ticket.getUserId());
-        ticketResponse.setTripId(ticket.getTripId());
+        ticketResponse.setFlightId(ticket.getFlightId());
         ticketResponse.setFio(ticket.getFio());
         ticketResponse.setType(ticket.getType().toString());
         ticketResponse.setPrice(ticket.getPrice());
@@ -66,7 +66,7 @@ public class TicketMapper {
                 .price(price)
                 .seatNumber(seatNumber)
                 .status(TicketStatus.FREE)
-                .tripId(tripId)
+                .flightId(tripId)
                 .type(ticketType)
                 .build();
     }

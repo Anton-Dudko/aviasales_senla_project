@@ -1,1 +1,0 @@
-alter table ticket add column seat_number integer

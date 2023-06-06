@@ -2,7 +2,6 @@ package com.aviasalestickets.controller;
 
 import com.aviasalestickets.model.Ticket;
 import com.aviasalestickets.model.dto.*;
-import com.aviasalestickets.model.dto.user.UserDetails;
 import com.aviasalestickets.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +70,7 @@ public class TicketController {
     @PostMapping("/generate")
     public ResponseEntity<?> generateTickets(@RequestBody GenerateTicketRequest request) {
         ticketService.generateTickets(request);
-        return ResponseEntity.status(HttpStatus.OK).body("Tickets for trip number - " + request.getTripId() + " created");
+        return ResponseEntity.status(HttpStatus.OK).body("Tickets for trip number - " + request.getFlightId() + " created");
     }
 
 }

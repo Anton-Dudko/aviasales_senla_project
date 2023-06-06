@@ -22,7 +22,7 @@ public class Ticket {
 
     private Long userId;
 
-    private Long tripId;
+    private Long flightId;
 
     private String fio;
 

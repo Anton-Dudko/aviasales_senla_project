@@ -43,7 +43,7 @@ public class TicketService {
 
     public TicketResponseWithCount search(TicketRequest request) {
         return Optional.ofNullable(request)
-                .map(req -> criteriaTicketService.findAll(request.getUserId(), request.getStatus(), request.getTripId(), request.getFio(), request.getId()))
+                .map(req -> criteriaTicketService.findAll(request.getUserId(), request.getStatus(), request.getFlightId(), request.getFio(), request.getId()))
                 .map(ticketMapper::convertListEntityToDtoWithCount)
                 .orElseThrow(() -> new TicketNotFoundException("Tickets with these parameters not found"));
     }
@@ -66,7 +66,7 @@ public class TicketService {
                     return ticketRepository.save(t);
                 })
                 .map(ticket -> {
-                    var flightInfoDto = tripApi.requestToTrip(ticket.getTripId());
+                    var flightInfoDto = tripApi.requestToTrip(ticket.getFlightId());
                     return ticketMapper.buildKafkaTicketDto(flightInfoDto, ticket.getPrice().toString(), user);
                 })
                 .map(kafkaTicketDto -> kafkaProducerService.sendMessage(kafkaTicketDto, KafkaTopics.NEW_TICKET_RESERVATION_EVENT))
@@ -87,7 +87,7 @@ public class TicketService {
                     return ticketRepository.save(ticket);
                 })
                 .map(ticket -> {
-                    var flightInfoDto = tripApi.requestToTrip(ticket.getTripId());
+                    var flightInfoDto = tripApi.requestToTrip(ticket.getFlightId());
                     return ticketMapper.buildKafkaTicketDto(flightInfoDto, ticket.getPrice().toString(), user);
                 })
                 .map(kafkaTicketDto -> kafkaProducerService.sendMessage(kafkaTicketDto, KafkaTopics.CANCELED_TICKET_RESERVATION_EVENT))

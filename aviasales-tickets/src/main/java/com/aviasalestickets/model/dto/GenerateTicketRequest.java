@@ -4,7 +4,7 @@ import lombok.Value;
 
 @Value
 public class GenerateTicketRequest {
-    Long tripId;
+    Long flightId;
     Integer countTicketsFirstClass;
     Integer countTicketsSecondClass;
     Double firstClassPrice;

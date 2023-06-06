@@ -9,10 +9,10 @@ import java.util.List;
 import static java.util.Optional.ofNullable;
 
 public class TicketSpecifications {
-    public static Specification<Ticket> tripIdLike(Long tripId) {
+    public static Specification<Ticket> tripIdLike(Long flightId) {
         return (root, query, criteriaBuilder) ->
-                ofNullable(tripId)
-                        .map(value -> criteriaBuilder.equal(root.get("tripId"), tripId))
+                ofNullable(flightId)
+                        .map(value -> criteriaBuilder.equal(root.get("flightId"), flightId))
                         .orElseGet(criteriaBuilder::conjunction);
     }
 
