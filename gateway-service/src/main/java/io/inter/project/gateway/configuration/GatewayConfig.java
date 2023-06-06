@@ -22,37 +22,9 @@ import java.util.*;
 @ConfigurationProperties(prefix = "endpoint")
 public class GatewayConfig {
 
-    private final String financeServiceHost;
-    private final String userServiceHost;
-    private final String ticketServiceHost;
-    private final String tripServiceHost;
-    private final String notificationServiceHost;
-
-    private final Map<String, String> userService = new LinkedHashMap<>();
-    private final Map<String, String> financeService = new LinkedHashMap<>();
-    private final Map<String, String> tripService = new LinkedHashMap<>();
-    private final Map<String, String> notificationService = new LinkedHashMap<>();
-    private final Map<String, String> ticketsService = new LinkedHashMap<>();
     private final List<String> exclusionList = new ArrayList<>();
 
-    private final Map<String, Map<String, String>> mappings;
-
-    public GatewayConfig(
-            @Value("${cloud.finance-service-host}") String financeServiceHost,
-            @Value("${cloud.userservice-host}") String userServiceHost,
-            @Value("${cloud.ticket-service-host}") String ticketServiceHost,
-            @Value("${cloud.trip-service-host}") String tripServiceHost,
-            @Value("${cloud.notification-service-host}") String notificationServiceHost
-    ) {
-        this.financeServiceHost = financeServiceHost;
-        this.userServiceHost = userServiceHost;
-        this.ticketServiceHost = ticketServiceHost;
-        this.tripServiceHost = tripServiceHost;
-        this.notificationServiceHost = notificationServiceHost;
-
-        this.mappings = new HashMap<>();
-        initMappings();
-    }
+    private final Map<String, Map<String, String>> mappings = new LinkedHashMap<>();
 
     @Bean
     public RouteLocator createRoutes(RouteLocatorBuilder builder, AuthFilter authFilter, UserIdFilter userIdFilter) {
@@ -89,12 +61,5 @@ public class GatewayConfig {
         }
     }
 
-    private void initMappings() {
-        mappings.put(userServiceHost, userService);
-        mappings.put(tripServiceHost, tripService);
-        mappings.put(financeServiceHost, financeService);
-        mappings.put(notificationServiceHost, notificationService);
-        mappings.put(ticketServiceHost, ticketsService);
-    }
 }
 

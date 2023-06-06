@@ -1,57 +1,56 @@
 endpoint:
-  userService:
-    "[/admin-reg]": /admin/registration
-    "[/login]": /guest/login
-    "[/new-password]": /guest/new-password
-    "[/registration]": /guest/registration
-    "[/validate]": /auth/validate
-    "[/deletion/**]": /admin/${id}
-    "[/search]": /admin/search
-    "[/find-by-id/**]": /admin/users/${id}
-    "[/update/**]": /users/${id}
+  mappings:
+    userservice:
+      "[/admin-reg]": /admin/registration
+      "[/login]": /guest/login
+      "[/new-password]": /guest/new-password
+      "[/registration]": /guest/registration
+      "[/validate]": /auth/validate
+      "[/deletion/**]": /admin/${id}
+      "[/search]": /admin/search
+      "[/find-by-id/**]": /admin/users/${id}
+      "[/update/**]": /users/${id}
 
-  financeService:
-    "[/block-card]": /admin/cards/block
-    "[/unblock-card]": /admin/cards/unblock
-    "[/blocked-cards]": /admin/cards/blocked-cards
-    "[/blocked-countries]": /admin/cards/blocked-countries
-    "[/payment]": /payment
-    "[/payment-info/**]": /payment/${id}
-    "[/payment-stat]": /payment/stat
-    "[/payment-refund/**]": /payment/refund/${id}
+    finance-service:
+      "[/block-card]": /admin/cards/block
+      "[/unblock-card]": /admin/cards/unblock
+      "[/blocked-cards]": /admin/cards/blocked-cards
+      "[/blocked-countries]": /admin/cards/blocked-countries
+      "[/payment]": /payment
+      "[/payment-info/**]": /payment/${id}
+      "[/payment-stat]": /payment/stat
+      "[/payment-refund/**]": /payment/refund/${id}
 
-  tripService:
-    "[/new-flight]": /flights/admin/create
-    "[/find-flight/**]": /flights/admin/find/${id}
-    "[/find-flights]": /flights/guest/find
-    "[/all-flights/]": /flights/admin/find/all
-    "[/flight-info/**]": /flights/guest/info/${id}
-    "[/flight-update/**]": /flights/admin/update/${id}
-    "[/flight-delete/**]": /flights/admin/delete/${id}
-    "[/sub-create]": /subscriptions/create-new-flight
-    "[/sub-cancel]": /subscriptions/create-flight-canceled
-    "[/new-trip]": /trips/admin/create
-    "[/find-trip/**]": /trips/admin/find/${id}
-    "[/find-trips]": /trips/admin/find-all
-    "[/find-all-trips]": /trips/guest/find-all
-    "[/update-trip/**]": /trips/admin/update/${id}
-    "[/delete-trip/**]": /trips/admin/delete/${id}
+    trip-service:
+      "[/new-flight]": /flights/admin/create
+      "[/find-flight/**]": /flights/admin/find/${id}
+      "[/find-flights]": /flights/guest/find
+      "[/all-flights/]": /flights/admin/find/all
+      "[/flight-info/**]": /flights/guest/info/${id}
+      "[/flight-update/**]": /flights/admin/update/${id}
+      "[/flight-delete/**]": /flights/admin/delete/${id}
+      "[/sub-create]": /subscriptions/create-new-flight
+      "[/sub-cancel]": /subscriptions/create-flight-canceled
+      "[/new-trip]": /trips/admin/create
+      "[/find-trip/**]": /trips/admin/find/${id}
+      "[/find-trips]": /trips/admin/find-all
+      "[/find-all-trips]": /trips/guest/find-all
+      "[/update-trip/**]": /trips/admin/update/${id}
+      "[/delete-trip/**]": /trips/admin/delete/${id}
 
-  notificationService:
-    "[/find-emails]": /api/admin/email
-    "[/send-email]": /api/admin/send
-    "[/send-again/**]": /api/admin/${id}
+    notification-service:
+      "[/find-emails]": /api/admin/email
+      "[/send-email]": /api/admin/send
+      "[/send-again/**]": /api/admin/${id}
 
-  ticketsService:
-    "[/new-ticket]": /tickets
-    "[/find-tickets]": /tickets
-    "[/find-ticket/**]": /tickets/${id}
-    "[/find-tickets-by]": /tickets/findByIds
-    "[/book-ticket]": /tickets/booking
-    "[/pay-tickets]": /tickets/pay-tickets
-    "[/delete-ticket/**]": /tickets/${id}
-    "[/pay-ticket/**]": /tickets/pay/${id}
-    "[/generate-tickets]": /tickets/generate
+    ticket-service:
+      "[/tickets]": /tickets
+      "[/tickets/**]": /tickets/${id}
+      "[/find-tickets-by]": /tickets/findByIds
+      "[/book-ticket]": /tickets/booking
+      "[/pay-tickets]": /tickets/pay-tickets
+      "[/pay-ticket/**]": /tickets/pay/${id}
+      "[/generate-tickets]": /tickets/generate
 
 
   exclusionList:

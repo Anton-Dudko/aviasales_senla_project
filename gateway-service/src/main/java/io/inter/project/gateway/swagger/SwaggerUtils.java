@@ -12,7 +12,6 @@ import io.swagger.util.Json;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +38,6 @@ public class SwaggerUtils {
         if (gatewayConfig.getMappings().containsKey(serviceName)) {
             Map<String, Path> newPaths = createNewPaths(serviceName, swagger);
             swagger.setPaths(newPaths);
-
             List<Tag> tagList = filterTags(swagger.getTags());
             swagger.setTags(tagList);
         }
@@ -78,7 +76,7 @@ public class SwaggerUtils {
             String newValue = value.replace("$", "");
             String newKey = key.replace("**", "{id}");
             Path oldPath = swagger.getPaths().get(newValue);
-            newPaths.remove(newValue);
+            newPaths.remove(newValue, oldPath);
             newPaths.put(newKey, oldPath);
         });
         return newPaths;
