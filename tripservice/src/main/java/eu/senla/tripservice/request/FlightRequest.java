@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -19,13 +20,13 @@ public class FlightRequest {
     @NotNull
     private Long airplaneId;
 
-    @NotNull
+    @NotEmpty
     private String flightNumber;
 
-    @NotNull
+    @NotEmpty
     private String departureDateTime;
 
-    @NotNull
+    @NotEmpty
     private String arrivalDateTime;
 
     private boolean canceled;

@@ -210,6 +210,9 @@ public class FlightService {
         Airplane airplane = airplaneService.findById(flightRequest.getAirplaneId());
         Flight updatedFlight = mapper.mapFlightRequestToFlight(flightRequest, trip, airplane);
         updatedFlight.setFlightId(id);
+        if (isFlightExist(updatedFlight)) {
+            throw new FlightAlreadyExistsException("The same flight already exists");
+        }
         if (flightRequest.isCanceled() && !flightToUpdate.isCanceled()) {
             kafkaService.newEvent(KafkaTopicsName.FLIGHT_CANCELED_EVENT, id, trip.getTripId(), updatedFlight.getDepartureDateTime());
         }

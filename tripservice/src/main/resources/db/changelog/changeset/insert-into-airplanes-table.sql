@@ -9,5 +9,5 @@ INSERT INTO airplanes (model, number_of_seats, socket, media, wi_fi, seat_pitch,
 VALUES ('Ту-154', 30, true, false, true, 35, 34, '4-4');
 INSERT INTO airplanes (model, number_of_seats, socket, media, wi_fi, seat_pitch, seat_width, chair_scheme)
 VALUES ('Airbus A300', 50, true, true, true, 38, 38, '3-3');
-INSERT INTO airplanes (model, number_of_seats, socket, media, wi_fi, seat_pitch, seat_width, chair_scheme)
-VALUES ('Embraer E-Jet E2', 30, true, false, false, 37, 36, '2-2');
+INSERT INTO airplanes (model, number_of_seats, socket, media, wi_fi, seat_pitch, seat_width, chair_scheme, has_first_class)
+VALUES ('Embraer E-Jet E2', 30, true, false, false, 37, 36, '2-2', true);
