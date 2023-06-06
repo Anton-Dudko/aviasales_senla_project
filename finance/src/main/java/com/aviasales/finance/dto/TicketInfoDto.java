@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 @Data
 public class TicketInfoDto {
     private String id;
+    private Long tripId;
     private BigDecimal price;
     private TicketStatus status;
 }

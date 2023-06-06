@@ -1,7 +1,5 @@
 package com.aviasales.finance.service.external;
 
-import com.aviasales.finance.exception.ExternalPaymentSystemException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +47,7 @@ public class BinInfoService {
 
             try {
                 return Optional.of(objectMapper.readTree(response.getBody()).get("countryAlpha2").asText());
-            } catch (JsonProcessingException e) {
+            } catch (Exception e) {
                 logger.error("Error during country info extract from response", e);
                 return Optional.empty();
             }

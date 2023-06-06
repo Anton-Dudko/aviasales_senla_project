@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long>, JpaSpecificationExecutor<Payment> {
     Optional<Payment> findByIdAndPaymentStatus(Long id, PaymentStatus paymentStatus);
+    Optional<Payment> findByIdAndUserId(Long id, Long userid);
 }

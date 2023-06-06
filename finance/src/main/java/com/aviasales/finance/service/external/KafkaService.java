@@ -21,6 +21,8 @@ public class KafkaService {
     private String topicSuccess;
     @Value("${finance.kafka.notification.topic.error}")
     private String topicError;
+    @Value("${finance.kafka.notification.topic.refund}")
+    private String topicRefund;
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -39,6 +41,11 @@ public class KafkaService {
     public void sendSuccessMessage(KafkaPaymentNotificationDto paymentNotificationDto) {
         logger.info("Send success message to KAFKA");
         sendMessage(topicSuccess, paymentNotificationDto);
+    }
+
+    public void sendRefund(KafkaPaymentNotificationDto refundNotification) {
+        logger.info("Send refund message to KAFKA");
+        sendMessage(topicRefund, refundNotification);
     }
 
 //    public void send(String topic, String  message) {

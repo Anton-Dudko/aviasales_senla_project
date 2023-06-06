@@ -6,10 +6,14 @@ import com.aviasales.finance.entity.Payment;
 import com.aviasales.finance.enums.PaymentStatus;
 import com.aviasales.finance.enums.UserRole;
 import com.aviasales.finance.exception.ExternalPaymentSystemException;
+import com.aviasales.finance.exception.UserDetailsException;
 import com.aviasales.finance.repository.PaymentRepository;
 import com.aviasales.finance.service.external.KafkaService;
 import com.aviasales.finance.service.external.TicketService;
+import com.aviasales.finance.service.external.TripService;
 import com.aviasales.finance.utils.UrlUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tennaito.rsql.jpa.JpaPredicateVisitor;
 import cz.jirutka.rsql.parser.RSQLParser;
 import cz.jirutka.rsql.parser.ast.Node;
@@ -33,6 +37,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,9 +51,13 @@ public class PaymentService {
     private final KafkaService kafkaService;
     private final TicketService ticketService;
     private final EntityManager entityManager;
+    private final ObjectMapper objectMapper;
+    private final TripService tripService;
 
     @Autowired
-    public PaymentService(PaymentConverter paymentConverter, PaymentRepository paymentRepository, RestTemplate restTemplate, UrlUtils urlUtils, KafkaService kafkaService, TicketService ticketService, EntityManager entityManager) {
+    public PaymentService(PaymentConverter paymentConverter, PaymentRepository paymentRepository,
+                          RestTemplate restTemplate, UrlUtils urlUtils, KafkaService kafkaService,
+                          TicketService ticketService, EntityManager entityManager, ObjectMapper objectMapper, TripService tripService) {
         this.paymentConverter = paymentConverter;
         this.paymentRepository = paymentRepository;
         this.restTemplate = restTemplate;
@@ -56,6 +65,8 @@ public class PaymentService {
         this.kafkaService = kafkaService;
         this.ticketService = ticketService;
         this.entityManager = entityManager;
+        this.objectMapper = objectMapper;
+        this.tripService = tripService;
     }
 
     private ExternalPaymentResponse sendPaymentToExternalPaymentSystem(TransactionDto transactionDto, Payment payment) {
@@ -72,7 +83,7 @@ public class PaymentService {
         }
     }
 
-    public void processPayment(TransactionDto transactionDto, Payment payment,
+    public Payment processPayment(TransactionDto transactionDto, Payment payment,
                                KafkaPaymentNotificationDto kafkaNotification) {
         ExternalPaymentResponse externalPaymentResponse = sendPaymentToExternalPaymentSystem(transactionDto, payment);
         kafkaNotification.setPaymentDate(LocalDate.now());
@@ -90,9 +101,10 @@ public class PaymentService {
         logger.info("Payment done via external service, updating payment status to paid, payment id - "
                 + payment.getId());
         payment.setPaymentStatus(PaymentStatus.PAID);
-        paymentRepository.save(payment);
+        payment = paymentRepository.save(payment);
         kafkaNotification.setPaymentInfo("payment done via card number - " + transactionDto.getCardNumber());
         kafkaService.sendSuccessMessage(kafkaNotification);
+        return payment;
     }
 
     public Payment createPayment(PaymentDto paymentDto, List<TicketInfoDto> ticketList, long userId) {
@@ -118,8 +130,11 @@ public class PaymentService {
     }
 
 
-    public Optional<Payment> getPaymentById(Long id) {
-        return paymentRepository.findById(id);
+    public Optional<Payment> getPaymentById(Long paymentId, UserDetailsDto userDetailsDto) {
+        if (userDetailsDto.getRole().equals(UserRole.ROLE_ADMIN)) {
+            return paymentRepository.findById(paymentId);
+        }
+        return paymentRepository.findByIdAndUserId(paymentId, userDetailsDto.getUserId());
     }
 
     public PaymentListDto findPayments(PaymentFilter filter, PageRequest pageRequest, UserDetailsDto userDetailsDto) {
@@ -176,14 +191,18 @@ public class PaymentService {
         Optional<Payment> paymentOpt = paymentRepository.findByIdAndPaymentStatus(id, PaymentStatus.PAID);
         logger.info("Checking payment exists");
         if (paymentOpt.isEmpty()) {
-            return ResponseEntity.badRequest().body(new SimpleErrorResponse("No such payment"));
+            return ResponseEntity.badRequest().body(new SimpleErrorResponse("No such payment in PAID status"));
         }
 
         Payment payment = paymentOpt.get();
         logger.info("Checking user match");
-        if (userDetailsDto.getRole().equals(UserRole.ROLE_USER) && !payment.getId().equals(userDetailsDto.getUserId())) {
+        if (userDetailsDto.getRole().equals(UserRole.ROLE_USER) && !payment.getUserId().equals(userDetailsDto.getUserId())) {
             return ResponseEntity.badRequest().body(new SimpleErrorResponse("This payment was made by other user"));
         }
+
+        List<TicketInfoDto> tickets = ticketService.getTicketInfo(payment.getTickets());
+        List<Long> flights = tickets.stream().map(TicketInfoDto::getTripId).toList();
+        tripService.checkTripDate(flights);
 
         RefundExternalDto refundExternalDto = new RefundExternalDto(payment.getCardNumber(), payment.getAmount());
         ExternalPaymentResponse externalPaymentResponse = sendRefundToExternalPaymentSystem(refundExternalDto);
@@ -194,6 +213,16 @@ public class PaymentService {
 
         payment.setPaymentStatus(PaymentStatus.REFUND);
         paymentRepository.save(payment);
+
+        KafkaPaymentNotificationDto kafkaPaymentNotificationDto = new KafkaPaymentNotificationDto();
+        kafkaPaymentNotificationDto.setEmail(userDetailsDto.getEmail());
+        kafkaPaymentNotificationDto.setUserLanguage(userDetailsDto.getLanguage());
+        kafkaPaymentNotificationDto.setUserName(userDetailsDto.getUsername());
+        kafkaPaymentNotificationDto.setAmountPayable(payment.getAmount());
+        kafkaPaymentNotificationDto.setPaymentDate(LocalDate.now());
+        kafkaPaymentNotificationDto.setPaymentInfo(" " + payment.getId() + " on card " + payment.getCardNumber() + ". Ticket refund was made (tickets id)" + Arrays.toString(payment.getTickets().toArray()));
+
+        kafkaService.sendRefund(kafkaPaymentNotificationDto);
         ticketService.updateTicketToRefund(payment.getTickets());
         return ResponseEntity.status(HttpStatus.OK).body(new SimpleResponse("Refund was made for payment - " + payment.getId()));
     }
@@ -211,4 +240,12 @@ public class PaymentService {
         }
     }
 
+    public UserDetailsDto getUserDetailsFromString(String userDetails) {
+        try {
+            return objectMapper.readValue(userDetails, UserDetailsDto.class);
+        } catch (JsonProcessingException e) {
+            logger.error("error processing user details string received from gateway");
+            throw new UserDetailsException("Error occurs during user details processing", e);
+        }
+    }
 }

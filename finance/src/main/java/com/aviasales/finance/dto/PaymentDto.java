@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 public class PaymentDto {
-    @Size(min = 1, max = 10, message = "Number of tickets to pay should be more than 1 and less than 10")
+    @Size(min = 1, max = 10, message = "Number of tickets to pay should be more or equals 1 and less or equals 10")
     private List<Long> tickets;
     @CreditCardNumber(message = "Credit card number is not valid")
     private String cardNumber;
