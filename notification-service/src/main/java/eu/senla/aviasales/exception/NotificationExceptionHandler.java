@@ -3,6 +3,7 @@ package eu.senla.aviasales.exception;
 import eu.senla.aviasales.exception.custom.IncorrectDataException;
 import eu.senla.aviasales.exception.custom.NotFoundException;
 import eu.senla.aviasales.exception.custom.TopicNotFoundException;
+import eu.senla.aviasales.exception.custom.UserServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,4 +39,10 @@ public class NotificationExceptionHandler {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
 
+    @ExceptionHandler(UserServiceException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleUserServiceException(UserServiceException ex) {
+        log.warn(ex.getMessage());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
 }

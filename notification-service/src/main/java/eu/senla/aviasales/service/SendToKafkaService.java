@@ -1,7 +1,6 @@
-package eu.senla.aviasales.service.impl;
+package eu.senla.aviasales.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.senla.aviasales.kafka.KafkaTopicConstants;
 import eu.senla.aviasales.request.CustomEmailRequest;
 import eu.senla.aviasales.response.SendResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +23,9 @@ public class SendToKafkaService {
     private final Producer<String, Map<String, CustomEmailRequest>> producer;
     private final ObjectMapper objectMapper;
 
-    public SendResponse sendCustomEmail(final CustomEmailRequest customEmailRequest) {
+    public SendResponse sendCustomEmail(String topic, final CustomEmailRequest customEmailRequest) {
         ProducerRecord<String, Map<String, CustomEmailRequest>> producerRecord =
-                new ProducerRecord<>(KafkaTopicConstants.CUSTOM_EMAIL_TYPE, objectMapper.convertValue(customEmailRequest, Map.class));
+                new ProducerRecord<>(topic, objectMapper.convertValue(customEmailRequest, Map.class));
         producer.send(producerRecord);
         log.info("...method sendCustomEmail {}", producerRecord);
         return SendResponse.builder()

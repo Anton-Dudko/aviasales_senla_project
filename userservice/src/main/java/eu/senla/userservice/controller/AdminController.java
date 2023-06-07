@@ -44,6 +44,12 @@ public class AdminController {
         return userService.findById(id);
     }
 
+    @GetMapping("/search-admin-email")
+    public UserGetPageResponse findAllAdminEmail() {
+        log.info("...Method findAllAdminEmail");
+        return userService.findAllAdmin();
+    }
+
     @PostMapping("/search")
     public UserGetPageResponse findBySpecification(@RequestParam(defaultValue = "0") Integer page,
                                                    @RequestParam(defaultValue = "10") Integer size,

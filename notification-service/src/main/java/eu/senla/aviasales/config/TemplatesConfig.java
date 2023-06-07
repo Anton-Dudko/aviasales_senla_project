@@ -4,7 +4,10 @@ import eu.senla.aviasales.exception.custom.TopicNotFoundException;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -18,9 +21,15 @@ import java.util.Map;
 @Configuration
 @ConfigurationProperties(prefix = "application.email")
 public class TemplatesConfig {
+
     private List<String> languages;
     private String localizationFolder;
     private Map<String, Topic> topics;
+
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        return builder.build();
+    }
 
     public List<String> getTopicNames() {
         return topics.values()
@@ -72,5 +81,4 @@ public class TemplatesConfig {
             this.subject = subject;
         }
     }
-
 }

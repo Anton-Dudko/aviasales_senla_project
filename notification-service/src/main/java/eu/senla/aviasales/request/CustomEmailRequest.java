@@ -1,6 +1,7 @@
 package eu.senla.aviasales.request;
 
 import eu.senla.aviasales.exception.ExceptionMessageConstants;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
@@ -15,6 +16,7 @@ import javax.validation.constraints.Email;
 @Data
 @Getter
 @Setter
+@Builder
 public class CustomEmailRequest {
     @NonNull
     private String userName;

@@ -1,4 +1,4 @@
-package eu.senla.aviasales.service.impl;
+package eu.senla.aviasales.service;
 
 import eu.senla.aviasales.entity.EmailNotification;
 import eu.senla.aviasales.exception.ExceptionMessageConstants;

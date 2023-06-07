@@ -101,6 +101,11 @@ application:
         template: custom_email
         localization: custom_email
         subject: Custom admin email
+      ERROR_EVENT:
+        topic_name: error_email_event
+        template: error_email
+        localization: error_email
+        subject: Error admin email
       NEW_TRIP_EVENT:
         topic_name: new_trip_event
         template: new_trip
