@@ -1,14 +1,12 @@
 package eu.senla.tripservice.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class TicketsCreateRequest {
     long flightId;
     int countTicketsFirstClass;
