@@ -20,13 +20,19 @@ import java.util.stream.Collectors;
 public class SwaggerUtils {
 
     public static final String GUEST_ROUTE_PARAM = "guest";
+    public static final String USER_DETAILS_PARAM = "userDetails";
     public static final String PARAM_NAME = "Authorization";
     public static final String DESCRIPTION = "Bearer token";
     public static final String CONTENT_TYPE = "string";
     public static final String HOST_VALUE = "localhost:8080";
 
+
+
+    private final GatewayConfig gatewayConfig;
     @Autowired
-    private GatewayConfig gatewayConfig;
+    public SwaggerUtils(GatewayConfig gatewayConfig) {
+        this.gatewayConfig = gatewayConfig;
+    }
 
     public Swagger setSpecialDataIntoApiDocs(Swagger swagger) {
         addAuthHeaderToOperations(swagger);
@@ -52,7 +58,7 @@ public class SwaggerUtils {
             if (!path.contains(GUEST_ROUTE_PARAM)) {
                 for (Operation operation : pathObject.getOperations()) {
                     operation.setParameters(operation.getParameters().stream()
-                            .filter(x -> !x.getName().equals("userDetails"))
+                            .filter(x -> !x.getName().equals(USER_DETAILS_PARAM))
                             .collect(Collectors.toList()));
                     HeaderParameter authHeader = createAuthHeader();
                     operation.addParameter(authHeader);

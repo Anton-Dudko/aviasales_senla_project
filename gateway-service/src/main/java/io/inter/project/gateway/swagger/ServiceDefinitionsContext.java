@@ -29,7 +29,7 @@ public class ServiceDefinitionsContext {
     public List<SwaggerResource> getSwaggerDefinitions(){
         return  serviceDescriptions.keySet().stream().map(s -> {
             SwaggerResource resource = new SwaggerResource();
-            resource.setLocation("/service/" + s);
+            resource.setLocation(String.format("/service/%s",s));
             resource.setName(s);
             resource.setSwaggerVersion("2.0");
             return resource;

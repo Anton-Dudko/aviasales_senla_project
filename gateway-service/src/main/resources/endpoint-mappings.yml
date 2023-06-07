@@ -41,6 +41,7 @@ endpoint:
     notification-service:
       "[/find-all]": /api/admin/notification
       "[/notification/**]": /api/admin/notification/${id}
+      "[/send-email]": /api/admin/send
 
     ticket-service:
       "[/tickets]": /tickets

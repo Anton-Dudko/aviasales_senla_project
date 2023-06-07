@@ -17,6 +17,11 @@ import java.util.*;
 @ConfigurationProperties(prefix = "endpoint")
 public class GatewayConfig {
 
+    public static final String URI_ADMIN_VALUE = "admin";
+    public static final String URI_USERS_VALUE = "users/${id}";
+    public static final String URI_GUEST_VALUE = "guest";
+    public static final String CHECK_TRUE_PARAM = "true";
+    public static final String CHECK_FALSE_PARAM = "false";
     private final List<String> exclusionList = new ArrayList<>();
 
     private final Map<String, Map<String, String>> mappings = new LinkedHashMap<>();
@@ -31,16 +36,16 @@ public class GatewayConfig {
     private void addRoutes(AuthFilter authFilter, UserIdFilter userIdFilter, RouteLocatorBuilder.Builder routes, Map<String, String> serviceMap, String serviceHost) {
         serviceMap.forEach((path, uri) -> routes.route(UUID.randomUUID().toString(), r -> r.path(path)
                 .filters(f -> {
-                    if (uri.contains("admin")) {
-                        f.filter(authFilter.apply(new AuthFilter.Config("true")));
+                    if (uri.contains(URI_ADMIN_VALUE)) {
+                        f.filter(authFilter.apply(new AuthFilter.Config(CHECK_TRUE_PARAM)));
                         rewritePath(f, path, uri);
-                    } else if (uri.contains("users/${id}")) {
+                    } else if (uri.contains(URI_USERS_VALUE)) {
                         f.filter(userIdFilter.apply(new UserIdFilter.Config()));
                         rewritePath(f, path, uri);
-                    } else if (uri.contains("guest")) {
+                    } else if (uri.contains(URI_GUEST_VALUE)) {
                         rewritePath(f, path, uri);
                     } else {
-                        f.filter(authFilter.apply(new AuthFilter.Config("false")));
+                        f.filter(authFilter.apply(new AuthFilter.Config(CHECK_FALSE_PARAM)));
                         rewritePath(f, path, uri);
                     }
                     return f;

@@ -16,8 +16,12 @@ import java.util.List;
 @Configuration
 public class SwaggerUIConfiguration {
 
+
+    private final ServiceDefinitionsContext definitionContext;
     @Autowired
-    private ServiceDefinitionsContext definitionContext;
+    public SwaggerUIConfiguration(ServiceDefinitionsContext definitionContext) {
+        this.definitionContext = definitionContext;
+    }
 
     @Bean
     public RestTemplate configureTemplate(){
