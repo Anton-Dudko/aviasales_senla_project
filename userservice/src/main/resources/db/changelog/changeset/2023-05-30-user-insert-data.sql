@@ -1,13 +1,10 @@
---liquibase formatted sql
---changeset OlgaGlavdel:users-insert-data
-
-INSERT INTO public.users (username, email, password, date_birth, language, role, refresh_token, access_token)
-VALUES ('admin1', 'olga.glavdel@gmaaaaail.com', '$2a$13$WxgzgtLhLPCPxbNKVTzQtu2xcA2Q6dH6aMB1065.GESsiH9SOwMKi',
-        '2009-09-09', 'EN', 'ROLE_ADMIN',
-        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODgzMDc1Nzl9.WQGL2JjhmWi5YNiBZn7rwegqtv7AsgZo4Rc77ZMXtXwfLJb3Egg2LPMVy_-BuJFLxiyAyOgY1JlQwxisLKNbSA',
-        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjEiLCJleHAiOjE2ODY1Nzk1NzksInJvbGUiOiJST0xFX0FETUlOIn0.U9B8-ZI0UJKss0GtvT-bKVAIkj7qm519Y34FJXt2wjzSsVW1QyzBaYjxmadaYY3oiYFYFZByjYBOU51urxHt7w');
-INSERT INTO public.users (username, email, password, date_birth, language, role, refresh_token, access_token)
-VALUES ('username1', 'pin007@tuuuuuut.by', '$2a$13$CfxofPy.BNHGH/5Jp/Q3K.cEjq8F6fg3nGa2AGZV8AA8nLzqXYXLK',
-        '2012-12-12', 'RU', 'ROLE_USER',
-        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZTEiLCJleHAiOjE2ODgzMDc1OTB9.3i3mBpWWs2C2Fa9_YuqR7PDyp_hhhw-0luUB31fbpbnGCDJIggfRSqDvuXUzeE4wQqKf0Ulj0pVhYvHHrdJCJg',
-        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZTEiLCJleHAiOjE2ODY1Nzk1OTAsInJvbGUiOiJST0xFX1VTRVIifQ.AFHFVo_LQxnfb1-CMGAAHYSqtHZ968577Ibh8FZ84L0fUWPf0hupqBj6G2vF14RhQxjosOBOCFniT2QOlpk6OQ');
+INSERT INTO users (username, email, password, date_birth, language, role, refresh_token, access_token)
+VALUES ('admin', 'pin007@tut.by', '$2a$13$tj80en8/NPWEiQBLXTUnwOhQ4b89MQl6zxXa31yujN2TVDoAJtm2q', '2012-12-12', 'RU',
+        'ROLE_ADMIN',
+        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4ODczOTU2MX0.qlFeqIj0dl7PglScIMWoDoB49zEvA6jVP6OI7zUm9R-IXiBbPkkFSIDG7UWAstQTVUYOQ8O89gEuHomYVDWaAw',
+        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4NzIyNzU2MCwicm9sZSI6IlJPTEVfQURNSU4ifQ.wZw8URhNFo-X62f3h3xm9BK_U2p3KQA1ssDzMKeb1J0zn3att-_NLNLiYzzrgz6dkqWkQEsNKTgZ_gTet2-FuQ');
+INSERT INTO users (username, email, password, date_birth, language, role, refresh_token, access_token)
+VALUES ('user', 'olga.glavdel@gmail.com', '$2a$13$GtpQAk5.XdfAQKpcWHG2aO5muFqL.PWl5H.z3vCXITE4eCRulS3KO', '2012-12-12',
+        'EN', 'ROLE_USER',
+        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiZXhwIjoxNjg4NzM5NTY0fQ.DZijdtFr_11V7IuWYqpQodKdzJzLI2QR0KAg__kkceArSyMNSWNtw2VZ__a5xQP_T-XMnkkr-BT9QQCRxG4AoA',
+        'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyIiwiZXhwIjoxNjg3MjI3NTY0LCJyb2xlIjoiUk9MRV9VU0VSIn0.e7lrhte6BUy06eggtA5ITxsaewlyWvf_SZASZJHDPkhhK8v6_b18Kgi0k8O0xSN93q0yQF-86qF46VEn00vMGg');

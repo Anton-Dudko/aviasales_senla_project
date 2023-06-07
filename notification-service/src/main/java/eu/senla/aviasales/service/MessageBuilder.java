@@ -8,7 +8,7 @@ import eu.senla.aviasales.exception.custom.TopicNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @Slf4j
 @RequiredArgsConstructor
-@Service
+@Component
 public class MessageBuilder {
     private final TemplatesConfig templatesConfig;
     private final SpringTemplateEngine templateEngine;
@@ -37,7 +37,7 @@ public class MessageBuilder {
             Map<String, String> result = new HashMap<>();
             TemplatesConfig.Topic topic = templatesConfig.getTopicByName(emailNotification.getTemplateType());
             result.put("subject", topic.getSubject());
-            log.info("Building an email. Receiver: {}. Subject: {}.", emailNotification.getTemplateVariables().get("email"), topic.getSubject());
+            log.info("... Building an email. Receiver: {}. Subject: {}.", emailNotification.getTemplateVariables().get("email"), topic.getSubject());
             Context context = new Context();
             context.setVariables(emailNotification.getTemplateVariables());
             context.setVariables(getLocalizationVariables(topic, (String) emailNotification.getTemplateVariables().get("userLanguage")));

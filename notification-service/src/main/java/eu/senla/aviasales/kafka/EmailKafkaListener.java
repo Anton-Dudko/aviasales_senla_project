@@ -19,13 +19,13 @@ import java.util.Map;
 @Service
 public class EmailKafkaListener {
 
-    private final SendService sendToEmailServiceImplTest;
+    private final SendService sendToEmailServiceImpl;
     private final NotificationMapper notificationMapper;
 
     @KafkaListener(topics = "#{templatesConfig.getTopicNames()}", autoStartup = "true")
     public void listenTo(ConsumerRecord<String, Map<String, Object>> consumerRecord) {
         log.info("KAFKA EMAIL NOTIFICATION LISTENER ACTIVATED");
-        sendToEmailServiceImplTest.sendEmail(notificationMapper.recordToEntity(consumerRecord));
+        sendToEmailServiceImpl.sendEmail(notificationMapper.recordToEntity(consumerRecord));
     }
 }
 

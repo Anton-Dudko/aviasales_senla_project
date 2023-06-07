@@ -1,7 +1,7 @@
 package eu.senla.aviasales.controller;
 
 import eu.senla.aviasales.entity.EmailNotification;
-import eu.senla.aviasales.service.impl.EmailNotificationService;
+import eu.senla.aviasales.service.EmailNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,18 +15,18 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/test")
+@RequestMapping("/api/admin/notification")
 public class AdminController {
 
     private final EmailNotificationService service;
 
-    @GetMapping("/notification/{id}")
+    @GetMapping("/{id}")
     public EmailNotification findById(@PathVariable String id) {
         log.info("...Method findById");
         return service.findById(id);
     }
 
-    @GetMapping("/notification")
+    @GetMapping
     public List<EmailNotification> findAll() {
         log.info("...Method findById");
         return service.findAll();

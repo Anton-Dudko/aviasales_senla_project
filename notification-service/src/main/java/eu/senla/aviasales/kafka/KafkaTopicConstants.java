@@ -6,4 +6,5 @@ package eu.senla.aviasales.kafka;
  */
 public class KafkaTopicConstants {
     public static final String CUSTOM_EMAIL_TYPE = "custom_admin_event";
+    public static final String ERROR_EMAIL_TYPE = "error_email_event";
 }

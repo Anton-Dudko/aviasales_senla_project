@@ -1,8 +1,9 @@
 package eu.senla.aviasales.controller;
 
+import eu.senla.aviasales.kafka.KafkaTopicConstants;
 import eu.senla.aviasales.request.CustomEmailRequest;
 import eu.senla.aviasales.response.SendResponse;
-import eu.senla.aviasales.service.impl.SendToKafkaService;
+import eu.senla.aviasales.service.SendToKafkaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,6 @@ public class NotificationController {
     @PostMapping("/send")
     public SendResponse sendEmail(@RequestBody @Valid CustomEmailRequest customEmailRequest) {
         log.info("Method sendEmail ");
-        return sendService.sendCustomEmail(customEmailRequest);
+        return sendService.sendCustomEmail(KafkaTopicConstants.CUSTOM_EMAIL_TYPE, customEmailRequest);
     }
 }

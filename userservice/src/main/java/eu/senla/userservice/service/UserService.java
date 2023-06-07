@@ -2,6 +2,7 @@ package eu.senla.userservice.service;
 
 
 import eu.senla.common.enam.Language;
+import eu.senla.common.enam.Role;
 import eu.senla.userservice.dao.UserSpecification;
 import eu.senla.userservice.entity.User;
 import eu.senla.userservice.exception.ExceptionMessageConstants;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -57,6 +59,15 @@ public class UserService {
         log.info("Method findById");
         return userMapper.entityToResponse(userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_FOUND)));
+    }
+
+    public UserGetPageResponse findAllAdmin() {
+        log.info("Method findAllAdminEmail");
+        List<User> listAdmin = userRepository.findAllByRole(Role.ROLE_ADMIN);
+        return UserGetPageResponse.builder()
+                .userResponseList(userMapper.listEntityToListResponse(listAdmin))
+                .count(listAdmin.size())
+                .build();
     }
 
     public UserResponse update(Long id, UserUpdateRequest request) {

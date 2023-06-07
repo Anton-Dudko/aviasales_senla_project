@@ -1,6 +1,8 @@
 package eu.senla.aviasales.service.impl;
 
 import eu.senla.aviasales.entity.EmailNotification;
+import eu.senla.aviasales.service.AlarmAdminService;
+import eu.senla.aviasales.service.EmailNotificationService;
 import eu.senla.aviasales.service.MessageBuilder;
 import eu.senla.aviasales.service.SendService;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +29,10 @@ import java.util.Map;
 public class SendToEmailServiceImpl implements SendService {
     @Value("${email.send.count}")
     private Integer maxCountSending;
-
     private final JavaMailSender javaMailSender;
     private final MessageBuilder messageBuilder;
     private final EmailNotificationService service;
+    private final AlarmAdminService alarmAdminService;
 
 
     @Override
@@ -52,6 +54,7 @@ public class SendToEmailServiceImpl implements SendService {
             if (emailNotification.getDateFirstSend() == null) {
                 emailNotification.setDateFirstSend(LocalDate.now());
                 service.save(emailNotification);
+                alarmAdminService.sendTroublem(emailNotification, e.getMessage());
             }
         }
     }
