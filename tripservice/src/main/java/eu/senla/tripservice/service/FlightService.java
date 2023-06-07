@@ -143,7 +143,7 @@ public class FlightService {
                 });
 
                 long cheapestFlightId = ticketsResponses.get(0).getTickets().get(0).getFlightId();
-
+                log.info("FlightService-findDirectFlight: cheapestFlightId = " + cheapestFlightId);
                 Flight cheapestFlight = null;
 
                 for (Flight flight : flights) {
@@ -254,6 +254,7 @@ public class FlightService {
         String createTicketsRequestUrl = "http://ticket-service:8088/tickets/generate";
         String receivedMessage;
         try {
+            log.info("FlightService-makeCreateTicketsRequest - send generate tickets request: " + request);
             receivedMessage = restTemplate.postForObject(createTicketsRequestUrl, request, String.class);
         } catch (Exception e) {
             throw new RequestException("Ticket not created");
@@ -289,8 +290,7 @@ public class FlightService {
 
         double firstClassTicketSurcharge = 1.2;
         int defaultFirstClassPercent = 30;
-        double defaultTicketPrice = (airplane.getNumberOfSeats() * 4 + airplane.getAirplaneId()) / 2.0;
-        double secondClassPriceCoefficient = 0.8;
+        double defaultTicketPrice = Math.ceil((airplane.getNumberOfSeats() * 4 + airplane.getAirplaneId()) / 2.0);
 
         int seatsNumber = airplane.getNumberOfSeats();
 
@@ -300,10 +300,8 @@ public class FlightService {
         int firstClassSeatsNumber = (int) Math.round(seatsNumber * percentOfFirstClassTickets / 100.0);
         int secondClassSeatsNumber = seatsNumber - firstClassSeatsNumber;
 
-        double secondClassPrice = Math.ceil(price * secondClassPriceCoefficient);
-
         return new TicketsCreateRequest(flightId, firstClassSeatsNumber, secondClassSeatsNumber,
-                secondClassPrice * firstClassTicketSurcharge, secondClassPrice);
+                price * firstClassTicketSurcharge, price);
     }
 
     private boolean isFlightExist(Flight flightToCheck) {
