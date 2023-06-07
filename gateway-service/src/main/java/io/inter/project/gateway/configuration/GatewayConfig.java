@@ -2,10 +2,7 @@ package io.inter.project.gateway.configuration;
 
 import io.inter.project.gateway.filter.AuthFilter;
 import io.inter.project.gateway.filter.UserIdFilter;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.GatewayFilterSpec;
@@ -16,9 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.*;
 
 @Configuration
-@Getter
-@Setter
-@Slf4j
+@Data
 @ConfigurationProperties(prefix = "endpoint")
 public class GatewayConfig {
 
@@ -38,26 +33,26 @@ public class GatewayConfig {
                 .filters(f -> {
                     if (uri.contains("admin")) {
                         f.filter(authFilter.apply(new AuthFilter.Config("true")));
-                        handlePathRewriting(f, path, uri);
+                        rewritePath(f, path, uri);
                     } else if (uri.contains("users/${id}")) {
                         f.filter(userIdFilter.apply(new UserIdFilter.Config()));
-                        handlePathRewriting(f, path, uri);
+                        rewritePath(f, path, uri);
                     } else if (uri.contains("guest")) {
-                        handlePathRewriting(f, path, uri);
+                        rewritePath(f, path, uri);
                     } else {
                         f.filter(authFilter.apply(new AuthFilter.Config("false")));
-                        handlePathRewriting(f, path, uri);
+                        rewritePath(f, path, uri);
                     }
                     return f;
                 })
                 .uri("lb://" + serviceHost)));
     }
 
-    private void handlePathRewriting(GatewayFilterSpec f, String path, String uri) {
+    private void rewritePath(GatewayFilterSpec filterSpec, String path, String uri) {
         if (path.contains("/**")) {
-            f.rewritePath(path.replace("**", "(?<id>[^/]+)"), uri);
+            filterSpec.rewritePath(path.replace("**", "(?<id>[^/]+)"), uri);
         } else {
-            f.rewritePath(path, uri);
+            filterSpec.rewritePath(path, uri);
         }
     }
 

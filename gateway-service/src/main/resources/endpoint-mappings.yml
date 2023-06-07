@@ -39,9 +39,8 @@ endpoint:
       "[/delete-trip/**]": /trips/admin/delete/${id}
 
     notification-service:
-      "[/find-emails]": /api/admin/email
-      "[/send-email]": /api/admin/send
-      "[/send-again/**]": /api/admin/${id}
+      "[/find-all]": /api/admin/notification
+      "[/notification/**]": /api/admin/notification/${id}
 
     ticket-service:
       "[/tickets]": /tickets

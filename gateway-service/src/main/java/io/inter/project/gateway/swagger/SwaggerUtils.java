@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class SwaggerUtils {
@@ -50,6 +51,9 @@ public class SwaggerUtils {
             Path pathObject = entry.getValue();
             if (!path.contains(GUEST_ROUTE_PARAM)) {
                 for (Operation operation : pathObject.getOperations()) {
+                    operation.setParameters(operation.getParameters().stream()
+                            .filter(x -> !x.getName().equals("userDetails"))
+                            .collect(Collectors.toList()));
                     HeaderParameter authHeader = createAuthHeader();
                     operation.addParameter(authHeader);
                 }
