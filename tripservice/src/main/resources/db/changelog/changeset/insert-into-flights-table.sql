@@ -4,7 +4,7 @@
 INSERT INTO flights (trip_id, airplane_id, flight_number, departure, arrival, meal, hand_luggage, luggage, duration,
                      canceled)
 -- minsk - moscow
-VALUES (1, 1, 'B2-14400', '2023-06-12 21:30:00.000000', '2023-06-12 22:30:00.000000', true, true, true, 60, false),
+VALUES (1, 1, 'B2-14400', '2023-05-12 21:30:00.000000', '2023-05-12 22:30:00.000000', true, true, true, 60, false),
        (2, 1, 'B2-14410', '2023-06-13 14:30:00.000000', '2023-06-13 15:30:00.000000', true, true, true, 60, false),
        (1, 2, 'B2-14400', '2023-06-12 21:30:00.000000', '2023-06-12 22:20:00.000000', true, true, true, 50, false),
        (2, 2, 'B2-14410', '2023-06-13 14:30:00.000000', '2023-06-13 15:20:00.000000', true, true, true, 50, false),
