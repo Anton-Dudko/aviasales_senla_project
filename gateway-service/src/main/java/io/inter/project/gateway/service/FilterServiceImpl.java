@@ -27,6 +27,8 @@ public class FilterServiceImpl implements FilterService{
 
     public static final String AUTH_TOKEN = "Authorization";
     private static final String uri = "http://userservice/auth/validate";
+    public static final String URI_TOKEN_PARAM = "%s?accessToken=%s";
+    public static final String USER_DETAILS_HEADER_PARAM = "userDetails";
     private final WebClient.Builder webClientBuilder;
 
     @Autowired
@@ -57,7 +59,7 @@ public class FilterServiceImpl implements FilterService{
         log.debug("Token value {}", accessToken);
 
         return webClientBuilder.build().get()
-                .uri(String.format("%s?accessToken=%s", uri, accessToken))
+                .uri(String.format(URI_TOKEN_PARAM, uri, accessToken))
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, response -> {
                     log.warn("Token not found or expired");
@@ -76,7 +78,7 @@ public class FilterServiceImpl implements FilterService{
             String userDetailsJson = objectMapper.writeValueAsString(userDetails);
             exchange.mutate()
                     .request(builder -> builder
-                            .header("userDetails", userDetailsJson)
+                            .header(USER_DETAILS_HEADER_PARAM, userDetailsJson)
                     )
                     .build();
         } catch (JsonProcessingException e) {

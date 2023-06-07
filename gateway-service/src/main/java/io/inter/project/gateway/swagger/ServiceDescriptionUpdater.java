@@ -29,17 +29,21 @@ public class ServiceDescriptionUpdater {
     private static final String DEFAULT_SWAGGER_URL = "/v2/api-docs";
     private static final String KEY_SWAGGER_URL = "swagger_url";
 
-    @Autowired
-    private DiscoveryClient discoveryClient;
-    @Autowired
-    private SwaggerUtils swaggerUtils;
 
-    @Autowired
-    private ServiceDefinitionsContext definitionContext;
+    private final DiscoveryClient discoveryClient;
+
+    private final SwaggerUtils swaggerUtils;
+
+    private final ServiceDefinitionsContext definitionContext;
 
     private final RestTemplate template;
 
-    public ServiceDescriptionUpdater() {
+    @Autowired
+    public ServiceDescriptionUpdater(DiscoveryClient discoveryClient, SwaggerUtils swaggerUtils,
+                                     ServiceDefinitionsContext definitionContext) {
+        this.discoveryClient = discoveryClient;
+        this.swaggerUtils = swaggerUtils;
+        this.definitionContext = definitionContext;
         this.template = new RestTemplate();
     }
 

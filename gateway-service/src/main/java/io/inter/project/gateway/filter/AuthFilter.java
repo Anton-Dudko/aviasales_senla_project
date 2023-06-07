@@ -18,6 +18,7 @@ import java.util.List;
 public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> {
 
     public static final String ADMIN_PARAM_VALUE = "ROLE_ADMIN";
+    public static final String CONFIG_SHORTCUT = "isAdminCheck";
     private final FilterService filterService;
 
     @Autowired
@@ -28,7 +29,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
     @Override
     public List<String> shortcutFieldOrder() {
-        return List.of("isAdminCheck");
+        return List.of(CONFIG_SHORTCUT);
     }
 
     @Override
