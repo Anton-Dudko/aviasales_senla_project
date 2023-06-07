@@ -1,7 +1,9 @@
 package com.aviasales.finance.service.external;
 
 import com.aviasales.finance.dto.TicketInfoDto;
+import com.aviasales.finance.dto.UserDetailsDto;
 import com.aviasales.finance.enums.TicketStatus;
+import com.aviasales.finance.enums.UserRole;
 import com.aviasales.finance.exception.TicketServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +19,6 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,7 +41,8 @@ public class TicketService {
 
         try {
             ResponseEntity<List<TicketInfoDto>> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,
-                    new HttpEntity<>(new HttpHeaders()), new ParameterizedTypeReference<List<TicketInfoDto>>() {});
+                    new HttpEntity<>(new HttpHeaders()), new ParameterizedTypeReference<List<TicketInfoDto>>() {
+                    });
             return Optional.ofNullable(response.getBody()).orElseThrow(() -> new TicketServiceException("Such tickets not found"));
 
         } catch (HttpClientErrorException | HttpServerErrorException e) {
@@ -61,14 +63,20 @@ public class TicketService {
 //        return List.of(ticketInfoDto, ticked2nd);
     }
 
-    public List<TicketInfoDto> getTicketInfoForPaying(List<Long> ticketList) {
-        //ToDo decide if it will be part of ticket service functionality
+    public List<TicketInfoDto> getTicketInfoForPaying(List<Long> ticketList, UserDetailsDto userDetailsDto) {
         List<TicketInfoDto> ticketInfoDtos = getTicketInfo(ticketList);
         if (ticketInfoDtos.size() != ticketList.size()) {
             throw new TicketServiceException("Not all tickets received from ticket service");
         }
 
+        logger.info("Checking ticket status valid");
         ticketInfoDtos.forEach(this::checkTicketNotPaid);
+
+        if (userDetailsDto.getRole().equals(UserRole.ROLE_USER)) {
+            logger.info("Checking booked tickets user id match");
+            ticketInfoDtos.stream().filter(ticket -> ticket.getStatus().equals(TicketStatus.BOOKED))
+                    .forEach(x -> checkTicketUserMatch(x, userDetailsDto.getUserId()));
+        }
 
         return ticketInfoDtos;
     }
@@ -105,6 +113,14 @@ public class TicketService {
         logger.info("Checking ticked status not paid");
         if (ticketInfoDto.getStatus().equals(TicketStatus.PAID)) {
             throw new TicketServiceException("Ticket already paid, ticket id - " + ticketInfoDto.getId());
+        }
+    }
+
+    public void checkTicketUserMatch(TicketInfoDto ticketInfoDto, long userId) {
+        logger.info("Checking ticked user match");
+        if (ticketInfoDto.getUserId() != userId) {
+            throw new TicketServiceException("Ticket was booked by other user, ticket id - " + ticketInfoDto.getId() +
+                    ". Your user id - " + userId);
         }
     }
 }

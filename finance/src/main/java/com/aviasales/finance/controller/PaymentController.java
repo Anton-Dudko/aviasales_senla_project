@@ -5,6 +5,7 @@ import com.aviasales.finance.entity.Payment;
 import com.aviasales.finance.service.BlockingCardService;
 import com.aviasales.finance.service.PaymentService;
 import com.aviasales.finance.service.external.TicketService;
+import com.aviasales.finance.service.external.TripService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,15 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final BlockingCardService blockingCardService;
     private final TicketService ticketService;
+    private final TripService tripService;
 
     @Autowired
     public PaymentController(PaymentService paymentService,
-                             BlockingCardService blockingCardService, TicketService ticketService) {
+                             BlockingCardService blockingCardService, TicketService ticketService, TripService tripService) {
         this.paymentService = paymentService;
         this.blockingCardService = blockingCardService;
         this.ticketService = ticketService;
+        this.tripService = tripService;
     }
 
     @PostMapping
@@ -47,7 +50,9 @@ public class PaymentController {
         logger.info("Checking card details");
         blockingCardService.validateCardDetails(paymentDto.getCardNumber());
         logger.info("Checking ticket");
-        List<TicketInfoDto> ticketInfoDto = ticketService.getTicketInfoForPaying(paymentDto.getTickets());
+        List<TicketInfoDto> ticketInfoDto = ticketService.getTicketInfoForPaying(paymentDto.getTickets(), userDetailsDto);
+        tripService.checkFlightDateForPaying(ticketInfoDto.stream().map(TicketInfoDto::getFlightId)
+                .distinct().collect(Collectors.toList()));
 
         Payment payment = paymentService.createPayment(paymentDto, ticketInfoDto, userDetailsDto.getUserId());
         TransactionDto transactionDto = paymentService.createTransaction(paymentDto, payment.getAmount());
@@ -83,6 +88,7 @@ public class PaymentController {
     public PaymentListDto getPaymentStat(PaymentFilter paymentFilter, @RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "15") int size,
                                          @RequestHeader(name = "userDetails") String userDetails) {
+        logger.info("rsql for debug gateway" + paymentFilter.getAmount());
         UserDetailsDto userDetailsDto = paymentService.getUserDetailsFromString(userDetails);
         PageRequest pageRequest = PageRequest.of(page, size);
         return paymentService.findPayments(paymentFilter, pageRequest, userDetailsDto);

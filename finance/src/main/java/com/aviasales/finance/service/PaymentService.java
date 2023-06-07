@@ -201,7 +201,7 @@ public class PaymentService {
         }
 
         List<TicketInfoDto> tickets = ticketService.getTicketInfo(payment.getTickets());
-        List<Long> flights = tickets.stream().map(TicketInfoDto::getTripId).toList();
+        List<Long> flights = tickets.stream().map(TicketInfoDto::getFlightId).distinct().toList();
         tripService.checkTripDate(flights);
 
         RefundExternalDto refundExternalDto = new RefundExternalDto(payment.getCardNumber(), payment.getAmount());
