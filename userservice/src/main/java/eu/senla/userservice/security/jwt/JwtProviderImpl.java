@@ -26,7 +26,7 @@ public class JwtProviderImpl implements JwtProvider {
                 .plusMinutes(securityProperties.getAccessTime().toMinutes())
                 .atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(user.getEmail())
                 .setExpiration(date)
                 .signWith(SignatureAlgorithm.HS512, securityProperties.getAccessSecret())
                 .claim("role", user.getRole())
@@ -40,7 +40,7 @@ public class JwtProviderImpl implements JwtProvider {
                 .plusDays(securityProperties.getRefreshTime().getDays())
                 .atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(user.getEmail())
                 .setExpiration(date)
                 .signWith(SignatureAlgorithm.HS512, securityProperties.getRefreshSecret())
                 .compact();
@@ -59,15 +59,15 @@ public class JwtProviderImpl implements JwtProvider {
     }
 
     @Override
-    public String getLoginFromAccessToken(String token) {
-        log.info("Method getLoginFromAccessToken");
-        return getLoginFromToken(token, securityProperties.getAccessSecret());
+    public String getEmailFromAccessToken(String token) {
+        log.info("Method getEmailFromAccessToken");
+        return getEmailFromToken(token, securityProperties.getAccessSecret());
     }
 
     @Override
-    public String getLoginFromRefreshToken(String token) {
-        log.trace("Method getLoginFromRefreshToken");
-        return getLoginFromToken(token, securityProperties.getRefreshSecret());
+    public String getEmailFromRefreshToken(String token) {
+        log.trace("Method getEmailFromRefreshToken");
+        return getEmailFromToken(token, securityProperties.getRefreshSecret());
     }
 
     private boolean validateToken(String token, String secret) {
@@ -82,8 +82,8 @@ public class JwtProviderImpl implements JwtProvider {
         return false;
     }
 
-    private String getLoginFromToken(String token, String secret) {
-        log.info("Method getLoginFromToken");
+    private String getEmailFromToken(String token, String secret) {
+        log.info("Method getEmailFromToken");
         Claims claims = Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)

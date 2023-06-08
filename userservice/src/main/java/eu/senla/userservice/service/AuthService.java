@@ -83,13 +83,13 @@ public class AuthService {
 
         if (jwtProvider.validateAccessToken(accessToken)) {
             log.info("...access token is validate");
-            User user = repository.findByUsername(jwtProvider.getLoginFromAccessToken(accessToken))
+            User user = repository.findByEmail(jwtProvider.getEmailFromAccessToken(accessToken))
                     .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_FOUND));
             return userMapper.entityToResponse(user);
 
         } else if (jwtProvider.validateRefreshToken(refreshToken)) {
             log.info("...refresh token is validate");
-            User user = repository.findByUsername(jwtProvider.getLoginFromRefreshToken(refreshToken))
+            User user = repository.findByEmail(jwtProvider.getEmailFromRefreshToken(refreshToken))
                     .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_FOUND));
             user.setAccessToken(generateAccessToken(user));
             user = repository.save(user);

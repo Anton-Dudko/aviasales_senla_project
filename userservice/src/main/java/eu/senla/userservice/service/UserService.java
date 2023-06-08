@@ -75,6 +75,11 @@ public class UserService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_FOUND));
         if (id.equals(user.getId())) {
+            if (StringUtils.isNotEmpty(request.getUsername())
+                    && !request.getUsername().equals(user.getUsername())
+                    && userRepository.findByUsername(request.getUsername()).isPresent()) {
+                throw new AuthenticatException(ExceptionMessageConstants.USER_WITH_SUCH_USERNAME_EXIST);
+            }
             user.setUsername(StringUtils.isNotEmpty(request.getUsername())
                     ? request.getUsername()
                     : user.getUsername());
