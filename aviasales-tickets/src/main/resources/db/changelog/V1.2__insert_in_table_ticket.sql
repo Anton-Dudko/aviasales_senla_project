@@ -1,16 +1,91 @@
 insert into ticket (fio, price, status, flight_id, type, user_id, seat_number)
-values ('Anton', 200, 'FREE', 111, 'FIRST_CLASS', 2, 1);
+values ('Anton', 200, 'FREE', 1, 'FIRST_CLASS', 2, 1),
+       ('Anton', 200, 'FREE', 1, 'FIRST_CLASS', 2, 2),
+       ('Anton', 200, 'FREE', 1, 'FIRST_CLASS', 2, 3),
+       ('Anton', 200, 'FREE', 1, 'FIRST_CLASS', 2, 4),
+       ('Anton', 100, 'PAID', 1, 'SECOND_CLASS', 2, 5),
+       ('Anton', 100, 'BOOKED', 1, 'SECOND_CLASS', 2, 6),
+       ('Anton', 100, 'FREE', 1, 'SECOND_CLASS', 2, 7),
+       ('Anton', 100, 'FREE', 1, 'SECOND_CLASS', 2, 7);
+
 insert into ticket (fio, price, status, flight_id, type, user_id, seat_number)
-values ('Anton', 200, 'FREE', 111, 'FIRST_CLASS', 2, 2);
-insert into ticket (fio, price, status, flight_id, type, user_id, seat_number)
-values ('Anton', 200, 'FREE', 111, 'FIRST_CLASS', 2, 3);
-insert into ticket (fio, price, status, flight_id, type, user_id, seat_number)
-values ('Anton', 200, 'FREE', 111, 'FIRST_CLASS', 2, 4);
-insert into ticket (fio, price, status, flight_id, type, user_id, seat_number)
-values ('Anton', 100, 'PAID', 111, 'SECOND_CLASS', 2, 5);
-insert into ticket (fio, price, status, flight_id, type, user_id, seat_number)
-values ('Anton', 100, 'BOOKED', 111, 'SECOND_CLASS', 2, 6);
-insert into ticket (fio, price, status, flight_id, type, user_id, seat_number)
-values ('Anton', 100, 'FREE', 111, 'SECOND_CLASS', 2, 7);
-insert into ticket (fio, price, status, flight_id, type, user_id, seat_number)
-values ('Anton', 100, 'FREE', 111, 'SECOND_CLASS', 2, 7);
+values (null, 200, 'FREE', 2, 'FIRST_CLASS', null, 1),
+       (null, 200, 'FREE', 2, 'FIRST_CLASS', null, 2),
+       (null, 200, 'FREE', 2, 'FIRST_CLASS', null, 3),
+       (null, 200, 'FREE', 2, 'FIRST_CLASS', null, 4),
+       ('Anton', 100, 'PAID', 3, 'SECOND_CLASS', 2, 5),
+       ('Anton', 100, 'BOOKED', 2, 'SECOND_CLASS', 2, 6),
+       (null, 200, 'FREE', 2, 'FIRST_CLASS', null, 7),
+       (null, 200, 'FREE', 2, 'FIRST_CLASS', null, 7),
+
+       (null, 200, 'FREE', 3, 'FIRST_CLASS', null, 1),
+       (null, 200, 'FREE', 3, 'FIRST_CLASS', null, 2),
+       (null, 200, 'FREE', 3, 'FIRST_CLASS', null, 3),
+       (null, 200, 'FREE', 3, 'FIRST_CLASS', null, 4),
+       ('Anton', 100, 'PAID', 3, 'SECOND_CLASS', 2, 5),
+       ('Anton', 100, 'BOOKED', 3, 'SECOND_CLASS', 2, 6),
+       (null, 200, 'FREE', 3, 'FIRST_CLASS', null, 7),
+       (null, 200, 'FREE', 3, 'FIRST_CLASS', null, 7),
+
+       (null, 200, 'FREE', 4, 'FIRST_CLASS', null, 1),
+       (null, 200, 'FREE', 4, 'FIRST_CLASS', null, 2),
+       (null, 200, 'FREE', 4, 'FIRST_CLASS', null, 3),
+       (null, 200, 'FREE', 4, 'FIRST_CLASS', null, 4),
+       ('Anton', 100, 'PAID', 4, 'SECOND_CLASS', 2, 5),
+       ('Anton', 100, 'BOOKED', 4, 'SECOND_CLASS', 2, 6),
+       (null, 200, 'FREE', 4, 'FIRST_CLASS', null, 7),
+       (null, 200, 'FREE', 4, 'FIRST_CLASS', null, 7),
+
+       (null, 200, 'FREE', 5, 'FIRST_CLASS', null, 1),
+       (null, 200, 'FREE', 5, 'FIRST_CLASS', null, 2),
+       (null, 200, 'FREE', 5, 'FIRST_CLASS', null, 3),
+       (null, 200, 'FREE', 5, 'FIRST_CLASS', null, 4),
+       ('Anton', 100, 'PAID', 5, 'SECOND_CLASS', 2, 5),
+       ('Anton', 100, 'BOOKED', 5, 'SECOND_CLASS', 2, 6),
+       (null, 200, 'FREE', 5, 'FIRST_CLASS', null, 7),
+       (null, 200, 'FREE', 5, 'FIRST_CLASS', null, 7),
+
+       (null, 200, 'FREE', 6, 'FIRST_CLASS', null, 1),
+       (null, 200, 'FREE', 6, 'FIRST_CLASS', null, 2),
+       (null, 200, 'FREE', 6, 'FIRST_CLASS', null, 3),
+       (null, 200, 'FREE', 6, 'FIRST_CLASS', null, 4),
+       ('Anton', 100, 'PAID', 6, 'SECOND_CLASS', 2, 5),
+       ('Anton', 100, 'BOOKED', 6, 'SECOND_CLASS', 2, 6),
+       (null, 200, 'FREE', 6, 'FIRST_CLASS', null, 7),
+       (null, 200, 'FREE', 6, 'FIRST_CLASS', null, 7),
+
+       (null, 200, 'FREE', 7, 'FIRST_CLASS', null, 1),
+       (null, 200, 'FREE', 7, 'FIRST_CLASS', null, 2),
+       (null, 200, 'FREE', 7, 'FIRST_CLASS', null, 3),
+       (null, 200, 'FREE', 7, 'FIRST_CLASS', null, 4),
+       ('Anton', 100, 'PAID', 7, 'SECOND_CLASS', 2, 5),
+       ('Anton', 100, 'BOOKED', 7, 'SECOND_CLASS', 2, 6),
+       (null, 200, 'FREE', 7, 'FIRST_CLASS', null, 7),
+       (null, 200, 'FREE', 7, 'FIRST_CLASS', null, 7),
+
+       (null, 200, 'FREE', 8, 'FIRST_CLASS', null, 1),
+       (null, 200, 'FREE', 8, 'FIRST_CLASS', null, 2),
+       (null, 200, 'FREE', 8, 'FIRST_CLASS', null, 3),
+       (null, 200, 'FREE', 8, 'FIRST_CLASS', null, 4),
+       ('Anton', 100, 'PAID', 8, 'SECOND_CLASS', 2, 5),
+       ('Anton', 100, 'BOOKED', 8, 'SECOND_CLASS', 2, 6),
+       (null, 200, 'FREE', 8, 'FIRST_CLASS', null, 7),
+       (null, 200, 'FREE', 8, 'FIRST_CLASS', null, 7),
+
+       (null, 200, 'FREE', 9, 'FIRST_CLASS', null, 1),
+       (null, 200, 'FREE', 9, 'FIRST_CLASS', null, 2),
+       (null, 200, 'FREE', 9, 'FIRST_CLASS', null, 3),
+       (null, 200, 'FREE', 9, 'FIRST_CLASS', null, 4),
+       ('Anton', 100, 'PAID', 9, 'SECOND_CLASS', 2, 5),
+       ('Anton', 100, 'BOOKED', 9, 'SECOND_CLASS', 2, 6),
+       (null, 200, 'FREE', 9, 'FIRST_CLASS', null, 7),
+       (null, 200, 'FREE', 9, 'FIRST_CLASS', null, 7),
+
+       (null, 200, 'FREE', 10, 'FIRST_CLASS', null, 1),
+       (null, 200, 'FREE', 10, 'FIRST_CLASS', null, 2),
+       (null, 200, 'FREE', 10, 'FIRST_CLASS', null, 3),
+       (null, 200, 'FREE', 10, 'FIRST_CLASS', null, 4),
+       ('Anton', 100, 'PAID', 10, 'SECOND_CLASS', 2, 5),
+       ('Anton', 100, 'BOOKED', 10, 'SECOND_CLASS', 2, 6),
+       (null, 200, 'FREE', 10, 'FIRST_CLASS', null, 7),
+       (null, 200, 'FREE', 10, 'FIRST_CLASS', null, 7);
