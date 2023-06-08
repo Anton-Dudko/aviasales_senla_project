@@ -1,7 +1,7 @@
 package com.aviasalestickets.config;
 
 import com.aviasalestickets.config.properties.KafkaProperties;
-import com.aviasalestickets.model.dto.KafkaTicketDto;
+import com.aviasalestickets.model.dto.kafka.KafkaTicketDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;

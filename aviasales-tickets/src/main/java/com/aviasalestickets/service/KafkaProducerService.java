@@ -1,6 +1,6 @@
 package com.aviasalestickets.service;
 
-import com.aviasalestickets.model.dto.KafkaTicketDto;
+import com.aviasalestickets.model.dto.kafka.KafkaTicketDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

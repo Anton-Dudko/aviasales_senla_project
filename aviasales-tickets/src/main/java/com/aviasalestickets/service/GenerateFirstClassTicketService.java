@@ -3,7 +3,7 @@ package com.aviasalestickets.service;
 import com.aviasalestickets.mapper.TicketMapper;
 import com.aviasalestickets.model.Ticket;
 import com.aviasalestickets.model.TicketType;
-import com.aviasalestickets.model.dto.GenerateTicketRequest;
+import com.aviasalestickets.model.dto.request.GenerateTicketRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
