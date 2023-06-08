@@ -55,7 +55,7 @@ public class ServiceDescriptionUpdater {
     }
 
     private void refreshServiceDefinition(String serviceId) {
-        log.debug("Attempting service definition refresh for Service: {}", serviceId);
+        log.info("Attempting service definition refresh for Service: {}", serviceId);
         List<ServiceInstance> serviceInstances = discoveryClient.getInstances(serviceId);
         if (serviceInstances == null || serviceInstances.isEmpty()) {
             log.info("No instances available for service: {}", serviceId);
@@ -80,7 +80,7 @@ public class ServiceDescriptionUpdater {
     }
 
     private Optional<Object> getSwaggerDefinitionForAPI(String serviceName, String url) {
-        log.debug("Accessing the SwaggerDefinition JSON for Service: {}. URL: {}", serviceName, url);
+        log.info("Accessing the SwaggerDefinition JSON for Service: {}. URL: {}", serviceName, url);
         try {
             Object jsonData = template.getForObject(url, Object.class);
             return Optional.ofNullable(jsonData);
