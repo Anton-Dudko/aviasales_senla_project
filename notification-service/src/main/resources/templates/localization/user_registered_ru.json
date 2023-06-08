@@ -1,6 +1,8 @@
 {
-  "appeal": "Уважаемый",
-  "welcomeText": "Мы рады, что выбрали нас! Вы успешно зарегестрированы в Aviasales.",
-  "emailGeneratedAutomatically": "Это письмо сегенирировано автоматически. Пожалуйста, не отвечайте на него.",
-  "supportTeam": "Служба поддержки Aviasales "
+  "welcome": "Добро пожаловать",
+  "appeal": "Дорогой",
+  "welcomeText": "Спасибо за регистрацию на Aviasales. Мы рады видеть вас на борту!",
+  "emailGeneratedAutomatically": "Это письмо сгенерировано автоматически. Пожалуйста, не отвечайте на него.",
+  "thanksText": "Еще раз благодарим за выбор Aviasales!",
+  "supportTeam": "С уважением, Команда Aviasales"
 }
