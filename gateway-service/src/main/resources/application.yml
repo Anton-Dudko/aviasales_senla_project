@@ -4,11 +4,7 @@ server:
 
 cloud:
   eureka-host: localhost
-  finance-service-host: finance-service
-  userservice-host: userservice
-  ticket-service-host: ticket-service
-  trip-service-host: trip-service
-  notification-service-host: notification-service
+
 spring:
   config:
     import: endpoint-mappings.yml
