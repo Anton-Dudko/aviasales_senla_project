@@ -2,9 +2,8 @@ package com.aviasalestickets.service;
 
 import com.aviasalestickets.model.Ticket;
 import com.aviasalestickets.model.TicketStatus;
+import com.aviasalestickets.model.TicketType;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.util.List;
 
 import static java.util.Optional.ofNullable;
 
@@ -44,10 +43,10 @@ public class TicketSpecifications {
                         .orElseGet(criteriaBuilder::conjunction);
     }
 
-//    public static Specification<Ticket> findAllByIds(List<Long> ids) {
-//        return (root, query, criteriaBuilder) ->
-//                ofNullable(ids)
-//                        .map(value -> criteriaBuilder.in(root.get("id")).value(ids))
-//                        .orElseGet(criteriaBuilder::conjunction);
-//    }
+    public static Specification<Ticket> typeEqual(String type) {
+        return (root, query, criteriaBuilder) ->
+                ofNullable(type)
+                        .map(value -> criteriaBuilder.equal(root.get("type"), TicketType.valueOf(type)))
+                        .orElseGet(criteriaBuilder::conjunction);
+    }
 }

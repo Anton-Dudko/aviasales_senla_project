@@ -18,24 +18,34 @@ public class ControllerAdvice {
         return build(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(TicketNotCreatedException.class)
-    public ResponseEntity<ErrorDetails> handleTicketNotFoundException(TicketNotCreatedException e) {
-        return build(e.getMessage(), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler({TicketNotCreatedException.class})
+    public ResponseEntity<ErrorDetails> handleTicketNotCreatedException(TicketNotCreatedException e) {
+        return build(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(TicketNotPaidException.class)
-    public ResponseEntity<ErrorDetails> handleTicketNotFoundException(TicketNotPaidException e) {
+    public ResponseEntity<ErrorDetails> handleTicketNotPaidException(TicketNotPaidException e) {
         return build(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(TicketNotDeletedReservationException.class)
-    public ResponseEntity<ErrorDetails> handleTicketNotFoundException(TicketNotDeletedReservationException e) {
+    public ResponseEntity<ErrorDetails> handleTicketNotDeletedReservationException(TicketNotDeletedReservationException e) {
         return build(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(TicketNotBookedException.class)
-    public ResponseEntity<ErrorDetails> handleTicketNotFoundException(TicketNotBookedException e) {
+    public ResponseEntity<ErrorDetails> handleTicketNotBookedException(TicketNotBookedException e) {
         return build(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TicketNotRefundException.class)
+    public ResponseEntity<ErrorDetails> handleTicketNotRefundException(TicketNotRefundException e) {
+        return build(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserDetailsException.class)
+    public ResponseEntity<ErrorDetails> handleUserDetailsException(UserDetailsException e) {
+        return build(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private ResponseEntity<ErrorDetails> build(String message, HttpStatus status) {

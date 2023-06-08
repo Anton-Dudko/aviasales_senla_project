@@ -1,0 +1,284 @@
+{
+	"info": {
+		"_postman_id": "2a155949-5b32-445b-8a13-4c8e0821629a",
+		"name": "Ticket service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14190613"
+	},
+	"item": [
+		{
+			"name": "Registration user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"username\": \"Anton\",\n    \"email\": \"antondudko01@gmail.com\",\n    \"password\": \"user\",\n    \"role\": \"ROLE_USER\",\n    \"dateBirth\": \"2001-08-31\",\n    \"language\": \"RU\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/registration",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Book ticket",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbnRvbiIsImV4cCI6MTY4NjIzNTc0OSwicm9sZSI6IlJPTEVfVVNFUiJ9.HkKQ1lB7UD0fZppjYqWUggHeC7Ut8iskp6HDXX4UKuTG8rkxWmN8l0NfbuMdkNgJ5Drkuk32nWydSQwmDsEQTQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 3,\n    \"userId\": 3\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/book-ticket",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"book-ticket"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete reservation",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbnRvbiIsImV4cCI6MTY4NjIzNTc0OSwicm9sZSI6IlJPTEVfVVNFUiJ9.HkKQ1lB7UD0fZppjYqWUggHeC7Ut8iskp6HDXX4UKuTG8rkxWmN8l0NfbuMdkNgJ5Drkuk32nWydSQwmDsEQTQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/delete-ticket/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"delete-ticket",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find tickets by criteria",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbnRvbiIsImV4cCI6MTY4NjIzNTc0OSwicm9sZSI6IlJPTEVfVVNFUiJ9.HkKQ1lB7UD0fZppjYqWUggHeC7Ut8iskp6HDXX4UKuTG8rkxWmN8l0NfbuMdkNgJ5Drkuk32nWydSQwmDsEQTQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/find-tickets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"find-tickets"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "FREE",
+							"disabled": true
+						},
+						{
+							"key": "flightId",
+							"value": "5",
+							"disabled": true
+						},
+						{
+							"key": "type",
+							"value": "FIRST_CLASS",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbnRvbiIsImV4cCI6MTY4NjIzNTc0OSwicm9sZSI6IlJPTEVfVVNFUiJ9.HkKQ1lB7UD0fZppjYqWUggHeC7Ut8iskp6HDXX4UKuTG8rkxWmN8l0NfbuMdkNgJ5Drkuk32nWydSQwmDsEQTQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/find-ticket/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"find-ticket",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find by ids",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbnRvbiIsImV4cCI6MTY4NjIzNTc0OSwicm9sZSI6IlJPTEVfVVNFUiJ9.HkKQ1lB7UD0fZppjYqWUggHeC7Ut8iskp6HDXX4UKuTG8rkxWmN8l0NfbuMdkNgJ5Drkuk32nWydSQwmDsEQTQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/find-tickets-by?ids=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"find-tickets-by"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pay tickets",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbnRvbiIsImV4cCI6MTY4NjIzNTc0OSwicm9sZSI6IlJPTEVfVVNFUiJ9.HkKQ1lB7UD0fZppjYqWUggHeC7Ut8iskp6HDXX4UKuTG8rkxWmN8l0NfbuMdkNgJ5Drkuk32nWydSQwmDsEQTQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/pay-tickets?ticketsId=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pay-tickets"
+					],
+					"query": [
+						{
+							"key": "ticketsId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate tickets",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"flightId\": 6,\n    \"countTicketsFirstClass\": 4,\n    \"countTicketsSecondClass\": 6,\n    \"firstClassPrice\": 333,\n    \"secondClassPrice\": 111\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8088/tickets/generate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"tickets",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

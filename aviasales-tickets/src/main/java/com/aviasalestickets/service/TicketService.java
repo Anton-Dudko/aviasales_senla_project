@@ -6,19 +6,23 @@ import com.aviasalestickets.mapper.TicketMapper;
 import com.aviasalestickets.mapper.UserMapper;
 import com.aviasalestickets.model.Ticket;
 import com.aviasalestickets.model.TicketStatus;
-import com.aviasalestickets.model.dto.*;
+import com.aviasalestickets.model.dto.request.GenerateTicketRequest;
+import com.aviasalestickets.model.dto.request.TicketRequest;
+import com.aviasalestickets.model.dto.response.BookTicketResponse;
+import com.aviasalestickets.model.dto.response.TicketResponse;
+import com.aviasalestickets.model.dto.response.TicketResponseWithCount;
 import com.aviasalestickets.model.dto.user.UserDetails;
 import com.aviasalestickets.repository.TicketRepository;
 import com.aviasalestickets.service.api.TripApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,17 +37,21 @@ public class TicketService {
     private final KafkaProducerService kafkaProducerService;
     private final UserMapper userMapper;
 
-
     public Ticket save(TicketRequest request) {
         return Optional.ofNullable(request)
                 .map(ticketMapper::convertDtoToEntity)
                 .map(ticketRepository::save)
-                .orElseThrow(() -> new TicketNotCreatedException("Ticket " + request.getId() + "not create"));
+                .orElseThrow(() -> new TicketNotCreatedException(String.format("Ticket %s not create", request)));
     }
 
     public TicketResponseWithCount search(TicketRequest request) {
         return Optional.ofNullable(request)
-                .map(req -> criteriaTicketService.findAll(request.getUserId(), request.getStatus(), request.getFlightId(), request.getFio(), request.getId()))
+                .map(req -> criteriaTicketService.findAll(request.getUserId(),
+                        request.getStatus(),
+                        request.getFlightId(),
+                        request.getFio(),
+                        request.getId(),
+                        request.getType()))
                 .map(ticketMapper::convertListEntityToDtoWithCount)
                 .orElseThrow(() -> new TicketNotFoundException("Tickets with these parameters not found"));
     }
@@ -52,16 +60,25 @@ public class TicketService {
         return Optional.ofNullable(id)
                 .map(ticketRepository::findTicketById)
                 .map(ticketMapper::convertEntityToDto)
-                .orElseThrow(() -> new TicketNotFoundException("Ticket " + id + " not found"));
+                .orElseThrow(() -> new TicketNotFoundException(String.format("Ticket %s not found", id)));
     }
 
+    @Transactional
     public BookTicketResponse bookTicket(Long id, Long userId, String userDetails) {
         UserDetails user = userMapper.getUserDetails(userDetails);
-        log.info(user.toString());
+        Boolean validate = Optional.ofNullable(user)
+                .map(userDetail -> StringUtils.isNotEmpty(userDetail.getEmail()))//TODO validation UTIL class valid all params
+                .orElse(false);
+        if (!validate) {
+            throw new RuntimeException("User details is invalid");
+        }
+
         return Optional.ofNullable(id)
                 .map(ticketRepository::findTicketById)
+                .filter(ticket -> ticket.getStatus().equals(TicketStatus.FREE))
                 .map(t -> {
                     t.setUserId(userId);
+                    t.setFio(user.getUsername());
                     t.setStatus(TicketStatus.BOOKED);
                     return ticketRepository.save(t);
                 })
@@ -69,17 +86,17 @@ public class TicketService {
                     var flightInfoDto = tripApi.requestToTrip(ticket.getFlightId());
                     return ticketMapper.buildKafkaTicketDto(flightInfoDto, ticket.getPrice().toString(), user);
                 })
-                .map(kafkaTicketDto -> kafkaProducerService.sendMessage(kafkaTicketDto, KafkaTopics.NEW_TICKET_RESERVATION_EVENT))
+                .map(kafkaTicketDto -> kafkaProducerService.sendMessage(kafkaTicketDto,
+                        KafkaTopics.NEW_TICKET_RESERVATION_EVENT))
                 .map(kafkaTicketDto -> new BookTicketResponse(id))
-                .orElseThrow(() -> new TicketNotBookedException("Ticket " + id + "not booked"));
+                .orElseThrow(() -> new TicketNotBookedException(String.format("Ticket %s not booked", id)));
     }
 
-    public void deleteReservation(Long id, String userDetails) {
+    public void deleteReservation(Long ticketId, String userDetails) {
         UserDetails user = userMapper.getUserDetails(userDetails);
-        log.info(user.toString());
-
-        Optional.ofNullable(id)
+        Optional.ofNullable(ticketId)
                 .map(ticketRepository::findTicketById)
+                .filter(ticket -> ticket.getStatus().equals(TicketStatus.BOOKED))
                 .map(ticket -> {
                     ticket.setStatus(TicketStatus.FREE);
                     ticket.setUserId(null);
@@ -90,58 +107,57 @@ public class TicketService {
                     var flightInfoDto = tripApi.requestToTrip(ticket.getFlightId());
                     return ticketMapper.buildKafkaTicketDto(flightInfoDto, ticket.getPrice().toString(), user);
                 })
-                .map(kafkaTicketDto -> kafkaProducerService.sendMessage(kafkaTicketDto, KafkaTopics.CANCELED_TICKET_RESERVATION_EVENT))
-                .map(kafkaTicketDto -> new BookTicketResponse(id))
-                .orElseThrow(() -> new TicketNotDeletedReservationException("Ticket " + id + "not deleted reservation"));
-    }
-
-    public void payTicket(Long id) {
-        Optional.ofNullable(id)
-                .map(ticketRepository::findTicketById)
-                .map(ticket -> {
-                    ticket.setStatus(TicketStatus.PAID);
-                    return ticketRepository.save(ticket);
-                })
-                .orElseThrow(() -> new TicketNotPaidException("Ticket " + id + "not paid"));
+                .map(kafkaTicketDto -> kafkaProducerService.sendMessage(kafkaTicketDto,
+                        KafkaTopics.CANCELED_TICKET_RESERVATION_EVENT))
+                .map(kafkaTicketDto -> new BookTicketResponse(ticketId))
+                .orElseThrow(() ->
+                        new TicketNotDeletedReservationException(String.format("Ticket %s not deleted reservation", ticketId)));
     }
 
     public void generateTickets(GenerateTicketRequest request) {
-        List<Ticket> ticketsToSave = new ArrayList<>();
-        for (GenerateTicketService generateTicketService : generateTicketServices) {
-            ticketsToSave.addAll(generateTicketService.generate(request));
-        }
+        List<Ticket> ticketsToSave = generateTicketServices.stream()
+                .flatMap(service -> service.generate(request).stream())
+                .collect(Collectors.toList());
         ticketRepository.saveAll(ticketsToSave);
     }
 
-    public ResponseEntity<?> payTickets(List<Long> ticketsId) {
-        List<Ticket> tickets = ticketRepository.findAllById(ticketsId);
-        log.info(tickets.toString());
-
-        for (Ticket ticket : tickets) {
-            if (!ticket.getStatus().equals(TicketStatus.FREE)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tickets not FREE or not exist!");
-            }
+    public void payTickets(List<Long> ticketsId, String userDetails) {
+        UserDetails user = userMapper.getUserDetails(userDetails);
+        var validateTicket = ticketRepository.findAllById(ticketsId).stream()
+                .filter(ticket -> ticket.getStatus().equals(TicketStatus.FREE) ||
+                        ticket.getStatus().equals(TicketStatus.BOOKED))
+                .peek(ticket -> {
+                    ticket.setStatus(TicketStatus.PAID);
+                    ticket.setUserId(user.getUserId());
+                    ticket.setFio(user.getUsername());
+                })
+                .toList();
+        if (validateTicket.size() != ticketsId.size()) {
+            throw new TicketNotPaidException("Tickets cannot be paid");
         }
-
-        for (Ticket ticket : tickets) {
-            ticket.setStatus(TicketStatus.PAID);
-            ticketRepository.save(ticket);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("Tickets number - " + ticketsId + " paid!");
+        ticketRepository.saveAll(validateTicket);
     }
 
-    public ResponseEntity<?> refundTickets(List<Long> ticketsId) {
-        List<Ticket> tickets = ticketRepository.findAllById(ticketsId);
-
-        for (Ticket ticket : tickets) {
-            ticket.setStatus(TicketStatus.FREE);
-            ticketRepository.save(ticket);
+    public void refundTickets(List<Long> ticketsId) {
+        var validateTickets = ticketRepository.findAllById(ticketsId).stream()
+                .peek(ticket -> {
+                    ticket.setStatus(TicketStatus.FREE);
+                    ticket.setFio(null);
+                    ticket.setUserId(null);
+                })
+                .toList();
+        if (validateTickets.size() != ticketsId.size()) {
+            throw new TicketNotRefundException("Tickets cannot be refund");
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Tickets number - " + ticketsId + " refunded!");
+        ticketRepository.saveAll(validateTickets);
     }
 
-    public List<Ticket> findAllByIds(List<Long> ids) {
-        return ticketRepository.findAllById(ids);
+    public List<TicketResponse> findAllByIds(List<Long> ids) {
+        List<Ticket> tickets = ticketRepository.findAllById(ids);
+        return tickets
+                .stream()
+                .map(ticketMapper::convertEntityToDto)
+                .collect(Collectors.toList());
     }
 }
 

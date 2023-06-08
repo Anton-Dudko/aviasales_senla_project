@@ -1,9 +1,9 @@
-package com.aviasalestickets.model.dto;
+package com.aviasalestickets.model.dto.kafka;
 
-import lombok.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
@@ -17,6 +17,4 @@ public class KafkaTicketDto {
     private String to;
     private String price;
     private String ticketDate;
-
-
 }

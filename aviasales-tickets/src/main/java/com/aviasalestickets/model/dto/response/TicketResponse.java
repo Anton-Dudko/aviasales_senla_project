@@ -1,4 +1,4 @@
-package com.aviasalestickets.model.dto;
+package com.aviasalestickets.model.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
