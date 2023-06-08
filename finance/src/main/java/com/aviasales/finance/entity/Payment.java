@@ -1,6 +1,7 @@
 package com.aviasales.finance.entity;
 
 import com.aviasales.finance.enums.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -23,6 +24,7 @@ public class Payment {
 
     @Column(name = "amount")
     private BigDecimal amount;
+    @JsonFormat(pattern = "dd-MM-yy HH:mm:ss")
     private LocalDateTime paymentCreationDateTime;
 
     @ElementCollection

@@ -34,4 +34,10 @@ public class ExceptionsHandler {
     public ResponseEntity<Object> handleTripServiceException(TripServiceException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SimpleErrorResponse(ex.getMessage()));
     }
+
+
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<Object> handlePaymentException(PaymentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SimpleErrorResponse(ex.getMessage()));
+    }
 }

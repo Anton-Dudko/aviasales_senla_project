@@ -8,6 +8,7 @@ import com.aviasales.finance.entity.Payment;
 import com.aviasales.finance.enums.PaymentStatus;
 import com.aviasales.finance.enums.UserRole;
 import com.aviasales.finance.exception.ExternalPaymentSystemException;
+import com.aviasales.finance.exception.PaymentException;
 import com.aviasales.finance.exception.UserDetailsException;
 import com.aviasales.finance.repository.PaymentRepository;
 import com.aviasales.finance.service.external.KafkaService;
@@ -18,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tennaito.rsql.jpa.JpaPredicateVisitor;
 import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.RSQLParserException;
 import cz.jirutka.rsql.parser.ast.Node;
 import cz.jirutka.rsql.parser.ast.RSQLVisitor;
 import org.slf4j.Logger;
@@ -55,11 +57,12 @@ public class PaymentService {
     private final EntityManager entityManager;
     private final ObjectMapper objectMapper;
     private final TripService tripService;
+    private final RSQLParser rsqlParser;
 
     @Autowired
     public PaymentService(PaymentConverter paymentConverter, PaymentRepository paymentRepository,
                           RestTemplate restTemplate, UrlUtils urlUtils, KafkaService kafkaService,
-                          TicketService ticketService, EntityManager entityManager, ObjectMapper objectMapper, TripService tripService) {
+                          TicketService ticketService, EntityManager entityManager, ObjectMapper objectMapper, TripService tripService, RSQLParser rsqlParser) {
         this.paymentConverter = paymentConverter;
         this.paymentRepository = paymentRepository;
         this.restTemplate = restTemplate;
@@ -69,6 +72,7 @@ public class PaymentService {
         this.entityManager = entityManager;
         this.objectMapper = objectMapper;
         this.tripService = tripService;
+        this.rsqlParser = rsqlParser;
     }
 
     private ExternalPaymentResponse sendPaymentToExternalPaymentSystem(TransactionDto transactionDto, Payment payment) {
@@ -171,14 +175,19 @@ public class PaymentService {
 
         if (filter.getAmount() != null) {
             String rsql = "amount" + filter.getAmount();
-            //toDo add validation of incorrect filter
-            Node node = new RSQLParser().parse(rsql);
 
-            spec = spec.and((root, query, builder) -> {
-                RSQLVisitor<Predicate, EntityManager> visitor = new JpaPredicateVisitor<>().defineRoot(root);
-                Predicate predicate = node.accept(visitor, entityManager);
-                return builder.and(predicate);
-            });
+            try {
+                Node node = rsqlParser.parse(rsql);
+
+
+                spec = spec.and((root, query, builder) -> {
+                    RSQLVisitor<Predicate, EntityManager> visitor = new JpaPredicateVisitor<>().defineRoot(root);
+                    Predicate predicate = node.accept(visitor, entityManager);
+                    return builder.and(predicate);
+                });
+            } catch (RSQLParserException rsqlParserException) {
+                throw new PaymentException("Incorrect format of RSQL query for amount");
+            }
 
         }
 

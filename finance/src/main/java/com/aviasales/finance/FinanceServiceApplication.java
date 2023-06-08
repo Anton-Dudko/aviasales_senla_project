@@ -1,5 +1,6 @@
 package com.aviasales.finance;
 
+import cz.jirutka.rsql.parser.RSQLParser;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -18,5 +19,10 @@ public class FinanceServiceApplication {
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 		return builder.build();
+	}
+
+	@Bean
+	public RSQLParser rsqlParser() {
+		return new RSQLParser();
 	}
 }

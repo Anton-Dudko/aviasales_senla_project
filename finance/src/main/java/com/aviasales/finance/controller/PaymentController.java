@@ -90,10 +90,10 @@ public class PaymentController {
 
 
     @GetMapping("/stat")
-    public PaymentListDto getPaymentStat(PaymentFilter paymentFilter, @RequestParam(defaultValue = "0") int page,
+    public PaymentListDto getPaymentStat(@Valid PaymentFilter paymentFilter, @RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "15") int size,
                                          @RequestHeader(name = "userDetails") String userDetails) {
-        logger.info("rsql for debug gateway" + paymentFilter.getAmount());
+
         UserDetailsDto userDetailsDto = paymentService.getUserDetailsFromString(userDetails);
         PageRequest pageRequest = PageRequest.of(page, size);
         return paymentService.findPayments(paymentFilter, pageRequest, userDetailsDto);

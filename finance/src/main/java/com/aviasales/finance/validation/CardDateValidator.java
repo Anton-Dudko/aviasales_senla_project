@@ -8,6 +8,7 @@ import java.time.YearMonth;
 
 @Component
 public class CardDateValidator implements ConstraintValidator<ValidCardDate, YearMonth> {
+
     @Override
     public boolean isValid(YearMonth date, ConstraintValidatorContext constraintValidatorContext) {
         if (date == null) {
