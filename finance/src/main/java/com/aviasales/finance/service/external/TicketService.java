@@ -1,6 +1,6 @@
 package com.aviasales.finance.service.external;
 
-import com.aviasales.finance.dto.TicketInfoDto;
+import com.aviasales.finance.dto.ticket.TicketInfoDto;
 import com.aviasales.finance.dto.UserDetailsDto;
 import com.aviasales.finance.enums.TicketStatus;
 import com.aviasales.finance.enums.UserRole;
@@ -8,6 +8,7 @@ import com.aviasales.finance.exception.TicketServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +28,8 @@ import java.util.stream.Collectors;
 public class TicketService {
     private static final Logger logger = LoggerFactory.getLogger(TicketService.class);
     private final RestTemplate restTemplate;
-    private final String tickerServiceUrl = "http://ticket-service:8088/tickets";
+    @Value("${ticket.service.url}")
+    private String tickerServiceUrl;
 
     @Autowired
     public TicketService(RestTemplate restTemplate) {
@@ -36,7 +38,7 @@ public class TicketService {
 
     public List<TicketInfoDto> getTicketInfo(List<Long> ticketList) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(tickerServiceUrl)
-                .pathSegment("findByIds")
+                .pathSegment("ids")
                 .queryParam("ids", ticketList.stream().map(Object::toString).collect(Collectors.joining(",")));
 
         try {
@@ -47,26 +49,19 @@ public class TicketService {
 
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             logger.error("Error received from ticket service: " + e.getMessage(), e);
-            throw new TicketServiceException(e.getMessage());
+            throw new TicketServiceException("Error received from ticket service: " + e.getMessage());
         }
-
-//        TicketInfoDto ticketInfoDto = new TicketInfoDto();
-//        ticketInfoDto.setId("1");
-//        ticketInfoDto.setPrice(new BigDecimal(100));
-//        ticketInfoDto.setStatus(TicketStatus.FREE);
-//
-//        TicketInfoDto ticked2nd = new TicketInfoDto();
-//        ticked2nd.setId("2");
-//        ticked2nd.setPrice(new BigDecimal(250));
-//        ticked2nd.setStatus(TicketStatus.FREE);
-//
-//        return List.of(ticketInfoDto, ticked2nd);
     }
 
     public List<TicketInfoDto> getTicketInfoForPaying(List<Long> ticketList, UserDetailsDto userDetailsDto) {
         List<TicketInfoDto> ticketInfoDtos = getTicketInfo(ticketList);
+        logger.info("Checking all tickets are received");
+
         if (ticketInfoDtos.size() != ticketList.size()) {
-            throw new TicketServiceException("Not all tickets received from ticket service");
+            String absentTickets = ticketInfoDtos.stream().filter(ticket -> ticketList.contains(ticket.getId()))
+                    .map(String::valueOf).collect(Collectors.joining(", "));
+            throw new TicketServiceException("Not all tickets that you provided are received from ticket service, absent tickets id(s) -" +
+                    absentTickets);
         }
 
         logger.info("Checking ticket status valid");
@@ -81,17 +76,20 @@ public class TicketService {
         return ticketInfoDtos;
     }
 
-    public void updateTicketToPaid(List<Long> ticketList) {
+    public void updateTicketToPaid(List<Long> ticketList, String userDetails) {
         logger.info("Update tickets to Paid");
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(tickerServiceUrl)
                 .pathSegment("pay-tickets").queryParam("ticketsId",
                         ticketList.stream().map(Object::toString).collect(Collectors.joining(",")));
         try {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.set("userDetails", userDetails);
             ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,
-                    new HttpEntity<>(new HttpHeaders()), String.class);
+                    new HttpEntity<>(httpHeaders), String.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             logger.error("Error received from ticket service during updating to paid status: " + e.getMessage(), e);
-            throw new TicketServiceException(e.getMessage());
+            throw new TicketServiceException("Error received from ticket service during updating to paid status:"
+                    + e.getMessage());
         }
     }
 
@@ -105,7 +103,8 @@ public class TicketService {
                     new HttpEntity<>(new HttpHeaders()), String.class);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             logger.error("Error received from ticket service during updating to Free status: " + e.getMessage(), e);
-            throw new TicketServiceException(e.getMessage());
+            throw new TicketServiceException("Error received from ticket service during updating to Free status refund tickets: "
+                    + e.getMessage());
         }
     }
 

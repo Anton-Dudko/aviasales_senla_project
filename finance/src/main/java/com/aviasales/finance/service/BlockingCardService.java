@@ -1,7 +1,7 @@
 package com.aviasales.finance.service;
 
 import com.aviasales.finance.controller.PaymentController;
-import com.aviasales.finance.dto.BlockCarDto;
+import com.aviasales.finance.dto.card.BlockCarDto;
 import com.aviasales.finance.entity.BlockedCard;
 import com.aviasales.finance.entity.BlockedCountry;
 import com.aviasales.finance.exception.BlockedCardException;

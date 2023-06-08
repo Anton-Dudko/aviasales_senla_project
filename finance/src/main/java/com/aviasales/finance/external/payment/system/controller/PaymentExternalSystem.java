@@ -1,6 +1,6 @@
 package com.aviasales.finance.external.payment.system.controller;
 
-import com.aviasales.finance.dto.RefundExternalDto;
+import com.aviasales.finance.dto.payment.RefundExternalDto;
 import com.aviasales.finance.external.payment.system.dto.PaymentForProcessingDto;
 import com.aviasales.finance.external.payment.system.service.PaymentProcessingService;
 import org.springframework.beans.factory.annotation.Autowired;

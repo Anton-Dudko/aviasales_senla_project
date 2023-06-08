@@ -1,4 +1,4 @@
-package com.aviasales.finance.dto;
+package com.aviasales.finance.dto.payment;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

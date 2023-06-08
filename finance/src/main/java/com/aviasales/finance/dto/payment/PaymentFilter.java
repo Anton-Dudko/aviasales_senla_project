@@ -1,4 +1,4 @@
-package com.aviasales.finance.dto;
+package com.aviasales.finance.dto.payment;
 
 import com.aviasales.finance.enums.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;

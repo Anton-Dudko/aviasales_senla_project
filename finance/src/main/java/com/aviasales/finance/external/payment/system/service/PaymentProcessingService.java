@@ -1,6 +1,6 @@
 package com.aviasales.finance.external.payment.system.service;
 
-import com.aviasales.finance.dto.RefundExternalDto;
+import com.aviasales.finance.dto.payment.RefundExternalDto;
 import com.aviasales.finance.external.payment.system.converter.BankCardMapper;
 import com.aviasales.finance.external.payment.system.dto.BankCardDto;
 import com.aviasales.finance.external.payment.system.dto.PaymentForProcessingDto;
@@ -22,12 +22,10 @@ import java.util.Objects;
 public class PaymentProcessingService {
     private static final Logger logger = LoggerFactory.getLogger(PaymentProcessingService.class);
     private final BankCardRepository bankCardRepository;
-    private final BankCardMapper bankCardMapper;
 
     @Autowired
-    public PaymentProcessingService(BankCardRepository bankCardRepository, BankCardMapper bankCardMapper) {
+    public PaymentProcessingService(BankCardRepository bankCardRepository) {
         this.bankCardRepository = bankCardRepository;
-        this.bankCardMapper = bankCardMapper;
     }
 
     public void processPayment(PaymentForProcessingDto paymentForProcessingDto) {
@@ -49,11 +47,6 @@ public class PaymentProcessingService {
 
         bankCard.setAccountSum(bankCard.getAccountSum().subtract(paymentForProcessingDto.getSum()));
         bankCardRepository.save(bankCard);
-    }
-
-    public void createBankCard(BankCardDto bankCardDto) {
-        bankCardRepository.findBankCardByCardNumber(bankCardDto.getCardNumber()).orElseThrow(() ->
-                new ExternalAccountException("Such bank card already created"));
     }
 
     public void processRefund(RefundExternalDto refundExternalDto) {

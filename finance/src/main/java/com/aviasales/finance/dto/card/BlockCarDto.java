@@ -1,4 +1,4 @@
-package com.aviasales.finance.dto;
+package com.aviasales.finance.dto.card;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.CreditCardNumber;
@@ -13,7 +13,7 @@ public class BlockCarDto {
     private String countryCode;
 
     public boolean validateDto() {
-        return !((getCardNumber() == null && getCountryCode() == null)
-                || (getCardNumber() != null && getCountryCode() != null));
+        return (getCardNumber() == null && getCountryCode() == null)
+                || (getCardNumber() != null && getCountryCode() != null);
     }
 }

@@ -1,5 +1,6 @@
 package com.aviasales.finance.external.payment.system.enity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -20,6 +21,7 @@ public class BankCard {
     private Long id;
 
     private String cardNumber;
+    @JsonFormat(pattern = "MM/yy")
     private YearMonth cardDate;
     private String cvv;
     private String cardHolder;
