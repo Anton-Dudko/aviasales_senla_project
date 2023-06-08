@@ -61,16 +61,17 @@ public class TripService {
 
     public void checkTripDateForRefund(List<Long> flightsList) {
         logger.info("Check flight departure date");
-        LocalDateTime latestTimeAvailableForReturn = LocalDateTime.now().plusHours(minHourBeforeDepartureForRefund);
-        List<FlightDto> flightDtoList = getFlights(flightsList);
+        final LocalDateTime LATEST_TIME_AVAILABLE_FOR_RETURN = LocalDateTime.now().plusHours(minHourBeforeDepartureForRefund);
 
-        LocalDateTime nearestFlightTime = flightDtoList.stream().map(FlightDto::getDepartureDateTime).min(LocalDateTime::compareTo)
-                .orElseThrow(() ->
-                        new TripServiceException("There are no date info for flights"));
+        List<FlightDto> flightDtoList = getFlights(flightsList).stream()
+                .filter(flights -> flights.getDepartureDateTime()
+                        .isBefore(LATEST_TIME_AVAILABLE_FOR_RETURN)).toList();
 
-        if (nearestFlightTime.isBefore(latestTimeAvailableForReturn)) {
-            logger.warn("Payment can not be returned, because some flight are 4 hours before departure");
-            throw new TripServiceException("Payment can not be returned, because some flight are 4 hours before departure");
+        if (flightDtoList.size() > 0) {
+            String lateFlights = flightDtoList.stream().map(flight -> String.valueOf(flight.getFlightId()))
+                    .collect(Collectors.joining(", "));
+            logger.warn("Payment can not be returned, because flights in some tickets are 4 hours before departure");
+            throw new TripServiceException("Payment can not be returned, because flights in some tickets are in the past or 4 hours before departure, flights id(s) - " + lateFlights);
         }
     }
 

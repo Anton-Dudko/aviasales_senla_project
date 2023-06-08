@@ -1,0 +1,944 @@
+{
+	"info": {
+		"_postman_id": "dac6b93b-ee4c-4eff-b1bb-d429dacb1a4a",
+		"name": "Gateway finance",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8649506"
+	},
+	"item": [
+		{
+			"name": "pay by blocked card (country blocked)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzb21lZW1haWxAZ21hYWFhaWwuY29tIiwiZXhwIjoxNjg2MzA5NTg3LCJyb2xlIjoiUk9MRV9VU0VSIn0.SOoetBTwHKjJEZtTI1wnGlvoW2lDZW-UN6E8jFeNDEXPQQYnf75qUzcki9ZQThPbrcDJhmvbnExrudkgA9iTzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n      \"tickets\": [4],\r\n\"cardNumber\": \"4485349439401891\",\r\n\"cardDate\": \"12/26\",\r\n\"cvv\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay by blocked card (number blocked)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzb21lZW1haWxAZ21hYWFhaWwuY29tIiwiZXhwIjoxNjg2MzA5NTg3LCJyb2xlIjoiUk9MRV9VU0VSIn0.SOoetBTwHKjJEZtTI1wnGlvoW2lDZW-UN6E8jFeNDEXPQQYnf75qUzcki9ZQThPbrcDJhmvbnExrudkgA9iTzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n      \"tickets\": [4],\r\n\"cardNumber\": \"6011000000000087\",\r\n\"cardDate\": \"12/26\",\r\n\"cvv\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay ticket which already Paid",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzb21lZW1haWxAZ21hYWFhaWwuY29tIiwiZXhwIjoxNjg2MzA5NTg3LCJyb2xlIjoiUk9MRV9VU0VSIn0.SOoetBTwHKjJEZtTI1wnGlvoW2lDZW-UN6E8jFeNDEXPQQYnf75qUzcki9ZQThPbrcDJhmvbnExrudkgA9iTzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        29\r\n    ],\r\n    \"cardNumber\": \"6011000991300009\",\r\n    \"cardDate\": \"11/24\",\r\n    \"cvv\": \"1314\",\r\n    \"cardHolder\": \"Pavle\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay ticket which booked by other user (user_role)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzb21lZW1haWxAZ21hYWFhaWwuY29tIiwiZXhwIjoxNjg2MzA5NTg3LCJyb2xlIjoiUk9MRV9VU0VSIn0.SOoetBTwHKjJEZtTI1wnGlvoW2lDZW-UN6E8jFeNDEXPQQYnf75qUzcki9ZQThPbrcDJhmvbnExrudkgA9iTzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        30\r\n    ],\r\n    \"cardNumber\": \"6011000991300009\",\r\n    \"cardDate\": \"11/24\",\r\n    \"cvv\": \"1314\",\r\n    \"cardHolder\": \"Pavle\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay ticket - flight in the past",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzb21lZW1haWxAZ21hYWFhaWwuY29tIiwiZXhwIjoxNjg2MzA5NTg3LCJyb2xlIjoiUk9MRV9VU0VSIn0.SOoetBTwHKjJEZtTI1wnGlvoW2lDZW-UN6E8jFeNDEXPQQYnf75qUzcki9ZQThPbrcDJhmvbnExrudkgA9iTzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        1\r\n    ],\r\n    \"cardNumber\": \"6011000991300009\",\r\n    \"cardDate\": \"11/24\",\r\n    \"cvv\": \"1314\",\r\n    \"cardHolder\": \"Pavle\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay ticket - card valid, but not exists in ПЧК",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzb21lZW1haWxAZ21hYWFhaWwuY29tIiwiZXhwIjoxNjg2MzA5NTg3LCJyb2xlIjoiUk9MRV9VU0VSIn0.SOoetBTwHKjJEZtTI1wnGlvoW2lDZW-UN6E8jFeNDEXPQQYnf75qUzcki9ZQThPbrcDJhmvbnExrudkgA9iTzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        9\r\n    ],\r\n    \"cardNumber\": \"3566002020360505\",\r\n    \"cardDate\": \"11/33\",\r\n    \"cvv\": \"999\",\r\n    \"cardHolder\": \"ISRAEL USER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay ticket - card cvv doesnt match",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzb21lZW1haWxAZ21hYWFhaWwuY29tIiwiZXhwIjoxNjg2MzA5NTg3LCJyb2xlIjoiUk9MRV9VU0VSIn0.SOoetBTwHKjJEZtTI1wnGlvoW2lDZW-UN6E8jFeNDEXPQQYnf75qUzcki9ZQThPbrcDJhmvbnExrudkgA9iTzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        9\r\n    ],\r\n    \"cardNumber\": \"6011000991300009\",\r\n    \"cardDate\": \"11/24\",\r\n    \"cvv\": \"134\",\r\n    \"cardHolder\": \"Pavle\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay ticket - not enough money on card account",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzb21lZW1haWxAZ21hYWFhaWwuY29tIiwiZXhwIjoxNjg2MzA5NTg3LCJyb2xlIjoiUk9MRV9VU0VSIn0.SOoetBTwHKjJEZtTI1wnGlvoW2lDZW-UN6E8jFeNDEXPQQYnf75qUzcki9ZQThPbrcDJhmvbnExrudkgA9iTzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        9\r\n    ],\r\n    \"cardNumber\": \"4263982640269299\",\r\n    \"cardDate\": \"11/33\",\r\n    \"cvv\": \"999\",\r\n    \"cardHolder\": \"ISRAEL USER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay - OK",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzb21lZW1haWxAZ21hYWFhaWwuY29tIiwiZXhwIjoxNjg2MzA5NTg3LCJyb2xlIjoiUk9MRV9VU0VSIn0.SOoetBTwHKjJEZtTI1wnGlvoW2lDZW-UN6E8jFeNDEXPQQYnf75qUzcki9ZQThPbrcDJhmvbnExrudkgA9iTzQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        9\r\n    ],\r\n    \"cardNumber\": \"6011000991300009\",\r\n    \"cardDate\": \"11/24\",\r\n    \"cvv\": \"1314\",\r\n    \"cardHolder\": \"Pavle\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "payment by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJvbGdhLmdsYXZkZWxAZ21haWwuY29tIiwiZXhwIjoxNjg2MzA5NTU0LCJyb2xlIjoiUk9MRV9VU0VSIn0.UfWJhN-MO8R8Kc_52aWufzYgpEAnmrB1SLFe6B_4QYKKG-BDwbI-orw8pkS6-zwNKrtVJcscSdOfCAPEWjoLdQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/payment-info/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment-info",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "payment STAT",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJvbGdhLmdsYXZkZWxAZ21haWwuY29tIiwiZXhwIjoxNjg2MzA5NTU0LCJyb2xlIjoiUk9MRV9VU0VSIn0.UfWJhN-MO8R8Kc_52aWufzYgpEAnmrB1SLFe6B_4QYKKG-BDwbI-orw8pkS6-zwNKrtVJcscSdOfCAPEWjoLdQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/payment-stat?page=0&size=10",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment-stat"
+					],
+					"query": [
+						{
+							"key": "paymentStatus",
+							"value": "paid",
+							"disabled": true
+						},
+						{
+							"key": "startDate",
+							"value": "31/05/23",
+							"disabled": true
+						},
+						{
+							"key": "endDate",
+							"value": "30/09/23",
+							"disabled": true
+						},
+						{
+							"key": "ticketId",
+							"value": "1234",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						},
+						{
+							"key": "amount",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refund ticket not exist",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJvbGdhLmdsYXZkZWxAZ21haWwuY29tIiwiZXhwIjoxNjg2MzA5NTU0LCJyb2xlIjoiUk9MRV9VU0VSIn0.UfWJhN-MO8R8Kc_52aWufzYgpEAnmrB1SLFe6B_4QYKKG-BDwbI-orw8pkS6-zwNKrtVJcscSdOfCAPEWjoLdQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "userDetails",
+						"value": "{\"userId\":123,\"username\":\"johndoe\",\"email\":\"johndoe@example.com\",\"language\":\"en\",\"role\":\"ROLE_ADMIN\"}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/payment-refund/1111",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment-refund",
+						"1111"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refund ticket when flight in the past",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJvbGdhLmdsYXZkZWxAZ21haWwuY29tIiwiZXhwIjoxNjg2MzA5NTU0LCJyb2xlIjoiUk9MRV9VU0VSIn0.UfWJhN-MO8R8Kc_52aWufzYgpEAnmrB1SLFe6B_4QYKKG-BDwbI-orw8pkS6-zwNKrtVJcscSdOfCAPEWjoLdQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/payment-refund/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment-refund",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refund ticket OK",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJvbGdhLmdsYXZkZWxAZ21haWwuY29tIiwiZXhwIjoxNjg2MzA5NTU0LCJyb2xlIjoiUk9MRV9VU0VSIn0.UfWJhN-MO8R8Kc_52aWufzYgpEAnmrB1SLFe6B_4QYKKG-BDwbI-orw8pkS6-zwNKrtVJcscSdOfCAPEWjoLdQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/payment-refund/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment-refund",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "block-card number",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwaW4wMDdAdHV0LmJ5IiwiZXhwIjoxNjg2MzA5NTQ1LCJyb2xlIjoiUk9MRV9BRE1JTiJ9.e609r83sayyY-5wzLgIw43E7l1rdQkJqbUcltAqG4_f8G9XKkkqQonl8xuJTle8mhQ498OLL4htdEZak6wlF-w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cardNumber\": \"6011000991300009\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/block-card",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"block-card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unblock-card card number",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwaW4wMDdAdHV0LmJ5IiwiZXhwIjoxNjg2MzA5NTQ1LCJyb2xlIjoiUk9MRV9BRE1JTiJ9.e609r83sayyY-5wzLgIw43E7l1rdQkJqbUcltAqG4_f8G9XKkkqQonl8xuJTle8mhQ498OLL4htdEZak6wlF-w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cardNumber\": \"6011000991300009\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/unblock-card",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"unblock-card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "block-card country",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwaW4wMDdAdHV0LmJ5IiwiZXhwIjoxNjg2MzA5NTQ1LCJyb2xlIjoiUk9MRV9BRE1JTiJ9.e609r83sayyY-5wzLgIw43E7l1rdQkJqbUcltAqG4_f8G9XKkkqQonl8xuJTle8mhQ498OLL4htdEZak6wlF-w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"countryCode\": \"US\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/block-card",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"block-card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unblock-card country",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwaW4wMDdAdHV0LmJ5IiwiZXhwIjoxNjg2MzA5NTQ1LCJyb2xlIjoiUk9MRV9BRE1JTiJ9.e609r83sayyY-5wzLgIw43E7l1rdQkJqbUcltAqG4_f8G9XKkkqQonl8xuJTle8mhQ498OLL4htdEZak6wlF-w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"countryCode\": \"US\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/unblock-card",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"unblock-card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "blocked-countries",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwaW4wMDdAdHV0LmJ5IiwiZXhwIjoxNjg2MzA5NTQ1LCJyb2xlIjoiUk9MRV9BRE1JTiJ9.e609r83sayyY-5wzLgIw43E7l1rdQkJqbUcltAqG4_f8G9XKkkqQonl8xuJTle8mhQ498OLL4htdEZak6wlF-w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/blocked-countries",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"blocked-countries"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "blocked-cards",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwaW4wMDdAdHV0LmJ5IiwiZXhwIjoxNjg2MzA5NTQ1LCJyb2xlIjoiUk9MRV9BRE1JTiJ9.e609r83sayyY-5wzLgIw43E7l1rdQkJqbUcltAqG4_f8G9XKkkqQonl8xuJTle8mhQ498OLL4htdEZak6wlF-w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/blocked-cards",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"blocked-cards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create admin for payment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"ADMIN USER\",\r\n    \"email\": \"germanovichpavel95@gmail.com\",\r\n    \"password\": \"user1\",\r\n    \"role\": \"ROLE_ADMIN\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user for payment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"CASUAL USER\",\r\n    \"email\": \"test-59wl55vjs@srv1.mail-tester.com\",\r\n    \"password\": \"user1\",\r\n    \"role\": \"ROLE_USER\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login for payment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"test-59wl55vjs@srv1.mail-tester.com\",\r\n    \"password\": \"user1\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ПЧК - create bank card",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"cardNumber\": \"4263982640269299\",\r\n\"cardDate\": \"11/33\",\r\n\"cvv\": \"999\",\r\n\"cardHolder\": \"ISRAEL USER\",\r\n\"accountSum\": \"50.0\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8091/external/account",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"external",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ПЧК - available cards",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8091/external/account/available-cards",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"external",
+						"account",
+						"available-cards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ПЧК - add money to account",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "localhost:8091/external/account?cardNumber=6011000991300009&sum=1000",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"external",
+						"account"
+					],
+					"query": [
+						{
+							"key": "cardNumber",
+							"value": "6011000991300009"
+						},
+						{
+							"key": "sum",
+							"value": "1000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new-ticket",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": 123,\r\n    \"tripId\": 1,\r\n    \"fio\": 1231,\r\n    \"type\": \"FIRST_CLASS\",\r\n    \"price\": 1231,\r\n    \"status\": \"FREE\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/new-ticket",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"new-ticket"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ticket-service check tickets",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8088/tickets/findByIds?ids=3,4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8088",
+					"path": [
+						"tickets",
+						"findByIds"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "3,4"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
