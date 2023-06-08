@@ -40,8 +40,7 @@ springfox:
 logging:
   level:
     com.netflix: WARN
-    org.springframework.cloud.gateway: TRACE
-    reactor.netty.http.client: INFO
+    org.springframework.cloud.gateway: DEBUG
 
 
 swagger:

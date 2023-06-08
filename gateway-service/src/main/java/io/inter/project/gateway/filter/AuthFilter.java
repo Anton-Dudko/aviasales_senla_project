@@ -34,7 +34,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
     @Override
     public GatewayFilter apply(Config config) {
-        log.info("Start of filtering request");
+        log.info("Start of filtering request with AuthFilter");
 
         return (exchange, chain) -> {
             try {

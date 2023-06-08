@@ -26,7 +26,7 @@ public class UserIdFilter extends AbstractGatewayFilterFactory<UserIdFilter.Conf
 
     @Override
     public GatewayFilter apply(Config config) {
-        log.info("Start of filtering request");
+        log.info("Start of filtering request with UserIdFilter");
 
         return (exchange, chain) -> {
             try {

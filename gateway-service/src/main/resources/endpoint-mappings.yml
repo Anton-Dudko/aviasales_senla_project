@@ -46,11 +46,11 @@ endpoint:
     ticket-service:
       "[/tickets]": /tickets
       "[/tickets/**]": /tickets/${id}
-      "[/find-tickets-by]": /tickets/findByIds
+      "[/find-tickets-by]": /tickets/ids
       "[/book-ticket]": /tickets/booking
       "[/pay-tickets]": /tickets/pay-tickets
-      "[/pay-ticket/**]": /tickets/pay/${id}
       "[/generate-tickets]": /tickets/generate
+      "[/refund-tickets]": /tickets/refund
 
 
   exclusionList:

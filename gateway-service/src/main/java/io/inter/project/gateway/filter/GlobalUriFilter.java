@@ -1,5 +1,6 @@
 package io.inter.project.gateway.filter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.filter.ReactiveLoadBalancerClientFilter;
@@ -14,12 +15,15 @@ import java.net.URI;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR;
 
+@Slf4j
 @Component
 public class GlobalUriFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
         URI incomingUri = exchange.getRequest().getURI();
+        log.info("Start of filtering request with GlobalUriFilter -> {}", incomingUri);
         if (isUriEncoded(incomingUri)) {
             Route route = exchange.getAttribute(GATEWAY_ROUTE_ATTR);
             if (route == null) {
@@ -27,6 +31,7 @@ public class GlobalUriFilter implements GlobalFilter, Ordered {
             }
             URI balanceUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
             URI mergedUri = createUri(incomingUri, balanceUrl);
+            log.info("Merged request -> {}", mergedUri);
             exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, mergedUri);
         }
 
