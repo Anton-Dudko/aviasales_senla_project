@@ -20,10 +20,10 @@ import java.util.Optional;
 @Service
 public class BinInfoService {
     private final RestTemplate restTemplate;
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
     private static final Logger logger = LoggerFactory.getLogger(BinInfoService.class);
-    private final String BIN_SERVICE_URL = "https://mrbin.io/bins/bin/getFull";
-
+    @Value("${bin.info.service.url}")
+    private String BIN_SERVICE_URL;
     @Value("${bin.info.service.token}")
     private String basicToken;
 

@@ -1,6 +1,6 @@
 package com.aviasales.finance.controller;
 
-import com.aviasales.finance.dto.BlockCarDto;
+import com.aviasales.finance.dto.card.BlockCarDto;
 import com.aviasales.finance.dto.FieldsErrorResponse;
 import com.aviasales.finance.dto.SimpleErrorResponse;
 import com.aviasales.finance.dto.SimpleResponse;
@@ -28,7 +28,7 @@ public class CardController {
 
     @PostMapping("/block")
     public ResponseEntity<?> blockCard(@Valid @RequestBody BlockCarDto blockCarDto, BindingResult bindingResult) {
-        if (!blockCarDto.validateDto()) {
+        if (blockCarDto.validateDto()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
                     SimpleErrorResponse("Only one of param (card number or country code) should be provided"));
         }
@@ -48,7 +48,7 @@ public class CardController {
 
     @PostMapping("/unblock")
     public ResponseEntity<?> unblockCard(@Valid @RequestBody BlockCarDto unblockCardDto, BindingResult bindingResult) {
-        if (!unblockCardDto.validateDto()) {
+        if (unblockCardDto.validateDto()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
                     SimpleErrorResponse("Only one of param (card number or country code) should be provided"));
         }

@@ -2,6 +2,8 @@ package com.aviasales.finance.service;
 
 import com.aviasales.finance.converter.PaymentConverter;
 import com.aviasales.finance.dto.*;
+import com.aviasales.finance.dto.payment.*;
+import com.aviasales.finance.dto.ticket.TicketInfoDto;
 import com.aviasales.finance.entity.Payment;
 import com.aviasales.finance.enums.PaymentStatus;
 import com.aviasales.finance.enums.UserRole;
@@ -202,7 +204,7 @@ public class PaymentService {
 
         List<TicketInfoDto> tickets = ticketService.getTicketInfo(payment.getTickets());
         List<Long> flights = tickets.stream().map(TicketInfoDto::getFlightId).distinct().toList();
-        tripService.checkTripDate(flights);
+        tripService.checkTripDateForRefund(flights);
 
         RefundExternalDto refundExternalDto = new RefundExternalDto(payment.getCardNumber(), payment.getAmount());
         ExternalPaymentResponse externalPaymentResponse = sendRefundToExternalPaymentSystem(refundExternalDto);

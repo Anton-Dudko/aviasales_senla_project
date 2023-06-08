@@ -12,7 +12,6 @@ public class CardDateValidator implements ConstraintValidator<ValidCardDate, Yea
     public boolean isValid(YearMonth date, ConstraintValidatorContext constraintValidatorContext) {
         if (date == null) {
             //field is mandatory for now
-            //ToDo decide if field should be mandatory
             return false;
         }
         return !YearMonth.now().isAfter(date);

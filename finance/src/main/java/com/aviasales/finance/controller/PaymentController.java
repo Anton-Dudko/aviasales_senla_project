@@ -1,6 +1,11 @@
 package com.aviasales.finance.controller;
 
 import com.aviasales.finance.dto.*;
+import com.aviasales.finance.dto.payment.PaymentDto;
+import com.aviasales.finance.dto.payment.PaymentFilter;
+import com.aviasales.finance.dto.payment.PaymentListDto;
+import com.aviasales.finance.dto.payment.TransactionDto;
+import com.aviasales.finance.dto.ticket.TicketInfoDto;
 import com.aviasales.finance.entity.Payment;
 import com.aviasales.finance.service.BlockingCardService;
 import com.aviasales.finance.service.PaymentService;
@@ -64,7 +69,7 @@ public class PaymentController {
         kafkaPaymentNotificationDto.setAmountPayable(payment.getAmount());
 
         payment = paymentService.processPayment(transactionDto, payment, kafkaPaymentNotificationDto);
-        ticketService.updateTicketToPaid(paymentDto.getTickets());
+        ticketService.updateTicketToPaid(paymentDto.getTickets(), userDetails);
 
         return ResponseEntity.status(HttpStatus.OK).body(new SimpleResponse("Ticket(s) paid. Ticket Id(s) - " + paymentDto
                 .getTickets().stream().map(Object::toString).collect(Collectors.joining(", "))
