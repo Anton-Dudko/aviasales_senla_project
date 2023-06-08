@@ -1,87 +1,27 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Payment Error</title>
+    <title>Payment success</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
-<body LINK="#c6d4df" ALINK="#c6d4df" VLINK="#c6d4df" TEXT="#c6d4df"
-      style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; color: #c6d4df;">
-<table style="width: 538px; background-color: #393836;" align="center" cellspacing="0" cellpadding="0">
-    <tr>
-        <td style=" height: 65px; background-color: #000000; border-bottom: 1px solid #4d4b48;">
-        </td>
-    </tr>
-    <tr>
-        <td bgcolor="#17212e">
-            <table width="470" border="0" align="center" cellpadding="0" cellspacing="0"
-                   style="padding-left: 5px; padding-right: 5px; padding-bottom: 10px;">
-
-                <tr bgcolor="#17212e">
-                    <td style="padding-top: 32px;">
-					<span style="padding-top: 16px; padding-bottom: 16px; font-size: 24px; color: #66c0f4; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">
-                        <em th:text="${appeal} "></em> <em th:text="${userName}"></em>
-					</span><br>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td style="padding-top: 12px;">
-					<span style="font-size: 17px; color: #c6d4df; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">
-						<p><em th:text="${description2} "></em></p>
-					</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding-top: 12px;">
-					<span style="font-size: 17px; color: #c6d4df; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">
-						<p><em th:text="${description3} "></em></p>
-					</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding-top: 12px;">
-					<span style="font-size: 17px; color: #c6d4df; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">
-						<em th:text="${amountDescription} "></em><em th:text="${amountPayable}"></em>
-					</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding-top: 12px;">
-					<span style="font-size: 17px; color: #c6d4df; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">
-						<em th:text="${dateDescription} "></em><em th:text="${paymentDate}"></em>
-					</span>
-                    </td>
-                </tr>
-                <tr bgcolor="#17212e">
-                    <td style="padding-top: 32px;">
-					<span style="padding-top: 16px; padding-bottom: 16px; font-size: 24px; color: #66c0f4; font-family: Arial, Helvetica, sans-serif; font-weight: bold;">
-					</span><br>
-                    </td>
-                </tr>
-
-                <tr bgcolor="#121a25">
-                    <td style="padding: 20px; font-size: 12px; line-height: 17px; color: #c6d4df; font-family: Arial, Helvetica, sans-serif;">
-                        <p style="padding-bottom: 10px; color: #c6d4df;"><em
-                                th:text="${emailGeneratedAutomatically} "></em></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="font-size: 12px; color: #6d7880; padding-top: 16px; padding-bottom: 60px;">
-                        <em th:text="${supportTeam} "></em><br>
-                    </td>
-                </tr>
-
-            </table>
-        </td>
-    </tr>
-
-    <td bgcolor="#000000">
-        <p>
-            <img src="https://files.fm/thumb_show.php?i=nxvvzb5zw">
-        </p>
-    </td>
-    </tr>
-</table>
+<body>
+<div class="container" style="font-family: Poppins, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8f9fa; padding: 20px; border-radius: 5px; background-image: url('https://static.vecteezy.com/system/resources/previews/011/968/092/original/airplane-flying-in-sky-jet-plane-fly-in-clouds-airplanes-travel-and-vacation-aircraft-flight-plane-airplane-trip-to-airport-or-airline-transportation-flat-airplane-illustration-free-vector.jpg'); background-size: cover; background-position: center; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
+    <div class="card" style="border: none; border-radius: 3px; padding: 10px; margin-bottom: 20px; background-color: rgba(242, 242, 243, 0.3); backdrop-filter: blur(10px); text-align: center;">
+        <h2 th:text="${description}" style="font-family: Poppins, sans-serif; text-align: center; margin-bottom: 5px; color: #ffffff;"></h2>
+    </div>
+    <div class="part" style="text-align: center;">
+        <h2 class="text-muted my-4" th:text="${appeal}" style="font-family: Poppins, sans-serif; text-align: center; margin-bottom: 5px; color: #13006b"></h2>
+        <h2 class="text-center my-4" th:text="${userName}" style="font-family: Poppins, sans-serif; text-align: center; margin-bottom: 5px; color: #13006b"></h2>
+    </div>
+    <div class="card" style="border: none; border-radius: 3px; padding: 10px; margin-bottom: 70px; margin-top: 150px; background-color: rgba(242, 242, 243, 0.7); backdrop-filter: blur(10px); text-align: center; color: #6c757d;">
+        <p style="font-family: Poppins, sans-serif; text-align: center; margin-bottom: 2px; color: #13006b; font-size: 15px;"><span th:text="${description2}"></span><b th:text="${paymentInfo}"></b>
+        <p style="font-family: Poppins, sans-serif; text-align: center; margin-bottom: 2px; color: #13006b; font-size: 15px;"><span th:text="${description3}"></span>
+        <p style="font-family: Poppins, sans-serif; text-align: center; margin-bottom: 2px; color: #13006b; font-size: 15px;"><span th:text="${amountDescription}"></span><b th:text="${amountPayable}"></b>.</p>
+        <p style="font-family: Poppins, sans-serif; text-align: center; margin-bottom: 2px; color: #13006b; font-size: 15px;"><span th:text="${dateDescription}"></span><b th:text="${paymentDate}"></b>.</p>
+        <p style="font-family: Poppins, sans-serif; text-align: center; margin-bottom: 2px; color: #13006b;"><b th:text="${grateful}"></b></p>
+    </div>
+    <div class="card" style="font-family: Poppins, sans-serif; border: none; border-radius: 3px; padding: 10px;background-color: rgba(242, 242, 243, 0.3); backdrop-filter: blur(10px); text-align: center; color: #ffffff;">&copy; 2023 Aviasales All rights reserved.</div>
+</div>
 </body>
 </html>
