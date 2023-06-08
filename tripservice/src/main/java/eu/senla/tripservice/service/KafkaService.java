@@ -64,6 +64,8 @@ public class KafkaService {
                 if (kafkaFlightDTO != null) {
                     log.info("KafkaService-newEvent-send new event to kafka");
                     sendKafkaNewEvent(eventName, kafkaFlightDTO);
+                } else {
+                    log.info("KafkaService-newEvent: not received all required details");
                 }
             }
         }
@@ -111,7 +113,8 @@ public class KafkaService {
         try {
             response = restTemplate.getForObject(getUserDetailsUrl, UserDetails.class);
         } catch (HttpClientErrorException e) {
-            throw new RequestException(e.getResponseBodyAsString());
+            log.error("User-service error, message: " + e.getMessage());
+            return null;
         }
         return response;
     }
