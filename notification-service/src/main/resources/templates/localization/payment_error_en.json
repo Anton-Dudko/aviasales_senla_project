@@ -5,5 +5,7 @@
   "description3": "DESCRIPTION HERE",
   "amountDescription": "Amount payable: ",
   "dateDescription": "Date: ",
-  "grateful": "Thank you!"
+  "emailGeneratedAutomatically": "This email was generated automatically. Please, do not respond.",
+  "grateful": "Thank you!",
+  "supportTeam": "The Aviasales Support Team"
 }

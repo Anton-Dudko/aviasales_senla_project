@@ -1,5 +1,7 @@
 package eu.senla.aviasales.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +26,7 @@ import java.util.Map;
 @Document("emailnotification")
 public class EmailNotification {
     @MongoId
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
     @Field
     private String templateType;
@@ -37,4 +40,6 @@ public class EmailNotification {
     private LocalDate dateFirstSend;
     @Field
     private int countTrySend;
+    @Field
+    private String exception;
 }

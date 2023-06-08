@@ -4,6 +4,7 @@ import eu.senla.aviasales.entity.EmailNotification;
 import eu.senla.aviasales.exception.ExceptionMessageConstants;
 import eu.senla.aviasales.exception.custom.NotFoundException;
 import eu.senla.aviasales.repository.EmailNotificationRepository;
+import eu.senla.aviasales.response.ListEmailNotification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,13 @@ public class EmailNotificationService {
         repository.delete(emailNotification);
     }
 
-    public List<EmailNotification> findAll() {
+    public ListEmailNotification findAll() {
         log.info("... method findAll");
-        return repository.findAll();
+        List<EmailNotification> emailNotifications = repository.findAll();
+        return ListEmailNotification.builder()
+                .emailNotificationList(emailNotifications)
+                .count(emailNotifications.stream().count())
+                .build();
     }
 
     public EmailNotification findById(String id) {

@@ -5,5 +5,7 @@
   "description3": "DESCRIPTION HERE",
   "amountDescription": "Amount returned: ",
   "dateDescription": "Date: ",
-  "grateful": "We hope for further cooperation!"
+  "grateful": "We hope for further cooperation!",
+  "emailGeneratedAutomatically": "This email was generated automatically. Please, do not respond.",
+  "supportTeam": "The Aviasales Support Team"
 }

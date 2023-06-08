@@ -5,5 +5,7 @@
   "description3": "ОПИСАНИЕ",
   "amountDescription": "К оплате: ",
   "dateDescription": "Дата: ",
-  "grateful": "Благодарим!"
+  "grateful": "Благодарим!",
+  "emailGeneratedAutomatically": "Это письмо сегенирировано автоматически. Пожалуйста, не отвечайте на него.",
+  "supportTeam": "Служба поддержки Aviasales "
 }
