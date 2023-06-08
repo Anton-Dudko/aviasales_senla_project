@@ -100,7 +100,7 @@ application:
         topic_name: custom_admin_event
         template: custom_email
         localization: custom_email
-        subject: Custom admin email
+        subject: Aviasales email
       ERROR_EVENT:
         topic_name: error_email_event
         template: error_email
@@ -110,22 +110,22 @@ application:
         topic_name: new_trip_event
         template: new_trip
         localization: new_trip
-        subject: New trip
+        subject: Aviasales new trip
       TRIP_CANCELED_EVENT:
         topic_name: trip_canceled_event
         template: trip_canceled
         localization: trip_canceled
-        subject: Canceled trip
+        subject: Aviasales canceled trip
       NEW_TICKET_RESERVATION_EVENT:
         topic_name: new_ticket_reservation_event
         template: new_ticket_reservation
         localization: new_ticket_reservation
-        subject: New ticket reservation
+        subject: Aviasales new ticket reservation
       CANCELED_TICKET_RESERVATION_EVENT:
         topic_name: canceled_ticket_reservation_event
         template: canceled_ticket_reservation
         localization: canceled_ticket_reservation
-        subject: Canceled ticket reservation
+        subject: Aviasales canceled ticket reservation
       PAYMENT_SUCCESS_EVENT:
         topic_name: payment_success_event
         template: payment_success

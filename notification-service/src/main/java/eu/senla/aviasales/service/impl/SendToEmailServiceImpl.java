@@ -53,6 +53,7 @@ public class SendToEmailServiceImpl implements SendService {
             //сохраняем в БД если до этого там нотификации не было
             if (emailNotification.getDateFirstSend() == null) {
                 emailNotification.setDateFirstSend(LocalDate.now());
+                emailNotification.setException(e.getMessage());
                 service.save(emailNotification);
                 alarmAdminService.sendTroublem(emailNotification, e.getMessage());
             }
@@ -74,7 +75,7 @@ public class SendToEmailServiceImpl implements SendService {
     @Scheduled(fixedDelayString = "${email.send.interval}")
     public void sendWrongLetter() {
         log.info("... method sendWrongLetter");
-        List<EmailNotification> list = service.findAll();
+        List<EmailNotification> list = service.findAll().getEmailNotificationList();
         if (!list.isEmpty()) {
             list.forEach(e -> {
                 sendEmail(e);
