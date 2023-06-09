@@ -198,7 +198,7 @@ public class PaymentService {
         return paymentListDto;
     }
 
-    public ResponseEntity<?> refundPayment(long id, UserDetailsDto userDetailsDto) {
+    public ResponseEntity<?> refundPayment(long id, UserDetailsDto userDetailsDto, String userDetailsHeader) {
         Optional<Payment> paymentOpt = paymentRepository.findByIdAndPaymentStatus(id, PaymentStatus.PAID);
         logger.info("Checking payment exists");
         if (paymentOpt.isEmpty()) {
@@ -211,7 +211,7 @@ public class PaymentService {
             return ResponseEntity.badRequest().body(new SimpleErrorResponse("This payment was made by other user"));
         }
 
-        List<TicketInfoDto> tickets = ticketService.getTicketInfo(payment.getTickets());
+        List<TicketInfoDto> tickets = ticketService.getTicketInfo(payment.getTickets(), userDetailsHeader);
         List<Long> flights = tickets.stream().map(TicketInfoDto::getFlightId).distinct().toList();
         tripService.checkTripDateForRefund(flights);
 
