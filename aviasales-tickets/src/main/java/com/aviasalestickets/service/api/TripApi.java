@@ -14,10 +14,10 @@ import org.springframework.web.client.RestTemplate;
 public class TripApi {
 
     private final RestTemplate restTemplate;
-   // private final TripRestTemplateProperties tripRestTemplateProperties;
+    // private final TripRestTemplateProperties tripRestTemplateProperties;
 
     @Transactional
-    public FlightInfoDto requestToTrip(Long id){
+    public FlightInfoDto requestToTrip(Long id) {
         FlightInfoDto flight;
         try {
             flight = restTemplate.getForObject("http://trip-service:8081/flights/admin/find/{id}", FlightInfoDto.class, id);

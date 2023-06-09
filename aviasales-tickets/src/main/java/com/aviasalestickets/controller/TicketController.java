@@ -36,8 +36,8 @@ public class TicketController {
     }
 
     @GetMapping("/ids")
-    public List<TicketResponse> findTicketsByIds(@RequestParam("ids") List<Long> ids) {
-        return ticketService.findAllByIds(ids);
+    public List<TicketResponse> findTicketsByIds(@RequestParam("ids") List<Long> ids, @RequestHeader("userDetails") String userDetails) {
+        return ticketService.findAllByIds(ids, userDetails);
     }
 
     @PostMapping("/booking")
