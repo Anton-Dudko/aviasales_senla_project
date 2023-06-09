@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "2c178421-2646-4928-aca3-8118c0c9d017",
-		"name": "Finance service",
+		"name": "Financeservice collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27427673"
 	},
@@ -565,17 +565,13 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"// Parse the JSON response string into a JavaScript object\r",
 							"var responseObj = JSON.parse(responseBody);\r",
 							"\r",
-							"// Access the \"message\" property to retrieve the message string\r",
 							"var message = responseObj.message;\r",
 							"\r",
-							"// Extract the payment id value using regular expressions or string manipulation\r",
 							"var paymentId = message.match(/Payment id - (\\d+)/i)[1];\r",
 							"pm.globals.set(\"userPaymentId\", paymentId);\r",
-							"// Print the extracted payment id value\r",
-							"console.log(\"Payment id:\", paymentId);"
+							""
 						],
 						"type": "text/javascript"
 					}
