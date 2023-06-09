@@ -1,0 +1,1143 @@
+{
+	"info": {
+		"_postman_id": "2c178421-2646-4928-aca3-8118c0c9d017",
+		"name": "Finance service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27427673"
+	},
+	"item": [
+		{
+			"name": "create with role ADMIN",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"adminFinEmail\", JSON.parse(pm.request.body).email);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"johndoe\",\r\n    \"email\": \"thaseugene@gmail.com\",\r\n    \"password\": \"johndoe\",\r\n    \"role\": \"ROLE_ADMIN\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/registration",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create with role USER",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"userFinEmail\", JSON.parse(pm.request.body).email);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"johndoeUSER\",\r\n    \"email\": \"thas@mail.ru\",\r\n    \"password\": \"johndoe\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/registration",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login as ADMIN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var token = jsonData.accessToken;\r",
+							"pm.globals.set(\"adminFinToken\", token);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{adminFinEmail}}\",\r\n    \"password\": \"johndoe\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login as USER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var token = jsonData.accessToken;\r",
+							"pm.globals.set(\"userFinToken\", token);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{userFinEmail}}\",\r\n    \"password\": \"johndoe\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay by blocked card (country blocked) 403",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"tickets\": [4],\r\n\"cardNumber\": \"4485349439401891\",\r\n\"cardDate\": \"12/26\",\r\n\"cvv\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay by blocked card (number blocked) 403",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n      \"tickets\": [4],\r\n\"cardNumber\": \"6011000000000087\",\r\n\"cardDate\": \"12/26\",\r\n\"cvv\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay ticket which already Paid 400",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        29\r\n    ],\r\n    \"cardNumber\": \"6011000991300009\",\r\n    \"cardDate\": \"11/24\",\r\n    \"cvv\": \"1314\",\r\n    \"cardHolder\": \"Pavle\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay ticket which booked by other user (user_role) 400",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        30\r\n    ],\r\n    \"cardNumber\": \"6011000991300009\",\r\n    \"cardDate\": \"11/24\",\r\n    \"cvv\": \"1314\",\r\n    \"cardHolder\": \"Pavle\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay ticket - flight in the past 400",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        1\r\n    ],\r\n    \"cardNumber\": \"6011000991300009\",\r\n    \"cardDate\": \"11/24\",\r\n    \"cvv\": \"1314\",\r\n    \"cardHolder\": \"Pavle\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay ticket - card valid, but not exists in ПЧК 400",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        9\r\n    ],\r\n    \"cardNumber\": \"3566002020360505\",\r\n    \"cardDate\": \"11/33\",\r\n    \"cvv\": \"999\",\r\n    \"cardHolder\": \"ISRAEL USER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay ticket - card cvv doesnt match 400",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        9\r\n    ],\r\n    \"cardNumber\": \"6011000991300009\",\r\n    \"cardDate\": \"11/24\",\r\n    \"cvv\": \"134\",\r\n    \"cardHolder\": \"Pavle\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay ticket - not enough money on card account 400",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        9\r\n    ],\r\n    \"cardNumber\": \"4263982640269299\",\r\n    \"cardDate\": \"11/33\",\r\n    \"cvv\": \"999\",\r\n    \"cardHolder\": \"ISRAEL USER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pay - OK",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the JSON response string into a JavaScript object\r",
+							"var responseObj = JSON.parse(responseBody);\r",
+							"\r",
+							"// Access the \"message\" property to retrieve the message string\r",
+							"var message = responseObj.message;\r",
+							"\r",
+							"// Extract the payment id value using regular expressions or string manipulation\r",
+							"var paymentId = message.match(/Payment id - (\\d+)/i)[1];\r",
+							"pm.globals.set(\"userPaymentId\", paymentId);\r",
+							"// Print the extracted payment id value\r",
+							"console.log(\"Payment id:\", paymentId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tickets\": [\r\n        9\r\n    ],\r\n    \"cardNumber\": \"6011000991300009\",\r\n    \"cardDate\": \"11/24\",\r\n    \"cvv\": \"1314\",\r\n    \"cardHolder\": \"Pavle\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/payment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "payment by id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/payment-info/{{userPaymentId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment-info",
+						"{{userPaymentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "payment STAT",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/payment-stat?page=0&size=10",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment-stat"
+					],
+					"query": [
+						{
+							"key": "paymentStatus",
+							"value": "paid",
+							"disabled": true
+						},
+						{
+							"key": "startDate",
+							"value": "31/05/23",
+							"disabled": true
+						},
+						{
+							"key": "endDate",
+							"value": "30/09/23",
+							"disabled": true
+						},
+						{
+							"key": "ticketId",
+							"value": "1234",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						},
+						{
+							"key": "amount",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refund ticket not exist 400",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "userDetails",
+						"value": "{\"userId\":123,\"username\":\"johndoe\",\"email\":\"johndoe@example.com\",\"language\":\"en\",\"role\":\"ROLE_ADMIN\"}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/payment-refund/1111",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment-refund",
+						"1111"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refund ticket when flight in the past 400 ??",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/payment-refund/8",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment-refund",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refund ticket OK",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/payment-refund/{{userPaymentId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"payment-refund",
+						"{{userPaymentId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "block-card number",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"adminFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cardNumber\": \"6011000991300009\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/block-card",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"block-card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unblock-card card number",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"adminFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cardNumber\": \"6011000991300009\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/unblock-card",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"unblock-card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "block-card country",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"adminFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"countryCode\": \"US\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/block-card",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"block-card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unblock-card country",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"adminFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"countryCode\": \"US\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/unblock-card",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"unblock-card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "blocked-countries",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"adminFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/blocked-countries",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"blocked-countries"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "blocked-cards",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"adminFinToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/blocked-cards",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"blocked-cards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ПЧК - create bank card",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"cardNumber\": \"4263982640269299\",\r\n\"cardDate\": \"11/33\",\r\n\"cvv\": \"999\",\r\n\"cardHolder\": \"ISRAEL USER\",\r\n\"accountSum\": \"50.0\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8091/external/account",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"external",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ПЧК - available cards",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8091/external/account/available-cards",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"external",
+						"account",
+						"available-cards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ПЧК - add money to account",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "localhost:8091/external/account?cardNumber=6011000991300009&sum=1000",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"external",
+						"account"
+					],
+					"query": [
+						{
+							"key": "cardNumber",
+							"value": "6011000991300009"
+						},
+						{
+							"key": "sum",
+							"value": "1000"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

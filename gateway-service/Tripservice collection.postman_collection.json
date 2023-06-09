@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "2facf684-7c52-4f28-a125-5264a7c9a2a8",
+		"_postman_id": "6ece0641-ed9c-4e8c-8f8e-744d09b46885",
 		"name": "Tripservice collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "27427673"
+		"_exporter_id": "24150085",
+		"_collection_link": "https://interstellar-crater-494474.postman.co/workspace/Team-Workspace~20f3f218-87c2-40a9-830c-45fed934de7c/collection/24150085-6ece0641-ed9c-4e8c-8f8e-744d09b46885?action=share&creator=24150085&source=collection_link"
 	},
 	"item": [
 		{
@@ -33,7 +34,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"johnyUSER\",\r\n    // \"email\": \"nasevich.nik@mail.ru\",\r\n    \"email\": \"thaseugene@gmail.com\",\r\n    \"password\": \"user1\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}",
+					"raw": "{\r\n    \"username\": \"johnyUSER\",\r\n    \"email\": \"nasevich.nik@mail.ru\",\r\n    //\"email\": \"thaseugene@gmail.com\",\r\n    \"password\": \"user1\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -82,7 +83,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"johnyADMIN\",\r\n    // \"email\": \"nikita26234@gmail.com\",\r\n    \"email\": \"thas@mail.ru\",\r\n    \"password\": \"admin1\",\r\n    \"role\": \"ROLE_ADMIN\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}\r\n",
+					"raw": "{\r\n    \"username\": \"johnyADMIN\",\r\n    \"email\": \"nikita26234@gmail.com\",\r\n    //\"email\": \"thas@mail.ru\",\r\n    \"password\": \"admin1\",\r\n    \"role\": \"ROLE_ADMIN\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -686,6 +687,56 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"flightId\":\"{{flightId}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/sub-cancel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sub-cancel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sub-flight-canceled (user/admin) for test",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var token = pm.globals.get(\"userTripToken\");\r",
+							"\r",
+							"pm.request.headers.add({\r",
+							"    key: \"Authorization\",\r",
+							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "userDetails",
+						"value": "{    \"userId\": \"6\",  \"username\": \"username\",    \"email\": \"email\",    \"password\": \"password\",    \"dateBirth\": \"2023-05-01\",    \"language\": \"EN\",    \"role\": \"ROLE_USER\"}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"flightId\":\"10\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -3139,7 +3190,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"flightId\":\"20\"\r\n}",
+					"raw": "{\r\n    \"flightId\":\"10\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -3652,7 +3703,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/flight-update/20",
+					"raw": "http://localhost:8080/flight-update/10",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -3660,7 +3711,7 @@
 					"port": "8080",
 					"path": [
 						"flight-update",
-						"20"
+						"10"
 					]
 				}
 			},
