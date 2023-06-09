@@ -55,7 +55,8 @@ public class PaymentController {
         logger.info("Checking card details");
         blockingCardService.validateCardDetails(paymentDto.getCardNumber());
         logger.info("Checking ticket");
-        List<TicketInfoDto> ticketInfoDto = ticketService.getTicketInfoForPaying(paymentDto.getTickets(), userDetailsDto);
+        List<TicketInfoDto> ticketInfoDto = ticketService.getTicketInfoForPaying(paymentDto.getTickets(), userDetailsDto,
+                userDetails);
         tripService.checkFlightDateForPaying(ticketInfoDto.stream().map(TicketInfoDto::getFlightId)
                 .distinct().collect(Collectors.toList()));
 
@@ -103,6 +104,6 @@ public class PaymentController {
     public ResponseEntity<?> refundPayment(@PathVariable("id") long paymentId,
                                            @RequestHeader(name = "userDetails") String userDetails) {
         UserDetailsDto userDetailsDto = paymentService.getUserDetailsFromString(userDetails);
-        return paymentService.refundPayment(paymentId, userDetailsDto);
+        return paymentService.refundPayment(paymentId, userDetailsDto, userDetails);
     }
 }

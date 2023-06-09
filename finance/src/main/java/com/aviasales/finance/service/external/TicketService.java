@@ -36,14 +36,16 @@ public class TicketService {
         this.restTemplate = restTemplate;
     }
 
-    public List<TicketInfoDto> getTicketInfo(List<Long> ticketList) {
+    public List<TicketInfoDto> getTicketInfo(List<Long> ticketList, String userDetailsHeader) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(tickerServiceUrl)
                 .pathSegment("ids")
                 .queryParam("ids", ticketList.stream().map(Object::toString).collect(Collectors.joining(",")));
 
         try {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.set("userDetails", userDetailsHeader);
             ResponseEntity<List<TicketInfoDto>> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,
-                    new HttpEntity<>(new HttpHeaders()), new ParameterizedTypeReference<List<TicketInfoDto>>() {
+                    new HttpEntity<>(httpHeaders), new ParameterizedTypeReference<List<TicketInfoDto>>() {
                     });
             return Optional.ofNullable(response.getBody()).orElseThrow(() -> new TicketServiceException("Such tickets not found"));
 
@@ -53,8 +55,9 @@ public class TicketService {
         }
     }
 
-    public List<TicketInfoDto> getTicketInfoForPaying(List<Long> ticketList, UserDetailsDto userDetailsDto) {
-        List<TicketInfoDto> ticketInfoDtos = getTicketInfo(ticketList);
+    public List<TicketInfoDto> getTicketInfoForPaying(List<Long> ticketList, UserDetailsDto userDetailsDto,
+                                                      String userDetailsHeader) {
+        List<TicketInfoDto> ticketInfoDtos = getTicketInfo(ticketList, userDetailsHeader);
         logger.info("Checking all tickets are received");
 
         if (ticketInfoDtos.size() != ticketList.size()) {
