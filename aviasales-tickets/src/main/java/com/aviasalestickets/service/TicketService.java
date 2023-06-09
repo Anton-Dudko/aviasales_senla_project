@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -127,6 +128,14 @@ public class TicketService {
                 .filter(ticket -> ticket.getStatus().equals(TicketStatus.FREE) ||
                         ticket.getStatus().equals(TicketStatus.BOOKED))
                 .peek(ticket -> {
+//                    var flightInfoDto = tripApi.requestToTrip(ticket.getFlightId());
+//                    int tripMonth = flightInfoDto.getDepartureDateTime().getMonthValue();
+//                    int tripDay = flightInfoDto.getDepartureDateTime().getDayOfMonth();
+//                    int userMonth = user.getDateBirth().getMonthValue();
+//                    int userDay = user.getDateBirth().getDayOfMonth();
+//                    if (tripMonth == userMonth && tripDay == userDay){
+//                        ticket.setPrice(ticket.getPrice().multiply(new BigDecimal("0.9")));
+//                    }
                     ticket.setStatus(TicketStatus.PAID);
                     ticket.setUserId(user.getUserId());
                     ticket.setFio(user.getUsername());
@@ -152,11 +161,24 @@ public class TicketService {
         ticketRepository.saveAll(validateTickets);
     }
 
-    public List<TicketResponse> findAllByIds(List<Long> ids) {
+    public List<TicketResponse> findAllByIds(List<Long> ids, String userDetails) {
+        UserDetails user = userMapper.getUserDetails(userDetails);
         List<Ticket> tickets = ticketRepository.findAllById(ids);
+        int userMonth = user.getDateBirth().getMonthValue();
+        int userDay = user.getDateBirth().getDayOfMonth();
         return tickets
                 .stream()
                 .map(ticketMapper::convertEntityToDto)
+                .map(ticketResponse -> {
+                    var flightInfoDto = tripApi.requestToTrip(ticketResponse.getFlightId());
+
+                    if (flightInfoDto.getDepartureDateTime().getMonthValue() == userMonth
+                        && flightInfoDto.getDepartureDateTime().getDayOfMonth() == userDay)
+                    {
+                        ticketResponse.setPrice(ticketResponse.getPrice().multiply(new BigDecimal("0.9")));
+                    }
+                    return ticketResponse;
+                })
                 .collect(Collectors.toList());
     }
 }
