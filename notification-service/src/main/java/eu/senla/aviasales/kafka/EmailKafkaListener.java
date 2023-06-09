@@ -1,7 +1,7 @@
 package eu.senla.aviasales.kafka;
 
 import eu.senla.aviasales.mapper.NotificationMapper;
-import eu.senla.aviasales.service.SendService;
+import eu.senla.aviasales.service.SendToEmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -19,7 +19,7 @@ import java.util.Map;
 @Service
 public class EmailKafkaListener {
 
-    private final SendService sendToEmailServiceImpl;
+    private final SendToEmailService sendToEmailServiceImpl;
     private final NotificationMapper notificationMapper;
 
     @KafkaListener(topics = "#{templatesConfig.getTopicNames()}", autoStartup = "true")
