@@ -1,10 +1,6 @@
-package eu.senla.aviasales.service.impl;
+package eu.senla.aviasales.service;
 
 import eu.senla.aviasales.entity.EmailNotification;
-import eu.senla.aviasales.service.AlarmAdminService;
-import eu.senla.aviasales.service.EmailNotificationService;
-import eu.senla.aviasales.service.MessageBuilder;
-import eu.senla.aviasales.service.SendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class SendToEmailServiceImpl implements SendService {
+public class SendToEmailService {
     @Value("${email.send.count}")
     private Integer maxCountSending;
     private final JavaMailSender javaMailSender;
@@ -34,8 +30,6 @@ public class SendToEmailServiceImpl implements SendService {
     private final EmailNotificationService service;
     private final AlarmAdminService alarmAdminService;
 
-
-    @Override
     public void sendEmail(EmailNotification emailNotification) {
         log.info("... method sendEmail ");
         Map<String, String> htmlWithSubject = messageBuilder.build(emailNotification);
@@ -60,7 +54,6 @@ public class SendToEmailServiceImpl implements SendService {
         }
     }
 
-    @Override
     public void sendEmail(String email, String subject, String htmlBody) throws MessagingException {
         log.info("... Method sendEmail. Sending email to: {}. Subject: {}", email, subject);
         MimeMessage message = javaMailSender.createMimeMessage();

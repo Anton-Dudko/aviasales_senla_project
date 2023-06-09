@@ -23,9 +23,6 @@ services:
   userservice:
     image: oglavdel/userservice:5.0
     container_name: userservice
-    #    build:
-    #      context: ./userservice
-    #      dockerfile: Dockerfile
     environment:
       management.context-path: /userservice
       hostName: userservice
