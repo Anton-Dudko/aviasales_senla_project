@@ -27,7 +27,6 @@ import java.util.Map;
 public class MessageBuilder {
     private final TemplatesConfig templatesConfig;
     private final SpringTemplateEngine templateEngine;
-
     private final ObjectMapper objectMapper;
 
     public Map<String, String> build(EmailNotification emailNotification) {

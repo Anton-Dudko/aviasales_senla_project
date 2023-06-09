@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class EmailNotificationService {
+public class CrudNotificationService {
 
     private final EmailNotificationRepository repository;
 

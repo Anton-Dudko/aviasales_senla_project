@@ -27,7 +27,7 @@ public class SendToEmailService {
     private Integer maxCountSending;
     private final JavaMailSender javaMailSender;
     private final MessageBuilder messageBuilder;
-    private final EmailNotificationService service;
+    private final CrudNotificationService service;
     private final AlarmAdminService alarmAdminService;
 
     public void sendEmail(EmailNotification emailNotification) {
