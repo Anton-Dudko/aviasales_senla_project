@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>eu.senla</groupId>
-    <artifactId>aviasales</artifactId>
+    <artifactId>notification-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>NotificationService</name>
     <description>Notification microservice for aviasales API</description>
