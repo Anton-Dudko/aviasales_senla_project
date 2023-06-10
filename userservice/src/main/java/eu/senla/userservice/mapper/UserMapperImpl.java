@@ -9,6 +9,7 @@ import eu.senla.userservice.response.TextResponse;
 import eu.senla.userservice.response.UserResponse;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +26,7 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public UserResponse entityToResponse(User entity) {
+    public UserResponse entityToResponse(@NotNull User entity) {
         return UserResponse.builder()
                 .userId(entity.getId())
                 .username(entity.getUsername())
@@ -37,7 +38,7 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public TextResponse entityToTextResponse(User user) {
+    public TextResponse entityToTextResponse(@NotNull User user) {
         return TextResponse.builder()
                 .username(user.getUsername())
                 .email(user.getEmail())
@@ -45,7 +46,7 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public User requestToEntity(UserRequest request) {
+    public User requestToEntity(@NotNull UserRequest request) {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
@@ -60,7 +61,7 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public UserEvent entityToEvent(User user) {
+    public UserEvent entityToEvent(@NotNull User user) {
         return UserEvent.builder()
                 .userName(user.getUsername())
                 .userLanguage(user.getLanguage().name().toLowerCase())

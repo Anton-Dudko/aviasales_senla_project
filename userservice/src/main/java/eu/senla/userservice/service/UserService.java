@@ -24,7 +24,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Validated
 public class UserService {
 
     private final UserRepository userRepository;
@@ -39,7 +43,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final KafkaService kafkaService;
 
-    public UserGetPageResponse findBySpecification(UserFindRequest request, Pageable pageable) {
+    public UserGetPageResponse findBySpecification(@Valid UserFindRequest request,
+                                                   @NotNull Pageable pageable) {
         log.info("Method findBySpecification");
         Page<User> pagedResult = userRepository.findAll(new UserSpecification(request), pageable);
         return pagedResult.hasContent()
@@ -55,7 +60,7 @@ public class UserService {
                 .build();
     }
 
-    public UserResponse findById(Long id) {
+    public UserResponse findById(@NotNull Long id) {
         log.info("Method findById");
         return userMapper.entityToResponse(userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_FOUND)));
@@ -70,7 +75,8 @@ public class UserService {
                 .build();
     }
 
-    public UserResponse update(Long id, UserUpdateRequest request) {
+    public UserResponse update(@NotNull Long id,
+                               @Valid UserUpdateRequest request) {
         log.info("Method update");
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_FOUND));
@@ -103,7 +109,7 @@ public class UserService {
     }
 
 
-    public TextResponse delete(Long id) {
+    public TextResponse delete(@NotNull Long id) {
         log.info("Method delete");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_FOUND));

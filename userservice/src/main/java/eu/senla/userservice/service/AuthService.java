@@ -20,11 +20,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@Validated
 public class AuthService {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
@@ -32,7 +37,7 @@ public class AuthService {
     private final UserRepository repository;
     private final KafkaService kafkaService;
 
-    public AuthResponse createUser(UserRequest request) {
+    public AuthResponse createUser(@Valid UserRequest request) {
         log.info("...method createUser");
         if (repository.findByUsername(request.getUsername()).isPresent()) {
             throw new AuthenticatException(ExceptionMessageConstants.USER_WITH_SUCH_USERNAME_EXIST);
@@ -54,13 +59,13 @@ public class AuthService {
                 .build();
     }
 
-    public AuthResponse createAdmin(UserRequest request) {
+    public AuthResponse createAdmin(@Valid UserRequest request) {
         request.setRole(Role.ROLE_ADMIN.name());
         return createUser(request);
 
     }
 
-    public AuthResponse authenticateUser(LoginRequest request) {
+    public AuthResponse authenticateUser(@Valid LoginRequest request) {
         User user = repository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_FOUND));
         if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -100,7 +105,7 @@ public class AuthService {
     }
 
 
-    public PasswordResponse generatePassword(UserUpdateRequest request) {
+    public PasswordResponse generatePassword(@Valid UserUpdateRequest request) {
         String email = request.getEmail();
         log.info("... email {}", email);
         User user = repository.findByEmail(email)
@@ -121,12 +126,12 @@ public class AuthService {
                 .build();
     }
 
-    private String generateAccessToken(User user) {
+    private String generateAccessToken(@NotNull User user) {
         log.info("method generateAccessToken");
         return jwtProvider.generateAccessToken(user);
     }
 
-    private String generateRefreshToken(User user) {
+    private String generateRefreshToken(@NotNull User user) {
         return jwtProvider.generateRefreshToken(user);
     }
 }

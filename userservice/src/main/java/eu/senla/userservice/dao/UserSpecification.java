@@ -20,7 +20,9 @@ public class UserSpecification implements Specification<User> {
     private UserFindRequest request;
 
     @Override
-    public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<User> root,
+                                 CriteriaQuery<?> query,
+                                 CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
         if (StringUtils.isNotEmpty(request.getEmail())) {
             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("email")),
