@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -20,10 +21,10 @@ public class JwtProviderImpl implements JwtProvider {
     private final JwtSecurityProperties securityProperties;
 
     @Override
-    public String generateAccessToken(User user) {
+    public String generateAccessToken(@NotNull User user) {
         log.info("Method generateAccessToken");
         Date date = Date.from(LocalDateTime.now()
-                .plusMinutes(securityProperties.getAccessTime().toMinutes())
+                .plusMinutes(securityProperties.getAccessTime().toHours())
                 .atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
                 .setSubject(user.getEmail())
@@ -34,7 +35,7 @@ public class JwtProviderImpl implements JwtProvider {
     }
 
     @Override
-    public String generateRefreshToken(User user) {
+    public String generateRefreshToken(@NotNull User user) {
         log.info("Method generateRefreshToken");
         Date date = Date.from(LocalDateTime.now()
                 .plusDays(securityProperties.getRefreshTime().getDays())
@@ -47,30 +48,31 @@ public class JwtProviderImpl implements JwtProvider {
     }
 
     @Override
-    public boolean validateAccessToken(String accessToken) {
+    public boolean validateAccessToken(@NotNull String accessToken) {
         log.info("Method validateAccessToken");
         return validateToken(accessToken, securityProperties.getAccessSecret());
     }
 
     @Override
-    public boolean validateRefreshToken(String refreshToken) {
+    public boolean validateRefreshToken(@NotNull String refreshToken) {
         log.info("Method validateRefreshToken");
         return validateToken(refreshToken, securityProperties.getRefreshSecret());
     }
 
     @Override
-    public String getEmailFromAccessToken(String token) {
+    public String getEmailFromAccessToken(@NotNull String token) {
         log.info("Method getEmailFromAccessToken");
         return getEmailFromToken(token, securityProperties.getAccessSecret());
     }
 
     @Override
-    public String getEmailFromRefreshToken(String token) {
+    public String getEmailFromRefreshToken(@NotNull String token) {
         log.trace("Method getEmailFromRefreshToken");
         return getEmailFromToken(token, securityProperties.getRefreshSecret());
     }
 
-    private boolean validateToken(String token, String secret) {
+    private boolean validateToken(@NotNull String token,
+                                  String secret) {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             log.info("Return true");
@@ -82,7 +84,8 @@ public class JwtProviderImpl implements JwtProvider {
         return false;
     }
 
-    private String getEmailFromToken(String token, String secret) {
+    private String getEmailFromToken(@NotNull String token,
+                                     String secret) {
         log.info("Method getEmailFromToken");
         Claims claims = Jwts.parser()
                 .setSigningKey(secret)

@@ -10,6 +10,7 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @Slf4j
@@ -22,25 +23,29 @@ public class KafkaService {
     private final UserMapper userMapper;
 
 
-    public void sendToTopic(String topic, User user) {
+    public void sendToTopic(@NotNull String topic,
+                            @NotNull User user) {
         UserEvent userEvent = createEvent(user);
         send(topic, userEvent);
     }
 
-    public void sendToTopic(String topic, User user, String password) {
+    public void sendToTopic(@NotNull String topic,
+                            @NotNull User user,
+                            @NotNull String password) {
         UserEvent userEvent = createEvent(user);
         userEvent.setNewPassword(password);
         send(topic, userEvent);
     }
 
-    private void send(String topic, UserEvent userEvent) {
+    private void send(@NotNull String topic,
+                      @NotNull UserEvent userEvent) {
         ProducerRecord<String, Map<String, UserEvent>> producerRecord =
                 new ProducerRecord<>(topic, objectMapper.convertValue(userEvent, Map.class));
         producer.send(producerRecord);
         log.info("Sending message ... {}", producerRecord);
     }
 
-    private UserEvent createEvent(User user) {
+    private UserEvent createEvent(@NotNull User user) {
         UserEvent event = userMapper.entityToEvent(user);
         log.info("event ... {}", event);
         return event;
