@@ -46,7 +46,6 @@ endpoint:
     ticket-service:
       "[/tickets]": /tickets
       "[/tickets/**]": /tickets/${id}
-      "[/find-tickets-by]": /tickets/ids
       "[/book-ticket]": /tickets/booking
       "[/pay-tickets]": /tickets/pay-tickets
       "[/generate-tickets]": /tickets/generate

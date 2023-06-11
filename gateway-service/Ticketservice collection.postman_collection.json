@@ -22,7 +22,11 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.globals.set(\"userTicketEmail\", JSON.parse(pm.request.body).email);"
+							"pm.globals.set(\"userTicketEmail\", JSON.parse(pm.request.body).email);\r",
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -66,7 +70,9 @@
 							"var token = jsonData.accessToken;\r",
 							"pm.globals.set(\"userTicketToken\", token);\r",
 							"\r",
-							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
 							""
 						],
 						"type": "text/javascript"
@@ -132,8 +138,11 @@
 							"        break;\r",
 							"    }\r",
 							"}\r",
-							"console.log(firstFreeTicketId);\r",
 							"pm.globals.set(\"freeTickerId\", firstFreeTicketId);\r",
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
 							""
 						],
 						"type": "text/javascript"
@@ -190,6 +199,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -234,6 +254,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -270,6 +301,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -285,47 +327,6 @@
 					"path": [
 						"tickets",
 						"{{freeTickerId}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Find by ids",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"var token = pm.globals.get(\"userTicketToken\");\r",
-							"\r",
-							"pm.request.headers.add({\r",
-							"    key: \"Authorization\",\r",
-							"    value: \"Bearer \" + token\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/find-tickets-by?ids={{freeTickerId}}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"find-tickets-by"
-					],
-					"query": [
-						{
-							"key": "ids",
-							"value": "{{freeTickerId}}"
-						}
 					]
 				}
 			},
@@ -385,6 +386,18 @@
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
 							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							""
 						],
 						"type": "text/javascript"
 					}

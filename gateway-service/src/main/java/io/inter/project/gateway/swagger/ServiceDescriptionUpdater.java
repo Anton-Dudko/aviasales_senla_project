@@ -39,7 +39,8 @@ public class ServiceDescriptionUpdater {
     private final RestTemplate template;
 
     @Autowired
-    public ServiceDescriptionUpdater(DiscoveryClient discoveryClient, SwaggerUtils swaggerUtils,
+    public ServiceDescriptionUpdater(DiscoveryClient discoveryClient,
+                                     SwaggerUtils swaggerUtils,
                                      ServiceDefinitionsContext definitionContext) {
         this.discoveryClient = discoveryClient;
         this.swaggerUtils = swaggerUtils;
@@ -79,7 +80,8 @@ public class ServiceDescriptionUpdater {
         return swaggerURL != null ? instance.getUri() + swaggerURL : instance.getUri() + DEFAULT_SWAGGER_URL;
     }
 
-    private Optional<Object> getSwaggerDefinitionForAPI(String serviceName, String url) {
+    private Optional<Object> getSwaggerDefinitionForAPI(String serviceName,
+                                                        String url) {
         log.info("Accessing the SwaggerDefinition JSON for Service: {}. URL: {}", serviceName, url);
         try {
             Object jsonData = template.getForObject(url, Object.class);
@@ -90,7 +92,8 @@ public class ServiceDescriptionUpdater {
         }
     }
 
-    private void updateServiceDefinition(String serviceId, String content) {
+    private void updateServiceDefinition(String serviceId,
+                                         String content) {
         try {
             definitionContext.addServiceDefinition(serviceId, swaggerUtils.setUpdatedMappings(serviceId, content));
         } catch (JsonProcessingException e) {
