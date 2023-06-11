@@ -1,6 +1,5 @@
 package com.aviasalestickets.service.api;
 
-//import com.aviasalestickets.config.properties.TripRestTemplateProperties;
 import com.aviasalestickets.exception.TripRestTemplateException;
 import com.aviasalestickets.model.dto.trip.FlightInfoDto;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +13,12 @@ import org.springframework.web.client.RestTemplate;
 public class TripApi {
 
     private final RestTemplate restTemplate;
-    // private final TripRestTemplateProperties tripRestTemplateProperties;
 
     @Transactional
     public FlightInfoDto requestToTrip(Long id) {
         FlightInfoDto flight;
         try {
-            flight = restTemplate.getForObject("http://trip-service:8081/flights/admin/find/{id}", FlightInfoDto.class, id);
+            flight = restTemplate.getForObject("/flights/admin/find/{id}", FlightInfoDto.class, id);//TODO test
         } catch (HttpClientErrorException e) {
             throw new TripRestTemplateException(e.getMessage());
         }

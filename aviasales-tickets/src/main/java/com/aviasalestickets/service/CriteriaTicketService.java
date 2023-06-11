@@ -19,9 +19,9 @@ public class CriteriaTicketService {
         return ticketRepository.findAll(
                 where(TicketSpecifications.userIdEqual(userId)
                         .and(TicketSpecifications.statusEqual(status))
-                        .and(TicketSpecifications.tripIdLike(tripId))
-                        .and(TicketSpecifications.idEqual(id))
-                        .and(TicketSpecifications.fioLike(fio))
-                        .and(TicketSpecifications.typeEqual(type))));
+                        .and(TicketSpecifications.flightIdEqual(tripId))
+                        .and(TicketSpecifications.ticketIdEqual(id))
+                        .and(TicketSpecifications.ticketFioEqual(fio))
+                        .and(TicketSpecifications.ticketTypeEqual(type))));
     }
 }

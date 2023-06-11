@@ -8,14 +8,19 @@ import com.aviasalestickets.model.dto.response.*;
 import com.aviasalestickets.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Slf4j
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tickets")
+@Slf4j
 public class TicketController {
 
     private final TicketService ticketService;
@@ -41,7 +46,8 @@ public class TicketController {
     }
 
     @PostMapping("/booking")
-    public BookTicketResponse bookingTicket(@RequestBody BookingRequest request, @RequestHeader("userDetails") String userDetails) {
+    public BookTicketResponse bookingTicket(@Valid @RequestBody BookingRequest request,
+                                            @NotEmpty @NotNull @RequestHeader("userDetails") String userDetails) {
         return ticketService.bookTicket(request.getId(), request.getUserId(), userDetails);
     }
 
@@ -73,7 +79,7 @@ public class TicketController {
     }
 
     @PostMapping("/generate")
-    public GenerateTicketResponse generateTickets(@RequestBody GenerateTicketRequest request) {
+    public GenerateTicketResponse generateTickets(@Valid @RequestBody GenerateTicketRequest request) {
         ticketService.generateTickets(request);
         return GenerateTicketResponse.builder()
                 .flightId(request.getFlightId())

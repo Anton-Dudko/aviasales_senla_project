@@ -31,7 +31,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   rest-template:
-    trip-service: http://trip-service:8081/flights/admin/find/{id}
+    trip-service: http://trip-service:8081
 
 springfox:
   documentation:
