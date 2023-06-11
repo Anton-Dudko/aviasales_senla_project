@@ -18,7 +18,8 @@ public class ServiceDefinitionsContext {
         serviceDescriptions = new ConcurrentHashMap<>();
     }
 
-    public void addServiceDefinition(String serviceName, String serviceDescription){
+    public void addServiceDefinition(String serviceName,
+                                     String serviceDescription){
         serviceDescriptions.put(serviceName, serviceDescription);
     }
 

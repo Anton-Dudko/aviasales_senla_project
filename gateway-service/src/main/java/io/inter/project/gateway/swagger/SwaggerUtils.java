@@ -9,8 +9,10 @@ import io.swagger.models.Tag;
 import io.swagger.models.parameters.HeaderParameter;
 import io.swagger.parser.SwaggerParser;
 import io.swagger.util.Json;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +42,8 @@ public class SwaggerUtils {
         return swagger;
     }
 
-    public String setUpdatedMappings(String serviceName, String content) throws JsonProcessingException {
+    public String setUpdatedMappings(String serviceName,
+                                     String content) throws JsonProcessingException {
         Swagger swagger = new SwaggerParser().parse(content);
         if (gatewayConfig.getMappings().containsKey(serviceName)) {
             Map<String, Path> newPaths = createNewPaths(serviceName, swagger);
@@ -52,16 +55,18 @@ public class SwaggerUtils {
     }
 
     private void addAuthHeaderToOperations(Swagger swagger) {
-        for (Map.Entry<String, Path> entry : swagger.getPaths().entrySet()) {
-            String path = entry.getKey();
-            Path pathObject = entry.getValue();
-            if (!path.contains(GUEST_ROUTE_PARAM)) {
-                for (Operation operation : pathObject.getOperations()) {
-                    operation.setParameters(operation.getParameters().stream()
-                            .filter(x -> !x.getName().equals(USER_DETAILS_PARAM))
-                            .collect(Collectors.toList()));
-                    HeaderParameter authHeader = createAuthHeader();
-                    operation.addParameter(authHeader);
+        if (!MapUtils.isEmpty(swagger.getPaths())) {
+            for (Map.Entry<String, Path> entry : swagger.getPaths().entrySet()) {
+                String path = entry.getKey();
+                Path pathObject = entry.getValue();
+                if (!path.contains(GUEST_ROUTE_PARAM)) {
+                    for (Operation operation : pathObject.getOperations()) {
+                        operation.setParameters(operation.getParameters().stream()
+                                .filter(x -> !x.getName().equals(USER_DETAILS_PARAM))
+                                .collect(Collectors.toList()));
+                        HeaderParameter authHeader = createAuthHeader();
+                        operation.addParameter(authHeader);
+                    }
                 }
             }
         }
@@ -80,7 +85,8 @@ public class SwaggerUtils {
         swagger.setHost(HOST_VALUE);
     }
 
-    private Map<String, Path> createNewPaths(String serviceName, Swagger swagger) {
+    private Map<String, Path> createNewPaths(String serviceName,
+                                             Swagger swagger) {
         Map<String, Path> newPaths = swagger.getPaths();
         gatewayConfig.getMappings().get(serviceName).forEach((key, value) -> {
             String newValue = value.replace("$", "");

@@ -3,6 +3,7 @@ package io.inter.project.gateway.filter;
 import io.inter.project.gateway.exception.GatewayServiceException;
 import io.inter.project.gateway.service.FilterService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -31,19 +32,25 @@ public class UserIdFilter extends AbstractGatewayFilterFactory<UserIdFilter.Conf
         return (exchange, chain) -> {
             try {
                 String accessToken = filterService.getAuthToken(exchange.getRequest().getHeaders());
-                return filterService.takeUserDetailsFromToken(accessToken).flatMap(userDetails -> {
-                    int incomingRequestId = extractRequestIdFromPath(exchange.getRequest().getPath().toString());
-                    if (incomingRequestId == userDetails.getUserId() || userDetails.getRole().equals(ADMIN_PARAM_VALUE)) {
-                        try {
-                            return Mono.just(filterService.insertUserDetailsInToResponse(exchange, userDetails));
-                        } catch (GatewayServiceException e) {
-                            log.warn("Some problems while processing");
-                            return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Some problems while processing"));
-                        }
-                    } else {
-                        return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied"));
-                    }
-                }).flatMap(chain::filter);
+                return filterService.takeUserDetailsFromToken(accessToken)
+                        .flatMap(userDetails -> {
+                            int incomingRequestId =
+                                    extractRequestIdFromPath(exchange.getRequest().getPath().toString());
+                            if (incomingRequestId == userDetails.getUserId() ||
+                                    StringUtils.equalsIgnoreCase(userDetails.getRole(), ADMIN_PARAM_VALUE)) {
+                                try {
+                                    return Mono.just(filterService.insertUserDetailsInToResponse(exchange,
+                                            userDetails));
+                                } catch (GatewayServiceException e) {
+                                    log.warn("Some problems while processing");
+                                    return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                                            "Some problems while processing"));
+                                }
+                            } else {
+                                return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied"));
+                            }
+                        })
+                        .flatMap(chain::filter);
 
             } catch (GatewayServiceException e) {
                 log.warn("Incorrect auth structure");

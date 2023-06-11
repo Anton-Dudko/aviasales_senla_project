@@ -20,8 +20,8 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 public class GlobalUriFilter implements GlobalFilter, Ordered {
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-
+    public Mono<Void> filter(ServerWebExchange exchange,
+                             GatewayFilterChain chain) {
         URI incomingUri = exchange.getRequest().getURI();
         log.info("Start of filtering request with GlobalUriFilter -> {}", incomingUri);
         if (isUriEncoded(incomingUri)) {
@@ -38,14 +38,15 @@ public class GlobalUriFilter implements GlobalFilter, Ordered {
         return chain.filter(exchange);
     }
 
-    private URI createUri(URI incomingUri, URI balanceUrl) {
+    private URI createUri(URI incomingUri,
+                          URI balanceUrl) {
         String port = balanceUrl.getPort() != -1 ? ":" + balanceUrl.getPort() : "";
         String rawPath = balanceUrl.getRawPath() != null ? balanceUrl.getRawPath() : "";
         String query = incomingUri.getRawQuery() != null ?  "?" + incomingUri.getRawQuery() : "";
         return URI.create(balanceUrl.getScheme() + "://" + balanceUrl.getHost() + port + rawPath + query);
     }
 
-    private static boolean isUriEncoded(URI uri) {
+    private boolean isUriEncoded(URI uri) {
         return (uri.getRawQuery() != null && uri.getRawQuery().contains("%"))
                 || (uri.getRawPath() != null && uri.getRawPath().contains("%"));
     }

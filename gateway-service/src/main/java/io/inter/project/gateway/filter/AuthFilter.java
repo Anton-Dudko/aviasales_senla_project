@@ -3,6 +3,7 @@ package io.inter.project.gateway.filter;
 import io.inter.project.gateway.exception.GatewayServiceException;
 import io.inter.project.gateway.service.FilterService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -41,7 +42,8 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                 String accessToken = filterService.getAuthToken(exchange.getRequest().getHeaders());
                 return filterService.takeUserDetailsFromToken(accessToken)
                         .flatMap(userDetails -> {
-                            if (config.isAdminCheck() && !userDetails.getRole().equals(ADMIN_PARAM_VALUE)) {
+                            if (config.isAdminCheck() && !StringUtils.equalsIgnoreCase(userDetails.getRole(),
+                                    ADMIN_PARAM_VALUE)) {
                                 log.warn("No authorities for this");
                                 return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied"));
                             }
@@ -49,7 +51,8 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                                 return Mono.just(filterService.insertUserDetailsInToResponse(exchange, userDetails));
                             } catch (GatewayServiceException e) {
                                 log.warn("Some problems while processing");
-                                return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Some problems while processing"));
+                                return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                                        "Some problems while processing"));
                             }
                         })
                         .flatMap(chain::filter);
@@ -70,7 +73,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
         }
 
         public boolean isAdminCheck() {
-            return isAdminCheck.equalsIgnoreCase("true");
+            return StringUtils.equalsIgnoreCase(isAdminCheck, "true");
         }
 
     }

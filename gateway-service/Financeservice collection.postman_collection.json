@@ -23,7 +23,10 @@
 					"script": {
 						"exec": [
 							"pm.globals.set(\"adminFinEmail\", JSON.parse(pm.request.body).email);\r",
-							""
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -70,7 +73,11 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.globals.set(\"userFinEmail\", JSON.parse(pm.request.body).email);"
+							"pm.globals.set(\"userFinEmail\", JSON.parse(pm.request.body).email);\r",
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -114,7 +121,9 @@
 							"var token = jsonData.accessToken;\r",
 							"pm.globals.set(\"adminFinToken\", token);\r",
 							"\r",
-							""
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -158,7 +167,9 @@
 							"var token = jsonData.accessToken;\r",
 							"pm.globals.set(\"userFinToken\", token);\r",
 							"\r",
-							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
 							""
 						],
 						"type": "text/javascript"
@@ -198,7 +209,9 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							""
+							"pm.test(\"Response code should match - 403\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -259,6 +272,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 403\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -298,6 +322,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -345,6 +380,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -384,6 +430,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -431,6 +488,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -474,6 +542,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -513,6 +592,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -571,7 +661,10 @@
 							"\r",
 							"var paymentId = message.match(/Payment id - (\\d+)/i)[1];\r",
 							"pm.globals.set(\"userPaymentId\", paymentId);\r",
-							""
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -618,6 +711,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -649,6 +753,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -695,11 +810,6 @@
 						{
 							"key": "size",
 							"value": "10"
-						},
-						{
-							"key": "amount",
-							"value": null,
-							"disabled": true
 						}
 					]
 				}
@@ -718,6 +828,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -764,6 +885,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -799,6 +931,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -830,6 +973,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -877,6 +1031,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -916,6 +1081,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -963,6 +1139,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -1006,6 +1193,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -1040,6 +1238,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -1053,83 +1262,6 @@
 					"port": "8080",
 					"path": [
 						"blocked-cards"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "ПЧК - create bank card",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n\"cardNumber\": \"4263982640269299\",\r\n\"cardDate\": \"11/33\",\r\n\"cvv\": \"999\",\r\n\"cardHolder\": \"ISRAEL USER\",\r\n\"accountSum\": \"50.0\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8091/external/account",
-					"host": [
-						"localhost"
-					],
-					"port": "8091",
-					"path": [
-						"external",
-						"account"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "ПЧК - available cards",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8091/external/account/available-cards",
-					"host": [
-						"localhost"
-					],
-					"port": "8091",
-					"path": [
-						"external",
-						"account",
-						"available-cards"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "ПЧК - add money to account",
-			"request": {
-				"method": "PATCH",
-				"header": [],
-				"url": {
-					"raw": "localhost:8091/external/account?cardNumber=6011000991300009&sum=1000",
-					"host": [
-						"localhost"
-					],
-					"port": "8091",
-					"path": [
-						"external",
-						"account"
-					],
-					"query": [
-						{
-							"key": "cardNumber",
-							"value": "6011000991300009"
-						},
-						{
-							"key": "sum",
-							"value": "1000"
-						}
 					]
 				}
 			},

@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "6ece0641-ed9c-4e8c-8f8e-744d09b46885",
+		"_postman_id": "89d494fc-f8ea-4d0e-af05-864706f1c869",
 		"name": "Tripservice collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "24150085",
-		"_collection_link": "https://interstellar-crater-494474.postman.co/workspace/Team-Workspace~20f3f218-87c2-40a9-830c-45fed934de7c/collection/24150085-6ece0641-ed9c-4e8c-8f8e-744d09b46885?action=share&creator=24150085&source=collection_link"
+		"_exporter_id": "27427673"
 	},
 	"item": [
 		{
@@ -23,7 +22,11 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.globals.set(\"userTripEmail\", JSON.parse(pm.request.body).email);"
+							"pm.globals.set(\"userTripEmail\", JSON.parse(pm.request.body).email);\r",
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -34,7 +37,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"johnyUSER\",\r\n    \"email\": \"nasevich.nik@mail.ru\",\r\n    //\"email\": \"thaseugene@gmail.com\",\r\n    \"password\": \"user1\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}",
+					"raw": "{\r\n    \"username\": \"johnyUSER\",\r\n    // \"email\": \"nasevich.nik@mail.ru\",\r\n    \"email\": \"thaseugene@gmail.com\",\r\n    \"password\": \"user1\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -72,7 +75,10 @@
 					"script": {
 						"exec": [
 							"pm.globals.set(\"adminTripEmail\", JSON.parse(pm.request.body).email);\r",
-							""
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -83,7 +89,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"johnyADMIN\",\r\n    \"email\": \"nikita26234@gmail.com\",\r\n    //\"email\": \"thas@mail.ru\",\r\n    \"password\": \"admin1\",\r\n    \"role\": \"ROLE_ADMIN\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}\r\n",
+					"raw": "{\r\n    \"username\": \"johnyADMIN\",\r\n    // \"email\": \"nikita26234@gmail.com\",\r\n    \"email\": \"thas@mail.ru\",\r\n    \"password\": \"admin1\",\r\n    \"role\": \"ROLE_ADMIN\",\r\n    \"dateBirth\": \"2012-12-12\",\r\n    \"language\": \"RU\"\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -112,7 +118,10 @@
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);\r",
 							"pm.globals.set(\"adminTripToken\", jsonData.accessToken);\r",
-							""
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -151,7 +160,11 @@
 					"script": {
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);\r",
-							"pm.globals.set(\"userTripToken\", jsonData.accessToken);"
+							"pm.globals.set(\"userTripToken\", jsonData.accessToken);\r",
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -193,7 +206,11 @@
 					"script": {
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);\r",
-							"pm.globals.set(\"tripId\", jsonData.tripId);"
+							"pm.globals.set(\"tripId\", jsonData.tripId);\r",
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -272,6 +289,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -320,6 +348,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -351,6 +390,19 @@
 		},
 		{
 			"name": "get all trips (guest)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -393,6 +445,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -459,6 +522,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -509,6 +583,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -551,7 +636,11 @@
 					"script": {
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);\r",
-							"pm.globals.set(\"flightId\", jsonData.flightId);"
+							"pm.globals.set(\"flightId\", jsonData.flightId);\r",
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -623,6 +712,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -669,6 +769,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -723,6 +834,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -769,6 +891,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -828,6 +961,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -872,6 +1016,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -926,7 +1081,11 @@
 					"script": {
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);\r",
-							"pm.globals.set(\"fastestId\", jsonData.flightId);"
+							"pm.globals.set(\"fastestId\", jsonData.flightId);\r",
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -998,6 +1157,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -1044,7 +1214,11 @@
 					"script": {
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);\r",
-							"pm.globals.set(\"cheapestId\", jsonData.flightId);"
+							"pm.globals.set(\"cheapestId\", jsonData.flightId);\r",
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -1116,6 +1290,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -1176,7 +1361,11 @@
 					"script": {
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);\r",
-							"pm.globals.set(\"seatnumberId\", jsonData.flightId);"
+							"pm.globals.set(\"seatnumberId\", jsonData.flightId);\r",
+							"\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -1234,6 +1423,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -1279,9 +1479,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"find flights test\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.total).to.eql(3);\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1334,9 +1533,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"find flights test\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.flights[0].flightId).to.eql(pm.globals.get(\"fastestId\"));\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1389,9 +1587,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"find flights test\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.flights[0].flightId).to.eql(pm.globals.get(\"cheapestId\"));\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1444,9 +1641,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"find flights test\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.returnTotal).to.eql(3);\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1499,9 +1695,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"find flights test\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.flights[0].flightId).to.eql(pm.globals.get(\"seatnumberId\"));\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1554,9 +1749,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"find flights test\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.flights[0].flightId).to.eql(pm.globals.get(\"fastestId\"));\r",
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1613,6 +1807,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -1661,6 +1866,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -1697,6 +1913,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -1729,6 +1956,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 208\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(208);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1781,6 +2019,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -1825,6 +2074,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -1877,6 +2137,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 403\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -1911,6 +2182,19 @@
 		},
 		{
 			"name": "create trip as guest (admin) 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {}
 			},
@@ -1956,6 +2240,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -2008,6 +2303,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 403\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -2042,6 +2348,19 @@
 		},
 		{
 			"name": "get trip with id as guest (admin) 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -2091,6 +2410,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 403\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -2122,6 +2452,19 @@
 		},
 		{
 			"name": "get all trips as guest (admin) 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -2164,6 +2507,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 208\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(208);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -2223,6 +2577,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -2274,6 +2639,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -2333,6 +2709,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -2388,6 +2775,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 403\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -2429,6 +2827,19 @@
 		},
 		{
 			"name": "update trip as guest (admin) 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {}
 			},
@@ -2485,6 +2896,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -2521,6 +2943,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 403\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -2543,6 +2976,19 @@
 		},
 		{
 			"name": "delete trip as guest (admin) 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -2576,6 +3022,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 208\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(208);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -2630,6 +3087,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -2666,6 +3134,19 @@
 		},
 		{
 			"name": "sub-new-flight as guest (user/admin) 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -2717,6 +3198,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -2761,6 +3253,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -2801,6 +3304,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -2859,6 +3373,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -2909,6 +3434,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -2967,6 +3503,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -3017,6 +3564,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -3075,6 +3633,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 403\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -3115,6 +3684,19 @@
 		},
 		{
 			"name": "create flight as guest (admin) 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {}
 			},
@@ -3177,6 +3759,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 208\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(208);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -3227,6 +3820,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -3267,6 +3871,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -3315,6 +3930,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -3345,6 +3971,19 @@
 		},
 		{
 			"name": "sub-flight-canceled as guest (user/admin) 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
@@ -3392,6 +4031,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -3458,6 +4108,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -3509,6 +4170,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -3568,6 +4240,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -3619,6 +4302,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -3678,6 +4372,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 208\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(208);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -3729,6 +4434,17 @@
 							"pm.request.headers.add({\r",
 							"    key: \"Authorization\",\r",
 							"    value: \"Bearer \" + token\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -3788,6 +4504,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 403\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -3829,6 +4556,19 @@
 		},
 		{
 			"name": "update flight as guest (admin) 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {}
 			},
@@ -3892,6 +4632,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -3940,6 +4691,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 403\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -3974,6 +4736,19 @@
 		},
 		{
 			"name": "get flight with id as guest (admin) 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -4023,6 +4798,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 403\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
@@ -4067,6 +4853,19 @@
 		},
 		{
 			"name": "get all flights as guest (admin) 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -4112,6 +4911,19 @@
 		},
 		{
 			"name": "find flight empty city (guest) 400",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {}
 			},
@@ -4153,6 +4965,19 @@
 		},
 		{
 			"name": "find flight wrong field (guest) 400",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {}
 			},
@@ -4194,6 +5019,19 @@
 		},
 		{
 			"name": "flight info + tickets wrong id (guest) 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {}
 			},
@@ -4247,6 +5085,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -4283,6 +5132,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 403\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -4305,6 +5165,19 @@
 		},
 		{
 			"name": "delete flight as guest (admin) 401",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response code should match - 401\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
