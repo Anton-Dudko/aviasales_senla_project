@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.UnexpectedTypeException;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -38,8 +39,8 @@ public class ControllerAdvice {
         return build(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(TicketNotRefundException.class)
-    public ResponseEntity<ErrorDetails> handleTicketNotRefundException(TicketNotRefundException e) {
+    @ExceptionHandler({TicketNotRefundException.class, UnexpectedTypeException.class})
+    public ResponseEntity<ErrorDetails> handleTicketNotRefundException(RuntimeException e) {
         return build(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
@@ -49,7 +50,7 @@ public class ControllerAdvice {
     }
 
     private ResponseEntity<ErrorDetails> build(String message, HttpStatus status) {
-        log.error("Error msg: {}", message);
+        log.error("Error message: {}", message);
         return new ResponseEntity<>(ErrorDetails.builder()
                 .message(message)
                 .status(status.name())

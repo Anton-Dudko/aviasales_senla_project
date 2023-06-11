@@ -149,6 +149,7 @@ public class TicketService {
 
     public void refundTickets(List<Long> ticketsId) {
         var validateTickets = ticketRepository.findAllById(ticketsId).stream()
+                .filter(ticket -> ticket.getStatus().equals(TicketStatus.PAID))
                 .peek(ticket -> {
                     ticket.setStatus(TicketStatus.FREE);
                     ticket.setFio(null);
@@ -175,7 +176,10 @@ public class TicketService {
                     if (flightInfoDto.getDepartureDateTime().getMonthValue() == userMonth
                         && flightInfoDto.getDepartureDateTime().getDayOfMonth() == userDay)
                     {
-                        ticketResponse.setPrice(ticketResponse.getPrice().multiply(new BigDecimal("0.9")));
+//                        var validatePrice = ticketResponse.getPrice().multiply(new BigDecimal("0.1"));
+//                        ticketResponse.setPrice((validatePrice > new BigDecimal("50")) ?
+//                                (ticketResponse.getPrice() - new BigDecimal("50")) :
+//                                );
                     }
                     return ticketResponse;
                 })
