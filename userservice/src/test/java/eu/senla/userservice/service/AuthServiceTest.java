@@ -7,10 +7,9 @@ import eu.senla.userservice.exception.custom.AuthenticatException;
 import eu.senla.userservice.exception.custom.NotFoundException;
 import eu.senla.userservice.repository.UserRepository;
 import eu.senla.userservice.request.LoginRequest;
+import eu.senla.userservice.request.NewPasswordRequest;
 import eu.senla.userservice.request.UserRequest;
-import eu.senla.userservice.request.UserUpdateRequest;
 import eu.senla.userservice.response.AuthResponse;
-import eu.senla.userservice.response.PasswordResponse;
 import eu.senla.userservice.response.UserResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
@@ -83,9 +82,7 @@ class AuthServiceTest {
         int sizeBefore = userRepository.findAll().size();
         userRequest.setUsername("new uniq name");
 
-        Exception exception = Assertions.assertThrows(AuthenticatException.class, () -> {
-            authService.createUser(userRequest);
-        });
+        Exception exception = Assertions.assertThrows(AuthenticatException.class, () -> authService.createUser(userRequest));
 
         String expectedMessage = ExceptionMessageConstants.USER_WITH_SUCH_EMAIL_EXIST;
         String actualMessage = exception.getMessage();
@@ -130,12 +127,10 @@ class AuthServiceTest {
 
     @Test
     void givenLoginRequest_authenticateUserNotExistEmail_returnNotFoundException() {
-        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
-            authService.authenticateUser(LoginRequest.builder()
-                    .email(EMAIL + "1")
-                    .password(PASSWORD)
-                    .build());
-        });
+        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> authService.authenticateUser(LoginRequest.builder()
+                .email(EMAIL + "1")
+                .password(PASSWORD)
+                .build()));
 
         String expectedMessage = ExceptionMessageConstants.USER_NOT_FOUND;
         String actualMessage = exception.getMessage();
@@ -146,12 +141,10 @@ class AuthServiceTest {
     @Test
     void givenLoginRequest_authenticateUserWrongPassword_returnAuthenticatException() {
         authService.createUser(userRequest);
-        Exception exception = Assertions.assertThrows(AuthenticatException.class, () -> {
-            authService.authenticateUser(LoginRequest.builder()
-                    .email(EMAIL)
-                    .password(PASSWORD + "1")
-                    .build());
-        });
+        Exception exception = Assertions.assertThrows(AuthenticatException.class, () -> authService.authenticateUser(LoginRequest.builder()
+                .email(EMAIL)
+                .password(PASSWORD + "1")
+                .build()));
 
         String expectedMessage = ExceptionMessageConstants.INVALID_PASSWORD;
         String actualMessage = exception.getMessage();
@@ -176,9 +169,7 @@ class AuthServiceTest {
     void givenAccessToken_validateAccessTokenNotExistUsername_returnNotFoundException() {
         String token = authService.createUser(userRequest).getAccessToken();
         userRepository.delete(userRepository.findByEmail(EMAIL).get());
-        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
-            authService.validateAccessToken(token);
-        });
+        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> authService.validateAccessToken(token));
 
         String expectedMessage = ExceptionMessageConstants.USER_NOT_FOUND;
         String actualMessage = exception.getMessage();
@@ -189,9 +180,7 @@ class AuthServiceTest {
     @Test
     void givenAccessToken_validateAccessTokenNotValidate_returnNotFoundException() {
         String token = authService.createUser(userRequest).getAccessToken() + "z";
-        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
-            authService.validateAccessToken(token);
-        });
+        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> authService.validateAccessToken(token));
 
         String expectedMessage = ExceptionMessageConstants.USER_NOT_FOUND;
         String actualMessage = exception.getMessage();
@@ -200,30 +189,8 @@ class AuthServiceTest {
     }
 
     @Test
-    void givenEmail_generatePassword_returnPasswordResponse() {
-        authService.createUser(userRequest);
-        PasswordResponse response = authService.generatePassword(UserUpdateRequest.builder().email(EMAIL).build());
-        AuthResponse authResponse = authService.authenticateUser(LoginRequest.builder()
-                .email(EMAIL)
-                .password(response.getPassword())
-                .build());
-
-        assertAll(
-                () -> assertEquals(USERNAME, response.getUsername()),
-                () -> assertEquals(EMAIL, response.getEmail()),
-                () -> assertNotNull(response.getPassword()),
-                () -> assertNotNull(userRepository.findByEmail(EMAIL).get().getPassword()),
-                () -> assertNotNull(authResponse.getAccessToken()),
-                () -> assertNotNull(authResponse.getRefreshToken())
-        );
-
-    }
-
-    @Test
     void givenEmail_generatePasswordNotExistEmail_returnNotFoundException() {
-        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> {
-            authService.generatePassword(UserUpdateRequest.builder().email(EMAIL).build());
-        });
+        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> authService.generatePassword(new NewPasswordRequest(EMAIL)));
 
         String expectedMessage = ExceptionMessageConstants.USER_NOT_REGISTRATE;
         String actualMessage = exception.getMessage();
