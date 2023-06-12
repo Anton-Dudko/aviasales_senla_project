@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -39,7 +40,27 @@ public class EmailNotification {
     @Field
     private LocalDate dateFirstSend;
     @Field
-    private int countTrySend;
+    private Integer countTrySend;
     @Field
     private String exception;
+    @Field
+    private Boolean isInSendingProcess;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        EmailNotification that = (EmailNotification) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

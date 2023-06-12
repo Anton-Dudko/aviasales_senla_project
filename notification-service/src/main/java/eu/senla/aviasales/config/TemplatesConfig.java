@@ -32,53 +32,23 @@ public class TemplatesConfig {
     }
 
     public List<String> getTopicNames() {
-        return topics.values()
-                .stream()
+        return topics.values().stream()
                 .map(Topic::getTopicName)
                 .toList();
     }
 
-    public Topic getTopicByName(String topicName) throws TopicNotFoundException {
+    public Topic getTopicByName(String topicName) {
         return topics.values().stream()
                 .filter(topic -> topic.getTopicName().equals(topicName))
                 .findFirst().orElseThrow(() -> new TopicNotFoundException("Cannot find topic: " + topicName + "."));
     }
+
+    @Getter
+    @Setter
     public static class Topic {
         private String topicName;
         private String template;
         private String localization;
         private String subject;
-
-        public String getTopicName() {
-            return topicName;
-        }
-
-        public void setTopicName(final String topicName) {
-            this.topicName = topicName;
-        }
-
-        public String getTemplate() {
-            return template;
-        }
-
-        public void setTemplate(final String template) {
-            this.template = template;
-        }
-
-        public String getLocalization() {
-            return localization;
-        }
-
-        public void setLocalization(final String localization) {
-            this.localization = localization;
-        }
-
-        public String getSubject() {
-            return subject;
-        }
-
-        public void setSubject(final String subject) {
-            this.subject = subject;
-        }
     }
 }
