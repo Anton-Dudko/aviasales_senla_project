@@ -22,7 +22,9 @@ public class FlightSpecification implements Specification<Flight> {
     private FindFlightRequest request;
 
     @Override
-    public Predicate toPredicate(Root<Flight> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+    public Predicate toPredicate(Root<Flight> root,
+                                 CriteriaQuery<?> query,
+                                 CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
 
         if (isNotEmpty(request.getDepartureCity())) {

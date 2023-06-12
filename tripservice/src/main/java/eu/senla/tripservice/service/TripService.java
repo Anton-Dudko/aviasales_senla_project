@@ -15,24 +15,25 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @Transactional(readOnly = true)
 public class TripService {
-
     private final TripRepository tripRepository;
     private final Mapper mapper;
 
     @Autowired
-    public TripService(TripRepository tripRepository, Mapper mapper) {
+    public TripService(TripRepository tripRepository,
+                       Mapper mapper) {
         this.tripRepository = tripRepository;
         this.mapper = mapper;
     }
 
     @Transactional
-    public Trip save(TripRequest tripRequest) {
+    public Trip save(@NotNull TripRequest tripRequest) {
         log.info("TripService-save");
         Trip tripToSave = mapper.mapTripRequestToTrip(tripRequest);
 
@@ -45,22 +46,23 @@ public class TripService {
         return tripToSave;
     }
 
-    public Trip findByDepartureCityAndArrivalCity(String departureCity, String arivalCity) {
-        return tripRepository.findByDepartureCityAndArrivalCity(departureCity, arivalCity).orElseThrow(() ->
-                new TripNotFoundException("Trip " + departureCity + " - " + arivalCity + " not found"));
+    public Trip findByDepartureCityAndArrivalCity(@NotNull String departureCity,
+                                                  @NotNull String arrivalCity) {
+        return tripRepository.findByDepartureCityAndArrivalCity(departureCity, arrivalCity).orElseThrow(() ->
+                new TripNotFoundException("Trip " + departureCity + " - " + arrivalCity + " not found"));
     }
 
-    public TripFullDataResponse findById(long id) {
+    public TripFullDataResponse findById(@NotNull Long id) {
         return mapper.mapTripToTripFullDataResponse(findTripById(id));
     }
 
-    public Trip findTripById(long id) {
+    public Trip findTripById(@NotNull Long id) {
         log.info("TripService-findTripById: " + id);
         return tripRepository.findById(id)
                 .orElseThrow(() -> new TripNotFoundException("Trip with id = " + id + " not found"));
     }
 
-    public ListTripsFullDataResponse findAllTrips(PageRequest pageRequest) {
+    public ListTripsFullDataResponse findAllTrips(@NotNull PageRequest pageRequest) {
         log.info("TripService-findAll");
         ListTripsFullDataResponse listTripsFullDataResponse = new ListTripsFullDataResponse();
         listTripsFullDataResponse.setTripFullDataResponseList(tripRepository.findAll(pageRequest)
@@ -71,7 +73,7 @@ public class TripService {
         return listTripsFullDataResponse;
     }
 
-    public ListTripsResponse findAll(PageRequest pageRequest) {
+    public ListTripsResponse findAll(@NotNull PageRequest pageRequest) {
         log.info("TripService-findAll");
         ListTripsResponse listTripsResponse = new ListTripsResponse();
         listTripsResponse.setTripFullDataResponseList(tripRepository.findAll(pageRequest)
@@ -83,7 +85,8 @@ public class TripService {
     }
 
     @Transactional
-    public Trip update(long id, TripRequest tripRequest) {
+    public Trip update(@NotNull Long id,
+                       @NotNull TripRequest tripRequest) {
         log.info("TripService-update");
         if (isTripExist(tripRequest.getDepartureCity(), tripRequest.getArrivalCity()))
             throw new TripAlreadyExistsException("Trip " + tripRequest.getDepartureCity()
@@ -99,7 +102,7 @@ public class TripService {
     }
 
     @Transactional
-    public TripFullDataResponse delete(long id) {
+    public TripFullDataResponse delete(@NotNull Long id) {
         log.info("TripService-deleteById: " + id);
         Trip trip = findTripById(id);
         tripRepository.deleteById(id);
@@ -109,7 +112,8 @@ public class TripService {
         return response;
     }
 
-    private boolean isTripExist(String departureCity, String arrivalCity) {
+    private boolean isTripExist(@NotNull String departureCity,
+                                @NotNull String arrivalCity) {
         return tripRepository.findByDepartureCityAndArrivalCity(departureCity, arrivalCity).isPresent();
     }
 }

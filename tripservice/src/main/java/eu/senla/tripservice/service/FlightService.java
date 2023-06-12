@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,8 +46,11 @@ public class FlightService {
     private final KafkaService kafkaService;
 
     @Autowired
-    public FlightService(FlightRepository flightRepository, TripService tripService, AirplaneService airplaneService,
-                         Mapper mapper, KafkaService kafkaService) {
+    public FlightService(FlightRepository flightRepository,
+                         TripService tripService,
+                         AirplaneService airplaneService,
+                         Mapper mapper,
+                         KafkaService kafkaService) {
         this.flightRepository = flightRepository;
         this.tripService = tripService;
         this.airplaneService = airplaneService;
@@ -55,7 +59,7 @@ public class FlightService {
     }
 
     @Transactional
-    public Flight create(FlightRequest flightRequest) {
+    public Flight create(@NotNull FlightRequest flightRequest) {
         log.info("FlightService-create");
 
         Trip trip = tripService.findTripById(flightRequest.getTripId());
@@ -71,23 +75,25 @@ public class FlightService {
         makeCreateTicketsRequest(generateTickets(flightToSave.getFlightId(),
                 flightRequest.getFirstClassTicketPercent(), flightRequest.getTicketPrice()));
 
-        kafkaService.newEvent(KafkaTopicsName.NEW_FLIGHT_EVENT, flightToSave.getFlightId(), flightToSave.getTrip().getTripId(),
+        kafkaService.newEvent(KafkaTopicsName.NEW_FLIGHT_EVENT,
+                flightToSave.getFlightId(),
+                flightToSave.getTrip().getTripId(),
                 flightToSave.getDepartureDateTime());
 
         return flightToSave;
     }
 
-    public FlightFullDataResponse findById(long id) {
+    public FlightFullDataResponse findById(@NotNull Long id) {
         return mapper.mapFlightToFlightFullDataResponse(findFlightById(id));
     }
 
-    private Flight findFlightById(long id) {
+    private Flight findFlightById(@NotNull Long id) {
         log.info("FlightService-findById: " + id);
         return flightRepository.findById(id)
                 .orElseThrow(() -> new FlightNotFoundException("Flight with id = " + id + " not found"));
     }
 
-    public ListFlightsFullDataResponse findAll(PageRequest pageRequest) {
+    public ListFlightsFullDataResponse findAll(@NotNull PageRequest pageRequest) {
         log.info("FlightService-findAll");
         ListFlightsFullDataResponse listFlightsFullDataResponse = new ListFlightsFullDataResponse();
         listFlightsFullDataResponse.setTripResponseList(flightRepository.findAll(pageRequest)
@@ -98,7 +104,8 @@ public class FlightService {
         return listFlightsFullDataResponse;
     }
 
-    public ListFlightsResponse find(FindFlightRequest findFlightRequest, Pageable pageable) {
+    public ListFlightsResponse find(@NotNull FindFlightRequest findFlightRequest,
+                                    @NotNull Pageable pageable) {
         log.info("FlightService-find");
         ListFlightsResponse listFlightsResponse = new ListFlightsResponse();
         findDirectFlight(listFlightsResponse, findFlightRequest, pageable);
@@ -109,7 +116,9 @@ public class FlightService {
         return listFlightsResponse;
     }
 
-    private void findDirectFlight(ListFlightsResponse listFlightsResponse, FindFlightRequest findFlightRequest, Pageable pageable) {
+    private void findDirectFlight(@NotNull ListFlightsResponse listFlightsResponse,
+                                  @NotNull FindFlightRequest findFlightRequest,
+                                  @NotNull Pageable pageable) {
         log.info("FlightService-findDirectFlight");
         if (findFlightRequest.isFastest() && findFlightRequest.isCheapest()) {
             log.info("FlightService-find: selected fastest and cheapest");
@@ -119,9 +128,11 @@ public class FlightService {
 
         } else if (findFlightRequest.isFastest()) {
             log.info("FlightService-findDirectFlight: fastest");
-            List<Flight> sortedFlights = flightRepository.findAll(new FlightSpecification(findFlightRequest), Sort.by("duration"));
+            List<Flight> sortedFlights = flightRepository.findAll(new FlightSpecification(findFlightRequest),
+                    Sort.by("duration"));
             if (!sortedFlights.isEmpty()) {
-                listFlightsResponse.setFlights(new ArrayList<>(Collections.singleton(mapper.mapFlightToFlightResponse(sortedFlights.get(0)))));
+                listFlightsResponse.setFlights(
+                        new ArrayList<>(Collections.singleton(mapper.mapFlightToFlightResponse(sortedFlights.get(0)))));
                 return;
             }
 
@@ -165,7 +176,9 @@ public class FlightService {
             flights = flightRepository.findAll(new FlightSpecification(findFlightRequest), pageable);
 
             if (flights.hasContent()) {
-                listFlightsResponse.setFlights(flights.getContent().stream().map(mapper::mapFlightToFlightResponse).collect(Collectors.toList()));
+                listFlightsResponse.setFlights(flights.getContent().stream()
+                        .map(mapper::mapFlightToFlightResponse)
+                        .collect(Collectors.toList()));
                 listFlightsResponse.setTotal(flights.getContent().size());
                 return;
             }
@@ -176,7 +189,8 @@ public class FlightService {
 
     }
 
-    private void findReturnFlight(ListFlightsResponse listFlightsResponse, FindFlightRequest findFlightRequest) {
+    private void findReturnFlight(@NotNull ListFlightsResponse listFlightsResponse,
+                                  @NotNull FindFlightRequest findFlightRequest) {
         log.info("FlightService-findReturnFlight");
         FindFlightRequest returnFlight = FindFlightRequest.builder()
                 .departureCity(findFlightRequest.getArrivalCity())
@@ -203,7 +217,8 @@ public class FlightService {
     }
 
     @Transactional
-    public Flight update(long id, FlightRequest flightRequest) {
+    public Flight update(@NotNull Long id,
+                         @NotNull FlightRequest flightRequest) {
         log.info("FlightService-update");
         Flight flightToUpdate = findFlightById(id);
         Trip trip = tripService.findTripById(flightRequest.getTripId());
@@ -214,7 +229,10 @@ public class FlightService {
             throw new FlightAlreadyExistsException("The same flight already exists");
         }
         if (flightRequest.isCanceled() && !flightToUpdate.isCanceled()) {
-            kafkaService.newEvent(KafkaTopicsName.FLIGHT_CANCELED_EVENT, id, trip.getTripId(), updatedFlight.getDepartureDateTime());
+            kafkaService.newEvent(KafkaTopicsName.FLIGHT_CANCELED_EVENT,
+                    id,
+                    trip.getTripId(),
+                    updatedFlight.getDepartureDateTime());
         }
         flightRepository.save(updatedFlight);
         log.info("Flight with id: " + id + " was updated");
@@ -222,7 +240,7 @@ public class FlightService {
     }
 
     @Transactional
-    public FlightFullDataResponse delete(long id) {
+    public FlightFullDataResponse delete(@NotNull Long id) {
         log.info("FlightService-delete, id: " + id);
         Flight flightToDelete = findFlightById(id);
         flightRepository.deleteById(id);
@@ -232,19 +250,19 @@ public class FlightService {
         return response;
     }
 
-    public FlightInfo info(long id) {
+    public FlightInfo info(@NotNull Long id) {
         log.info("FlightService-info, id: " + id);
         FlightInfo flightInfo = mapper.mapFlightToFlightInfo(findFlightById(id));
         flightInfo.setTickets(makeGetTicketsRequest(id));
         return flightInfo;
     }
 
-    public List<Flight> findAllByIds(List<Long> ids) {
+    public List<Flight> findAllByIds(@NotNull List<Long> ids) {
         log.info("FlightService-findByIds");
         return flightRepository.findAllById(ids);
     }
 
-    private void makeCreateTicketsRequest(TicketsCreateRequest ticketsCreateRequest) {
+    private void makeCreateTicketsRequest(@NotNull TicketsCreateRequest ticketsCreateRequest) {
         log.info("FlightService-makeCreateTicketsRequest");
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -257,12 +275,14 @@ public class FlightService {
             log.info("FlightService-makeCreateTicketsRequest - send generate tickets request: " + request);
             receivedMessage = restTemplate.postForObject(createTicketsRequestUrl, request, String.class);
         } catch (Exception e) {
+            log.error("FlightService-makeCreateTicketsRequest - response from ticket-service:"
+                    + e.getLocalizedMessage());
             throw new RequestException("Ticket not created");
         }
         log.info("FlightService-makeCreateTicketsRequest-receivedMessage: " + receivedMessage);
     }
 
-    protected TicketsResponse makeGetTicketsRequest(long id) {
+    protected TicketsResponse makeGetTicketsRequest(@NotNull Long id) {
         log.info("Flight-service-makeGetTicketsRequest");
         RestTemplate restTemplate = new RestTemplate();
 
@@ -283,7 +303,9 @@ public class FlightService {
         return response;
     }
 
-    private TicketsCreateRequest generateTickets(long flightId, int ticketPercent, double ticketPrice) {
+    private TicketsCreateRequest generateTickets(@NotNull Long flightId,
+                                                 @NotNull Integer ticketPercent,
+                                                 @NotNull Double ticketPrice) {
         log.info("FlightService-generateTickets, flight ID: " + flightId);
         Flight flight = findFlightById(flightId);
         Airplane airplane = flight.getAirplane();
@@ -304,13 +326,16 @@ public class FlightService {
                 price * firstClassTicketSurcharge, price);
     }
 
-    private boolean isFlightExist(Flight flightToCheck) {
+    private boolean isFlightExist(@NotNull Flight flightToCheck) {
         return flightRepository.findFlightByTrip_TripIdAndAirplane_AirplaneIdAndFlightNumberAndDepartureDateTimeAndArrivalDateTime(
-                flightToCheck.getTrip().getTripId(), flightToCheck.getAirplane().getAirplaneId(), flightToCheck.getFlightNumber(),
-                flightToCheck.getDepartureDateTime(), flightToCheck.getArrivalDateTime()).isPresent();
+                flightToCheck.getTrip().getTripId(),
+                flightToCheck.getAirplane().getAirplaneId(),
+                flightToCheck.getFlightNumber(),
+                flightToCheck.getDepartureDateTime(),
+                flightToCheck.getArrivalDateTime()).isPresent();
     }
 
-    protected void sortTickets(List<TicketResponse> tickets) {
+    protected void sortTickets(@NotNull List<TicketResponse> tickets) {
         tickets.sort((o1, o2) -> (int) Math.round(o1.getPrice() - o2.getPrice()));
     }
 }
