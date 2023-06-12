@@ -24,7 +24,7 @@ public class JwtProviderImpl implements JwtProvider {
     public String generateAccessToken(@NotNull User user) {
         log.info("Method generateAccessToken");
         Date date = Date.from(LocalDateTime.now()
-                .plusMinutes(securityProperties.getAccessTime().toHours())
+                .plusDays(securityProperties.getAccessTime().getDays())
                 .atZone(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
                 .setSubject(user.getEmail())

@@ -22,10 +22,3 @@ spring:
       properties:
         spring.json.type.mapping: event:eu.senla.userservice.entity.UserEvent
         spring.json.trusted.packages: "*"
-
-
-token:
-  access_secret: secret
-  refresh_secret: refresh
-  access_time: 1m
-  refresh_time: 1d

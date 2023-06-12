@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.time.Duration;
 import java.time.Period;
 
 @Configuration
@@ -22,7 +21,7 @@ public class JwtSecurityProperties {
     @NotNull
     private String refreshSecret;
     @NotNull
-    private Duration accessTime;
+    private Period accessTime;
     @NotNull
     private Period refreshTime;
 }
