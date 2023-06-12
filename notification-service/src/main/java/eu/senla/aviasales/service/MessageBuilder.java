@@ -7,11 +7,13 @@ import eu.senla.aviasales.entity.EmailNotification;
 import eu.senla.aviasales.exception.custom.TopicNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,14 +31,15 @@ public class MessageBuilder {
     private final SpringTemplateEngine templateEngine;
     private final ObjectMapper objectMapper;
 
-    public Map<String, String> build(EmailNotification emailNotification) {
+    public Map<String, String> build(@NotNull EmailNotification emailNotification) {
         log.info("... method build");
         try {
             setMissedLanguageField(emailNotification.getTemplateVariables());
+
             Map<String, String> result = new HashMap<>();
             TemplatesConfig.Topic topic = templatesConfig.getTopicByName(emailNotification.getTemplateType());
             result.put("subject", topic.getSubject());
-            log.info("... Building an email. Receiver: {}. Subject: {}.", emailNotification.getTemplateVariables().get("email"), topic.getSubject());
+
             Context context = new Context();
             context.setVariables(emailNotification.getTemplateVariables());
             context.setVariables(getLocalizationVariables(topic, (String) emailNotification.getTemplateVariables().get("userLanguage")));
@@ -48,9 +51,8 @@ public class MessageBuilder {
     }
 
     private void setMissedLanguageField(Map<String, Object> dtoVariables) {
-        if (dtoVariables.get("userLanguage") == null
-                || ((String) dtoVariables.get("userLanguage")).isBlank()
-                || !templatesConfig.getLanguages().contains(((String) dtoVariables.get("userLanguage")).toLowerCase())) {
+        String userLang = (String) dtoVariables.get("userLanguage");
+        if (StringUtils.isEmpty(userLang) || !templatesConfig.getLanguages().contains(userLang.toLowerCase())) {
             dtoVariables.put("userLanguage", "en");
         }
     }
