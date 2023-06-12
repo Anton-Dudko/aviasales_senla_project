@@ -24,6 +24,7 @@ public class GatewayConfig {
     public static final String CHECK_TRUE_PARAM = "true";
     public static final String CHECK_FALSE_PARAM = "false";
     private final List<String> exclusionList = new ArrayList<>();
+    private final List<String> excludedEndpointList = new ArrayList<>();
 
     private final Map<String, Map<String, String>> mappings = new LinkedHashMap<>();
 

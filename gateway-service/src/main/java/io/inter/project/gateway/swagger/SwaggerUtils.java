@@ -9,6 +9,7 @@ import io.swagger.models.Tag;
 import io.swagger.models.parameters.HeaderParameter;
 import io.swagger.parser.SwaggerParser;
 import io.swagger.util.Json;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,7 @@ public class SwaggerUtils {
     public Swagger setSpecialDataIntoApiDocs(Swagger swagger) {
         addAuthHeaderToOperations(swagger);
         setHostValue(swagger);
+
         return swagger;
     }
 
@@ -51,6 +53,7 @@ public class SwaggerUtils {
             List<Tag> tagList = filterTags(swagger.getTags());
             swagger.setTags(tagList);
         }
+
         return Json.mapper().writeValueAsString(swagger);
     }
 
@@ -78,6 +81,7 @@ public class SwaggerUtils {
         authHeader.setDescription(DESCRIPTION);
         authHeader.setRequired(true);
         authHeader.setType(CONTENT_TYPE);
+
         return authHeader;
     }
 
@@ -94,7 +98,13 @@ public class SwaggerUtils {
             Path oldPath = swagger.getPaths().get(newValue);
             newPaths.remove(newValue, oldPath);
             newPaths.put(newKey, oldPath);
+
         });
+        if (!CollectionUtils.isEmpty(gatewayConfig.getExcludedEndpointList())) {
+            gatewayConfig.getExcludedEndpointList()
+                    .forEach(newPaths::remove);
+        }
+
         return newPaths;
     }
 
@@ -102,7 +112,7 @@ public class SwaggerUtils {
         List<String> exclusionList = gatewayConfig.getExclusionList();
         return tags.stream()
                 .filter(x -> !exclusionList.contains(x.getName()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
 }
