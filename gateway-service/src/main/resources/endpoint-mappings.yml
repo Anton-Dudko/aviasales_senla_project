@@ -5,7 +5,6 @@ endpoint:
       "[/login]": /guest/login
       "[/new-password]": /guest/new-password
       "[/registration]": /guest/registration
-      "[/validate]": /auth/validate
       "[/deletion/**]": /admin/${id}
       "[/search]": /admin/search
       "[/find-by-id/**]": /admin/users/${id}
@@ -55,4 +54,10 @@ endpoint:
   exclusionList:
     - basic-error-controller
     - account-controller
+    - token-controller
     - payment-external-system
+
+  excludedEndpointList:
+    - /admin/search-admin-email
+    - /tickets/ids
+    - /auth/validate
