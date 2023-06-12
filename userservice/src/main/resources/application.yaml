@@ -21,7 +21,7 @@ spring:
 token:
   access_secret: SwqRT$1
   refresh_secret: HJyu76fv^&(
-  access_time: 24h
+  access_time: 1d
   refresh_time: 30d
 
 cloud:
