@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Slf4j
@@ -27,29 +28,35 @@ public class SubscriptionService {
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public SubscriptionService(SubscriptionRepository subscriptionRepository, TripService tripService,
-                               FlightService flightService, ObjectMapper objectMapper) {
+    public SubscriptionService(SubscriptionRepository subscriptionRepository,
+                               TripService tripService,
+                               FlightService flightService,
+                               ObjectMapper objectMapper) {
         this.subscriptionRepository = subscriptionRepository;
         this.tripService = tripService;
         this.flightService = flightService;
         this.objectMapper = objectMapper;
     }
 
-    public Subscription createNewFlightSubscription(NewFlightsSubscriptionRequest request, String userDetails) {
+    public Subscription createNewFlightSubscription(@NotNull NewFlightsSubscriptionRequest request,
+                                                    @NotNull String userDetails) {
         log.info("SubscriptionService-createNewFlightSubscription");
         long userId = getUserId(userDetails);
         Trip trip = tripService.findByDepartureCityAndArrivalCity(request.getDepartureCity(), request.getArrivalCity());
         return saveSubscription(KafkaTopicsName.NEW_FLIGHT_EVENT, userId, trip.getTripId());
     }
 
-    public Subscription createCanceledFlightSubscription(CanceledFlightSubscriptionRequest request, String userDetails) {
+    public Subscription createCanceledFlightSubscription(@NotNull CanceledFlightSubscriptionRequest request,
+                                                         @NotNull String userDetails) {
         log.info("SubscriptionService-createCanceledFlightSubscription");
         long userId = getUserId(userDetails);
         FlightFullDataResponse flight = flightService.findById(request.getFlightId());
         return saveSubscription(KafkaTopicsName.FLIGHT_CANCELED_EVENT, userId, flight.getFlightId());
     }
 
-    private Subscription saveSubscription(String eventName, long userId, long tripFlightId) {
+    private Subscription saveSubscription(String eventName,
+                                          @NotNull Long userId,
+                                          @NotNull Long tripFlightId) {
         log.info("SubscriptionService-saveSubscription: " + eventName + ", " + userId + ", " + tripFlightId);
         Subscription subscriptionToSave = Subscription.builder()
                 .eventName(eventName)
@@ -66,17 +73,18 @@ public class SubscriptionService {
         return subscriptionToSave;
     }
 
-    public List<Subscription> findSubscription(String eventName, Long tripFlightId) {
+    public List<Subscription> findSubscription(@NotNull String eventName,
+                                               @NotNull Long tripFlightId) {
         log.info("SubscriptionService-findSubscription");
         return subscriptionRepository.findAllByEventNameAndTripFlightId(eventName, tripFlightId);
     }
 
-    private boolean isSubscriptionExist(Subscription subscription) {
+    private boolean isSubscriptionExist(@NotNull Subscription subscription) {
         return subscriptionRepository.findByEventNameAndUserIdAndTripFlightId(subscription.getEventName(),
                 subscription.getUserId(), subscription.getTripFlightId()).isPresent();
     }
 
-    private long getUserId(String userDetails) {
+    private long getUserId(@NotNull String userDetails) {
         log.info("SubscriptionService-getUserId");
         UserDetails user;
         long userId = 0;

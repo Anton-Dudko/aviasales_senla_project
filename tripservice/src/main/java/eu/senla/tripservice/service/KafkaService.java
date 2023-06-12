@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +33,12 @@ public class KafkaService {
     private final TripService tripService;
 
     @Autowired
-    public KafkaService(Producer<String, Map<String, KafkaFlightDTO>> producer,
-                        ObjectMapper objectMapper, @Lazy SubscriptionService subscriptionService,
-                        @Lazy FlightService flightService, @Lazy TripService tripService) {
+    public KafkaService(Producer<String,
+                        Map<String, KafkaFlightDTO>> producer,
+                        ObjectMapper objectMapper,
+                        @Lazy SubscriptionService subscriptionService,
+                        @Lazy FlightService flightService,
+                        @Lazy TripService tripService) {
         this.producer = producer;
         this.objectMapper = objectMapper;
         this.subscriptionService = subscriptionService;
@@ -42,7 +46,10 @@ public class KafkaService {
         this.tripService = tripService;
     }
 
-    public void newEvent(String eventName, long flightId, long tripId, LocalDateTime departureDate) {
+    public void newEvent(@NotNull String eventName,
+                         @NotNull Long flightId,
+                         @NotNull Long tripId,
+                         @NotNull LocalDateTime departureDate) {
         log.info("KafkaService-newEvent");
         List<Subscription> subscriptions = new ArrayList<>();
         switch (eventName) {
@@ -71,7 +78,10 @@ public class KafkaService {
         }
     }
 
-    private KafkaFlightDTO createKafkaFlightDTO(long userId, long flightId, long tripId, LocalDateTime departureDate) {
+    private KafkaFlightDTO createKafkaFlightDTO(@NotNull Long userId,
+                                                @NotNull Long flightId,
+                                                @NotNull Long tripId,
+                                                @NotNull LocalDateTime departureDate) {
         log.info("KafkaService-createKafkaFlightDTO");
         UserDetails user = makeRequestForUserDetails(userId);
         KafkaFlightDTO flightDTO = null;
@@ -98,14 +108,15 @@ public class KafkaService {
         return flightDTO;
     }
 
-    public void sendKafkaNewEvent(String eventName, KafkaFlightDTO flightDTO) {
+    public void sendKafkaNewEvent(@NotNull String eventName,
+                                  @NotNull KafkaFlightDTO flightDTO) {
         log.info("KafkaService-sendKafkaNewEvent");
         ProducerRecord<String, Map<String, KafkaFlightDTO>> producerRecord =
                 new ProducerRecord<>(eventName, objectMapper.convertValue(flightDTO, Map.class));
         producer.send(producerRecord);
     }
 
-    public UserDetails makeRequestForUserDetails(long userId) {
+    public UserDetails makeRequestForUserDetails(@NotNull Long userId) {
         log.info("KafkaService-makeRequestForUserDetails");
         RestTemplate restTemplate = new RestTemplate();
         String getUserDetailsUrl = "http://userservice:8086/admin/users/" + userId;

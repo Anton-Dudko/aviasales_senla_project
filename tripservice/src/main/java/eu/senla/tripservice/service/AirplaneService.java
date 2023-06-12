@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
+
 @Slf4j
 @Service
 public class AirplaneService {
@@ -17,7 +19,7 @@ public class AirplaneService {
         this.airplaneRepository = airplaneRepository;
     }
 
-    public Airplane findById(long id) {
+    public Airplane findById(@NotNull Long id) {
         log.info("AirplaneService-findById: " + id);
         return airplaneRepository.findById(id).
                 orElseThrow(() -> new AirplaneNotFoundException("Airplane with id: " + id + " not found"));
