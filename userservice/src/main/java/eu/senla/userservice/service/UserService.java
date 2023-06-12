@@ -1,7 +1,5 @@
 package eu.senla.userservice.service;
 
-
-import eu.senla.common.enam.Language;
 import eu.senla.common.enam.Role;
 import eu.senla.userservice.dao.UserSpecification;
 import eu.senla.userservice.entity.User;
@@ -40,13 +38,17 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final EnumValidator enumValidator;
     private final PasswordEncoder passwordEncoder;
     private final KafkaService kafkaService;
 
     public UserGetPageResponse findBySpecification(@Valid UserFindRequest request,
                                                    @NotNull Pageable pageable) {
         log.info("Method findBySpecification");
+        enumValidator.checkLanguageEnum(request.getLanguage());
+        enumValidator.checkRoleEnum(request.getRole());
         Page<User> pagedResult = userRepository.findAll(new UserSpecification(request), pageable);
+
         return pagedResult.hasContent()
 
                 ? UserGetPageResponse.builder()
@@ -95,9 +97,7 @@ public class UserService {
             user.setDateBirth(StringUtils.isNotEmpty(request.getDateBirth())
                     ? LocalDate.parse(request.getDateBirth())
                     : user.getDateBirth());
-            user.setLanguage(StringUtils.isNotEmpty(request.getLanguage())
-                    ? Language.valueOf(request.getLanguage())
-                    : user.getLanguage());
+            user.setLanguage(enumValidator.checkLanguageEnum(request.getLanguage()));
             User updatedUser = userRepository.save(user);
 
             if (request.getPassword() != null) {

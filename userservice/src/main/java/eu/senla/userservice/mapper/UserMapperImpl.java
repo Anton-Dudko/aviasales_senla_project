@@ -1,12 +1,14 @@
 package eu.senla.userservice.mapper;
 
-import eu.senla.common.enam.Language;
-import eu.senla.common.enam.Role;
 import eu.senla.userservice.entity.User;
+import eu.senla.userservice.exception.ExceptionMessageConstants;
 import eu.senla.userservice.kafka.UserEvent;
 import eu.senla.userservice.request.UserRequest;
 import eu.senla.userservice.response.TextResponse;
 import eu.senla.userservice.response.UserResponse;
+import eu.senla.userservice.service.EnumValidator;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
@@ -16,7 +18,10 @@ import java.util.stream.Collectors;
 
 
 @Component
+@RequiredArgsConstructor
 public class UserMapperImpl implements UserMapper {
+
+    private final EnumValidator enumValidator;
 
     @Override
     public List<UserResponse> listEntityToListResponse(List<User> all) {
@@ -50,13 +55,14 @@ public class UserMapperImpl implements UserMapper {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setDateBirth(LocalDate.parse(request.getDateBirth()));
-        user.setLanguage(request.getLanguage() != null
-                ? Language.valueOf(request.getLanguage())
-                : Language.EN);
-        user.setRole(request.getRole() != null
-                ? Role.valueOf(request.getRole())
-                : Role.valueOf("ROLE_USER"));
+
+        if (StringUtils.isNotEmpty(request.getDateBirth())) {
+            user.setDateBirth(LocalDate.parse(request.getDateBirth()));
+        } else {
+            throw new IllegalArgumentException(ExceptionMessageConstants.DATE_IS_NULL);
+        }
+        user.setLanguage(enumValidator.checkLanguageEnum(request.getLanguage()));
+        user.setRole(enumValidator.checkRoleEnum(request.getRole()));
         return user;
     }
 

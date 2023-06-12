@@ -60,8 +60,10 @@ public class ProjectExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
-        List<String> validationList = ex.getBindingResult().getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList();
-        String message = String.join(" ", validationList);
+        List<String> validationList = ex.getBindingResult().getFieldErrors().stream()
+                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                .toList();
+        String message = String.join("; ", validationList);
         return new ResponseEntity<>(new ErrorResponse(status.value(), message), status);
     }
 }

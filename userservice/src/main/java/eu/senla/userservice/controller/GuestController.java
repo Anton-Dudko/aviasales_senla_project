@@ -1,10 +1,10 @@
 package eu.senla.userservice.controller;
 
 import eu.senla.userservice.request.LoginRequest;
+import eu.senla.userservice.request.NewPasswordRequest;
 import eu.senla.userservice.request.UserRequest;
-import eu.senla.userservice.request.UserUpdateRequest;
 import eu.senla.userservice.response.AuthResponse;
-import eu.senla.userservice.response.PasswordResponse;
+import eu.senla.userservice.response.TextResponse;
 import eu.senla.userservice.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class GuestController {
     }
 
     @PostMapping("/new-password")
-    public PasswordResponse generatePassword(@Valid @RequestBody UserUpdateRequest request) {
+    public TextResponse generatePassword(@Valid @RequestBody NewPasswordRequest request) {
         log.info("...Method generatePassword");
         return authService.generatePassword(request);
     }
