@@ -19,6 +19,11 @@ endpoint:
       "[/payment-info/**]": /payment/${id}
       "[/payment-stat]": /payment/stat
       "[/payment-refund/**]": /payment/refund/${id}
+      "[/account]": /external/account
+      "[/card-info]": /external/account/info
+      "[/available-cards]": /external/account/available-cards
+      "[/external-payment]": /external/payment
+      "[/external-refund]": /external/payment/refund
 
     trip-service:
       "[/new-flight]": /flights/admin/create

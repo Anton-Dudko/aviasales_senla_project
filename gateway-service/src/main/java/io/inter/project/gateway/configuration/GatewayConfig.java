@@ -23,7 +23,10 @@ public class GatewayConfig {
     public static final String URI_GUEST_VALUE = "guest";
     public static final String CHECK_TRUE_PARAM = "true";
     public static final String CHECK_FALSE_PARAM = "false";
+    public static final String URI_EXTERNAL_VALUE = "external";
+
     private final List<String> exclusionList = new ArrayList<>();
+
     private final List<String> excludedEndpointList = new ArrayList<>();
 
     private final Map<String, Map<String, String>> mappings = new LinkedHashMap<>();
@@ -47,7 +50,7 @@ public class GatewayConfig {
         if (!MapUtils.isEmpty(serviceMap)) {
             serviceMap.forEach((path, uri) -> routes.route(UUID.randomUUID().toString(), r -> r.path(path)
                     .filters(filter -> {
-                        if (uri.contains(URI_ADMIN_VALUE)) {
+                        if (uri.contains(URI_ADMIN_VALUE) || uri.contains(URI_EXTERNAL_VALUE) ) {
                             filter.filter(authFilter.apply(new AuthFilter.Config(CHECK_TRUE_PARAM)));
                             rewritePath(filter, path, uri);
                         } else if (uri.contains(URI_USERS_VALUE)) {
