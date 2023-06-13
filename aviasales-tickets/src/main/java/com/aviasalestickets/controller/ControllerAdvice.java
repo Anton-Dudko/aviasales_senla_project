@@ -19,7 +19,7 @@ public class ControllerAdvice {
         return build(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({TicketNotCreatedException.class})
+    @ExceptionHandler(TicketNotCreatedException.class)
     public ResponseEntity<ErrorDetails> handleTicketNotCreatedException(TicketNotCreatedException e) {
         return build(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }

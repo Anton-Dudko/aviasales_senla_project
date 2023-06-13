@@ -26,7 +26,7 @@ public class TicketController {
     private final TicketService ticketService;
 
     @PostMapping
-    public Ticket createTicket(@RequestBody TicketRequest request) {
+    public Ticket createTicket(@Valid @RequestBody TicketRequest request) {
         return ticketService.save(request);
     }
 
@@ -41,7 +41,8 @@ public class TicketController {
     }
 
     @GetMapping("/ids")
-    public List<TicketResponse> findTicketsByIds(@RequestParam("ids") List<Long> ids, @RequestHeader("userDetails") String userDetails) {
+    public List<TicketResponse> findTicketsByIds(@RequestParam("ids") List<Long> ids,
+                                                 @RequestHeader("userDetails") String userDetails) {
         return ticketService.findAllByIds(ids, userDetails);
     }
 
@@ -52,7 +53,8 @@ public class TicketController {
     }
 
     @GetMapping("/pay-tickets")
-    public PayTicketResponse payTickets(@RequestParam List<Long> ticketsId, @RequestHeader("userDetails") String userDetails) {
+    public PayTicketResponse payTickets(@RequestParam List<Long> ticketsId,
+                                        @RequestHeader("userDetails") String userDetails) {
         ticketService.payTickets(ticketsId, userDetails);
         return PayTicketResponse.builder()
                 .ticketsId(ticketsId)
@@ -61,7 +63,8 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
-    public BookingDeleteResponse deleteReservation(@PathVariable Long id, @RequestHeader("userDetails") String userDetails) {
+    public BookingDeleteResponse deleteReservation(@PathVariable Long id,
+                                                   @RequestHeader("userDetails") String userDetails) {
         ticketService.deleteReservation(id, userDetails);
         return BookingDeleteResponse.builder()
                 .message(String.format("Ticket reservation delete is success with id: %s", id))
