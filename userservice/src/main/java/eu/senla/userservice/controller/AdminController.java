@@ -44,12 +44,6 @@ public class AdminController {
         return userService.findById(id);
     }
 
-    @GetMapping("/search-admin-email")
-    public UserGetPageResponse findAllAdminEmail() {
-        log.info("...Method findAllAdminEmail");
-        return userService.findAllAdmin();
-    }
-
     @PostMapping("/search")
     public UserGetPageResponse findBySpecification(@RequestParam(defaultValue = "0") Integer page,
                                                    @RequestParam(defaultValue = "10") Integer size,
@@ -63,5 +57,18 @@ public class AdminController {
     public TextResponse deleteById(@PathVariable Long id) {
         log.info("...Delete user:  id {}", id);
         return userService.delete(id);
+    }
+
+
+    @GetMapping("/search-admin-email")
+    public UserGetPageResponse findAllAdmin() {
+        log.info("...Method findAllAdminEmail");
+        return userService.findAllAdmin();
+    }
+
+    @GetMapping("/find-by-email")
+    public UserResponse findUserByEmail(@RequestParam String email) {
+        log.info("...Method findUserByEmail");
+        return userService.findByEmail(email);
     }
 }
