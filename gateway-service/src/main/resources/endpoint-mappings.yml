@@ -66,3 +66,4 @@ endpoint:
     - /admin/search-admin-email
     - /tickets/ids
     - /auth/validate
+    - /admin/find-by-email
