@@ -96,8 +96,6 @@ services:
     depends_on:
       - trip-ticket-database
       - eureka-service
-    ports:
-      - "8081:8081"
     networks:
       - backend
   #trip microservice end
@@ -114,8 +112,6 @@ services:
     depends_on:
       - trip-ticket-database
       - eureka-service
-    ports:
-      - 8088:8088
     networks:
       - backend
   #ticket microservice end
