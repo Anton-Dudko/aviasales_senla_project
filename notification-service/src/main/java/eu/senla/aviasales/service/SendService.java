@@ -8,6 +8,7 @@ import eu.senla.aviasales.response.UserResponse;
 import eu.senla.aviasales.service.constant.TopicConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -64,11 +65,14 @@ public class SendService {
     public SendResponse sendEmail(@NotNull String topic,
                                   @Valid CustomEmailRequest customEmailRequest) {
         log.info("... sendEmail");
+        if (StringUtils.isEmpty(customEmailRequest.getUserName())) {
+            customEmailRequest.setUserName(userserviseService.getUserByEmail(customEmailRequest.getEmail()).getUsername());
+        }
         sendEmail(notificationMapper.customEmailRequestToEntity(topic, customEmailRequest));
         return SendResponse.builder()
                 .subject(customEmailRequest.getSubject())
                 .email(customEmailRequest.getEmail())
-                .message(customEmailRequest.getSubject())
+                .message(customEmailRequest.getBody())
                 .build();
     }
 

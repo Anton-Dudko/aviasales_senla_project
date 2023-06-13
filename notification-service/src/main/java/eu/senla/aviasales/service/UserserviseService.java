@@ -47,4 +47,25 @@ public class UserserviseService {
             throw new UserServiceException(ExceptionMessageConstants.EXCEPTION_FROM_USERSERVICE);
         }
     }
+
+    public UserResponse getUserByEmail(String email) {
+        log.info("... method getUserByEmail");
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromUriString(UserserserviceConstant.USER_SERVICE_URL)
+                .pathSegment(UserserserviceConstant.SEARCH_USER_BY_EMAIL)
+                .queryParam("email", email);
+        try {
+            ResponseEntity<UserResponse> response = restTemplate.exchange(
+                    builder.toUriString(),
+                    HttpMethod.GET,
+                    new HttpEntity<>(new HttpHeaders()),
+                    new ParameterizedTypeReference<>() {
+                    });
+            return Objects.requireNonNull(response.getBody());
+
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            log.warn(e.getMessage());
+            throw new UserServiceException(ExceptionMessageConstants.EXCEPTION_FROM_USERSERVICE);
+        }
+    }
 }
