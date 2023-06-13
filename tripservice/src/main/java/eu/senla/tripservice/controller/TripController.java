@@ -28,7 +28,8 @@ public class TripController {
     }
 
     @PostMapping("/admin/create")
-    public ResponseEntity<Trip> create(@RequestBody @Valid TripRequest tripRequest, BindingResult bindingResult) {
+    public ResponseEntity<Trip> create(@RequestBody @Valid TripRequest tripRequest,
+                                       BindingResult bindingResult) {
         validate(bindingResult);
         return ResponseEntity.status(HttpStatus.OK).body(tripService.save(tripRequest));
     }

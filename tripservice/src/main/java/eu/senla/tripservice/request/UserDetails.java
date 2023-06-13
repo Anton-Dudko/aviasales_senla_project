@@ -8,7 +8,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class UserDetails {
-    private long userId;
+    private Long userId;
     private String language;
     private String email;
     private String username;

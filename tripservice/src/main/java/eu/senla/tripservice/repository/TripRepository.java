@@ -8,5 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface TripRepository extends JpaRepository<Trip, Long> {
-    Optional<Trip> findByDepartureCityAndArrivalCity(String departureCity, String arrivalCity);
+    Optional<Trip> findByDepartureCityAndArrivalCity(String departureCity,
+                                                     String arrivalCity);
 }

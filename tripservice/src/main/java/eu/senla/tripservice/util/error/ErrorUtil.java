@@ -4,10 +4,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class ErrorUtil {
-    public static String returnErrorMessage(BindingResult bindingResult) {
+    public static String returnErrorMessage(@NotNull BindingResult bindingResult) {
         StringBuilder errorMessage = new StringBuilder();
 
         List<FieldError> errors = bindingResult.getFieldErrors();
