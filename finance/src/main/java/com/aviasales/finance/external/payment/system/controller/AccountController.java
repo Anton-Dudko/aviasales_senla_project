@@ -9,6 +9,7 @@ import com.aviasales.finance.external.payment.system.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,7 @@ public class AccountController {
     }
 
     @GetMapping("/info")
-    public BankCard getCardInfo(@RequestParam String cardNumber) {
+    public BankCard getCardInfo(@RequestParam @NonNull String cardNumber) {
         return bankCardRepository.findBankCardByCardNumber(cardNumber).get();
     }
 
