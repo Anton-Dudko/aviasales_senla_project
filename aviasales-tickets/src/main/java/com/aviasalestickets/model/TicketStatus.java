@@ -4,6 +4,4 @@ public enum TicketStatus {
     FREE,
     BOOKED,
     PAID;
-
-    TicketStatus(){}
 }

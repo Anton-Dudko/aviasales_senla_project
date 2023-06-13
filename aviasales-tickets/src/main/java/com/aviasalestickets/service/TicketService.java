@@ -67,12 +67,6 @@ public class TicketService {
     @Transactional
     public BookTicketResponse bookTicket(Long id, Long userId, String userDetails) {
         UserDetails user = userMapper.getUserDetails(userDetails);
-        Boolean validate = Optional.ofNullable(user)
-                .map(userDetail -> StringUtils.isNotEmpty(userDetail.getEmail()))//TODO validation UTIL class valid all params
-                .orElse(false);
-        if (!validate) {
-            throw new RuntimeException("User details is invalid");
-        }
 
         return Optional.ofNullable(id)
                 .map(ticketRepository::findTicketById)
@@ -128,14 +122,6 @@ public class TicketService {
                 .filter(ticket -> ticket.getStatus().equals(TicketStatus.FREE) ||
                         ticket.getStatus().equals(TicketStatus.BOOKED))
                 .peek(ticket -> {
-//                    var flightInfoDto = tripApi.requestToTrip(ticket.getFlightId());
-//                    int tripMonth = flightInfoDto.getDepartureDateTime().getMonthValue();
-//                    int tripDay = flightInfoDto.getDepartureDateTime().getDayOfMonth();
-//                    int userMonth = user.getDateBirth().getMonthValue();
-//                    int userDay = user.getDateBirth().getDayOfMonth();
-//                    if (tripMonth == userMonth && tripDay == userDay){
-//                        ticket.setPrice(ticket.getPrice().multiply(new BigDecimal("0.9")));
-//                    }
                     ticket.setStatus(TicketStatus.PAID);
                     ticket.setUserId(user.getUserId());
                     ticket.setFio(user.getUsername());
@@ -167,6 +153,7 @@ public class TicketService {
         List<Ticket> tickets = ticketRepository.findAllById(ids);
         int userMonth = user.getDateBirth().getMonthValue();
         int userDay = user.getDateBirth().getDayOfMonth();
+        BigDecimal discount = new BigDecimal("50");
         return tickets
                 .stream()
                 .map(ticketMapper::convertEntityToDto)
@@ -176,10 +163,10 @@ public class TicketService {
                     if (flightInfoDto.getDepartureDateTime().getMonthValue() == userMonth
                         && flightInfoDto.getDepartureDateTime().getDayOfMonth() == userDay)
                     {
-//                        var validatePrice = ticketResponse.getPrice().multiply(new BigDecimal("0.1"));
-//                        ticketResponse.setPrice((validatePrice > new BigDecimal("50")) ?
-//                                (ticketResponse.getPrice() - new BigDecimal("50")) :
-//                                );
+                        var validatePrice = ticketResponse.getPrice().multiply(new BigDecimal("0.1"));
+                        ticketResponse.setPrice((validatePrice.compareTo(discount) >=0 ) ?
+                                (ticketResponse.getPrice().subtract(discount)) :
+                                        ticketResponse.getPrice().multiply(new BigDecimal("0.9")));
                     }
                     return ticketResponse;
                 })

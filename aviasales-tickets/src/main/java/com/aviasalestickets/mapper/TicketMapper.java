@@ -22,34 +22,26 @@ import java.util.List;
 public class TicketMapper {
 
     public Ticket convertDtoToEntity(TicketRequest request) {
-        Ticket ticket = new Ticket();
-        ticket.setFio(request.getFio());
-        ticket.setPrice(request.getPrice());
-        ticket.setUserId(request.getUserId());
-        ticket.setFlightId(request.getFlightId());
-        ticket.setType(TicketType.valueOf(request.getType()));
-        ticket.setStatus(TicketStatus.valueOf(request.getStatus()));
-        return ticket;
+        return Ticket.builder()
+                .fio(request.getFio())
+                .price(request.getPrice())
+                .userId(request.getUserId())
+                .flightId(request.getFlightId())
+                .type(TicketType.valueOf(request.getType()))
+                .status(TicketStatus.valueOf(request.getStatus()))
+                .build();
     }
 
     public TicketResponse convertEntityToDto(Ticket ticket) {
-        TicketResponse ticketResponse = new TicketResponse();
-        ticketResponse.setId(ticket.getId());
-        ticketResponse.setUserId(ticket.getUserId());
-        ticketResponse.setFlightId(ticket.getFlightId());
-        ticketResponse.setFio(ticket.getFio());
-        ticketResponse.setType(ticket.getType().toString());
-        ticketResponse.setPrice(ticket.getPrice());
-        ticketResponse.setStatus(ticket.getStatus().toString());
-        return ticketResponse;
-    }
-
-    public List<TicketResponse> convertListEntityToDto(List<Ticket> entityList) {
-        List<TicketResponse> list = new ArrayList<>();
-        for (Ticket t : entityList) {
-            list.add(convertEntityToDto(t));
-        }
-        return list;
+        return TicketResponse.builder()
+                .id(ticket.getId())
+                .userId(ticket.getUserId())
+                .flightId(ticket.getFlightId())
+                .fio(ticket.getFio())
+                .type(ticket.getType().toString())
+                .price(ticket.getPrice())
+                .status(ticket.getStatus().toString())
+                .build();
     }
 
     public TicketResponseWithCount convertListEntityToDtoWithCount(List<Ticket> entityList) {
