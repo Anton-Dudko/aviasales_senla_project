@@ -13,12 +13,13 @@ import eu.senla.tripservice.response.trip.TripResponse;
 import eu.senla.tripservice.util.time.TimeFormatter;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Component
 public class Mapper {
-    public FlightResponse mapFlightToFlightResponse(Flight flight) {
+    public FlightResponse mapFlightToFlightResponse(@NotNull Flight flight) {
         return FlightResponse.builder()
                 .flightId(flight.getFlightId())
                 .departureCity(flight.getTrip().getDepartureCity())
@@ -29,7 +30,7 @@ public class Mapper {
                 .build();
     }
 
-    public FlightInfo mapFlightToFlightInfo(Flight flight) {
+    public FlightInfo mapFlightToFlightInfo(@NotNull Flight flight) {
         return FlightInfo.builder()
                 .flightId(flight.getFlightId())
                 .departureCity(flight.getTrip().getDepartureCity())
@@ -50,7 +51,9 @@ public class Mapper {
                 .build();
     }
 
-    public Flight mapFlightRequestToFlight(FlightRequest flightRequest, Trip trip, Airplane airplane) {
+    public Flight mapFlightRequestToFlight(@NotNull FlightRequest flightRequest,
+                                           @NotNull Trip trip,
+                                           @NotNull Airplane airplane) {
         LocalDateTime departureDateTime = TimeFormatter.formatStringToDateTime(flightRequest.getDepartureDateTime());
         LocalDateTime arrivalDateTime = TimeFormatter.formatStringToDateTime(flightRequest.getArrivalDateTime());
 
@@ -68,7 +71,7 @@ public class Mapper {
                 .build();
     }
 
-    public FlightFullDataResponse mapFlightToFlightFullDataResponse(Flight flight) {
+    public FlightFullDataResponse mapFlightToFlightFullDataResponse(@NotNull Flight flight) {
         return FlightFullDataResponse.builder()
                 .flightId(flight.getFlightId())
                 .trip(flight.getTrip())
@@ -83,27 +86,25 @@ public class Mapper {
                 .build();
     }
 
-    public Trip mapTripRequestToTrip(TripRequest tripRequest) {
+    public Trip mapTripRequestToTrip(@NotNull TripRequest tripRequest) {
         return Trip.builder()
                 .departureCity(tripRequest.getDepartureCity())
                 .arrivalCity(tripRequest.getArrivalCity())
                 .build();
     }
 
-    public TripFullDataResponse mapTripToTripFullDataResponse(Trip trip) {
+    public TripFullDataResponse mapTripToTripFullDataResponse(@NotNull Trip trip) {
         return TripFullDataResponse.builder()
                 .tripId(trip.getTripId())
                 .departureCity(trip.getDepartureCity())
                 .arrivalCity(trip.getArrivalCity())
                 .build();
-
     }
 
-    public TripResponse mapTripToTripResponse(Trip trip) {
+    public TripResponse mapTripToTripResponse(@NotNull Trip trip) {
         return TripResponse.builder()
                 .departureCity(trip.getDepartureCity())
                 .arrivalCity(trip.getArrivalCity())
                 .build();
-
     }
 }

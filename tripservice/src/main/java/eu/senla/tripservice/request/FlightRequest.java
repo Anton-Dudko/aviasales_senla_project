@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @ToString
 public class FlightRequest {
-
     @NotNull
     private Long tripId;
 

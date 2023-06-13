@@ -11,5 +11,9 @@ import java.util.Optional;
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, Long>, JpaSpecificationExecutor<Flight> {
     Optional<Flight> findFlightByTrip_TripIdAndAirplane_AirplaneIdAndFlightNumberAndDepartureDateTimeAndArrivalDateTime(
-            long tripId, long airplaneId, String flightNumber, LocalDateTime departureDateTime, LocalDateTime arrivalDateTime);
+            long tripId,
+            long airplaneId,
+            String flightNumber,
+            LocalDateTime departureDateTime,
+            LocalDateTime arrivalDateTime);
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -19,7 +20,7 @@ public class KafkaFlightDTO {
     private String tripDate;
     private Double price;
 
-    public void setTripDate(LocalDateTime tripDate) {
+    public void setTripDate(@NotNull LocalDateTime tripDate) {
         this.tripDate = TimeFormatter.formatLocalDateTimeToString(tripDate);
     }
 }
