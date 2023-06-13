@@ -118,4 +118,10 @@ public class UserService {
         textResponse.setMessage(TextResponseMessageConstants.USER_DELETED);
         return textResponse;
     }
+
+    public UserResponse findByEmail(String email) {
+        log.info("Method findByEmail");
+        return userMapper.entityToResponse(userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_FOUND)));
+    }
 }
