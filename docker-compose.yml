@@ -42,7 +42,7 @@ services:
   finance-service:
     build: ./finance
     ports:
-      - "8091:8091"
+      - ":8091"
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://finance_db:5432/postgres
