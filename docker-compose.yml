@@ -35,8 +35,6 @@ services:
     depends_on:
       - userservice_db
       - eureka-service
-    ports:
-      - 8086:8086
     networks:
       - backend
 
@@ -174,8 +172,6 @@ services:
 
   notification-service:
     build: ./notification-service
-    ports:
-      - "8087:8087"
     environment:
       cloud.eureka-host: eurekaserver
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
