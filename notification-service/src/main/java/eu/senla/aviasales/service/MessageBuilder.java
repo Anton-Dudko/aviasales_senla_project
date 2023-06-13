@@ -38,7 +38,11 @@ public class MessageBuilder {
 
             Map<String, String> result = new HashMap<>();
             TemplatesConfig.Topic topic = templatesConfig.getTopicByName(emailNotification.getTemplateType());
-            result.put("subject", topic.getSubject());
+            if (StringUtils.isNotEmpty(topic.getSubject())) {
+                result.put("subject", topic.getSubject());
+            } else {
+                result.put("subject", emailNotification.getSubject());
+            }
 
             Context context = new Context();
             context.setVariables(emailNotification.getTemplateVariables());

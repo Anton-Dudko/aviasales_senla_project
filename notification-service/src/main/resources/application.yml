@@ -100,7 +100,6 @@ application:
         topic_name: custom_admin_event
         template: custom_email
         localization: custom_email
-        subject: Aviasales email
       ERROR_EVENT:
         topic_name: error_email_event
         template: error_email
