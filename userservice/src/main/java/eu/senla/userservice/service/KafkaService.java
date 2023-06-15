@@ -2,8 +2,8 @@ package eu.senla.userservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.senla.userservice.entity.User;
-import eu.senla.userservice.kafka.UserEvent;
 import eu.senla.userservice.mapper.UserMapper;
+import eu.senla.userservice.response.UserEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;

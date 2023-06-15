@@ -62,7 +62,7 @@ public class AdminController {
 
     @GetMapping("/search-admin-email")
     public UserGetPageResponse findAllAdmin() {
-        log.info("...Method findAllAdminEmail");
+        log.info("...Method findAllAdmin");
         return userService.findAllAdmin();
     }
 

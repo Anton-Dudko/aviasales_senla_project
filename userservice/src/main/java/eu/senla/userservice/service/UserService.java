@@ -6,7 +6,6 @@ import eu.senla.userservice.entity.User;
 import eu.senla.userservice.exception.ExceptionMessageConstants;
 import eu.senla.userservice.exception.custom.AuthenticatException;
 import eu.senla.userservice.exception.custom.NotFoundException;
-import eu.senla.userservice.kafka.KafkaTopicConstants;
 import eu.senla.userservice.mapper.UserMapper;
 import eu.senla.userservice.repository.UserRepository;
 import eu.senla.userservice.request.UserFindRequest;
@@ -15,6 +14,7 @@ import eu.senla.userservice.response.TextResponse;
 import eu.senla.userservice.response.TextResponseMessageConstants;
 import eu.senla.userservice.response.UserGetPageResponse;
 import eu.senla.userservice.response.UserResponse;
+import eu.senla.userservice.service.constant.KafkaTopicConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -26,7 +26,6 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,8 +93,8 @@ public class UserService {
             user.setPassword(StringUtils.isNotEmpty(request.getPassword())
                     ? passwordEncoder.encode(request.getPassword())
                     : user.getPassword());
-            user.setDateBirth(StringUtils.isNotEmpty(request.getDateBirth())
-                    ? LocalDate.parse(request.getDateBirth())
+            user.setDateBirth(request.getDateBirth() != null
+                    ? request.getDateBirth()
                     : user.getDateBirth());
             user.setLanguage(enumValidator.checkLanguageEnum(request.getLanguage()));
             User updatedUser = userRepository.save(user);
@@ -114,9 +113,11 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ExceptionMessageConstants.USER_NOT_FOUND));
         userRepository.delete(user);
-        TextResponse textResponse = userMapper.entityToTextResponse(user);
-        textResponse.setMessage(TextResponseMessageConstants.USER_DELETED);
-        return textResponse;
+        return TextResponse.builder()
+                .message(TextResponseMessageConstants.PASSWORD_SENT_TO_EMAIL)
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .build();
     }
 
     public UserResponse findByEmail(String email) {

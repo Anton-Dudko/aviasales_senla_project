@@ -1,4 +1,4 @@
-package eu.senla.userservice.kafka;
+package eu.senla.userservice.service.constant;
 
 public class KafkaTopicConstants {
     public static final String REGISTERED_EVENT = "user_registered_event";

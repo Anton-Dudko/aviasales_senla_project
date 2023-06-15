@@ -3,7 +3,6 @@ package eu.senla.userservice.entity;
 import eu.senla.common.enam.Language;
 import eu.senla.common.enam.PostgreSQLEnumType;
 import eu.senla.common.enam.Role;
-import eu.senla.userservice.exception.ExceptionMessageConstants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,7 +45,7 @@ public class User {
     private String username;
 
     @NotNull
-    @Email(regexp = ".+[@].+[\\.].+", message = ExceptionMessageConstants.NOT_VALID_EMAIL)
+    @Email(regexp = ".+[@].+[\\.].+")
     @Column
     private String email;
 
@@ -55,7 +54,7 @@ public class User {
     private String password;
 
     @NotNull
-    @Past(message = ExceptionMessageConstants.NOT_VALID_DATE)
+    @Past
     @Column(name = "date_birth")
     private LocalDate dateBirth;
 

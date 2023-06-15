@@ -1,6 +1,6 @@
 package eu.senla.userservice.config;
 
-import eu.senla.userservice.kafka.UserEvent;
+import eu.senla.userservice.response.UserEvent;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

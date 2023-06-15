@@ -5,7 +5,6 @@ import eu.senla.userservice.entity.User;
 import eu.senla.userservice.exception.ExceptionMessageConstants;
 import eu.senla.userservice.exception.custom.AuthenticatException;
 import eu.senla.userservice.exception.custom.NotFoundException;
-import eu.senla.userservice.kafka.KafkaTopicConstants;
 import eu.senla.userservice.mapper.UserMapper;
 import eu.senla.userservice.repository.UserRepository;
 import eu.senla.userservice.request.LoginRequest;
@@ -16,6 +15,7 @@ import eu.senla.userservice.response.TextResponse;
 import eu.senla.userservice.response.TextResponseMessageConstants;
 import eu.senla.userservice.response.UserResponse;
 import eu.senla.userservice.security.jwt.JwtProvider;
+import eu.senla.userservice.service.constant.KafkaTopicConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
@@ -118,10 +118,11 @@ public class AuthService {
         user = repository.save(user);
 
         kafkaService.sendToTopic(KafkaTopicConstants.RESET_PASSWORD_EVENT, user, password);
-
-        TextResponse textResponse = userMapper.entityToTextResponse(user);
-        textResponse.setMessage(TextResponseMessageConstants.PASSWORD_SENT_TO_EMAIL);
-        return textResponse;
+        return TextResponse.builder()
+                .message(TextResponseMessageConstants.PASSWORD_SENT_TO_EMAIL)
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .build();
     }
 
     private String generateAccessToken(@NotNull User user) {

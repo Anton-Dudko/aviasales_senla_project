@@ -16,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,7 +38,7 @@ class UserServiceTest {
     private final String ROLE_ADMIN = Role.ROLE_ADMIN.name();
     private final String ROLE_USER = Role.ROLE_USER.name();
     private final String LANGUAGE = Language.EN.name();
-    private final String DATE_BIRTH = "2000-12-12";
+    private final LocalDate DATE_BIRTH = LocalDate.of(2000, 12, 12);
 
     UserRequest userRequest = UserRequest.builder()
             .username(USERNAME)
