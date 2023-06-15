@@ -11,10 +11,10 @@
     <!-- Checks for Size Violations.                    -->
     <!-- See https://checkstyle.org/config_sizes.html -->
     <module name="FileLength"/>
-    <!--    <module name="LineLength">-->
-    <!--        <property name="fileExtensions" value="java"/>-->
-    <!--        <property name="max" value="180"/>-->
-    <!--    </module>-->
+    <module name="LineLength">
+        <property name="fileExtensions" value="java"/>
+        <property name="max" value="180"/>
+    </module>
 
     <module name="TreeWalker">
         <!-- Checks for Javadoc comments.                     -->
@@ -113,7 +113,7 @@
         <module name="ArrayTypeStyle"/>
         <module name="TodoComment"/>
         <module name="UpperEll"/>
-        <!--        <module name="CommentsIndentation"/>-->
+        <module name="CommentsIndentation"/>
         <module name="TrailingComment"/>
 
         <!-- https://checkstyle.org/config_filters.html#SuppressionXpathFilter -->

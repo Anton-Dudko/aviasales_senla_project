@@ -4,18 +4,19 @@ import eu.senla.userservice.exception.ExceptionMessageConstants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 
 
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class UserRequest {
 
@@ -25,8 +26,7 @@ public class UserRequest {
     private String username;
 
     @NotEmpty
-    @Email(regexp = ".+[@].+[\\.].+",
-            message = ExceptionMessageConstants.NOT_VALID_EMAIL)
+    @Email(regexp = ".+[@].+[\\.].+")
     private String email;
 
     @NotEmpty
@@ -34,10 +34,9 @@ public class UserRequest {
             message = ExceptionMessageConstants.ERROR_PASSWORD_PATTERN)
     private String password;
 
-    @NotEmpty
-    @Pattern(regexp = "(19|20)\\d\\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])",
-            message = ExceptionMessageConstants.NOT_VALID_DATE_FORMAT)
-    private String dateBirth;
+    @NotNull
+    @Past
+    private LocalDate dateBirth;
 
     private String language;
 

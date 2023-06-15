@@ -1,14 +1,12 @@
-package eu.senla.userservice.kafka;
+package eu.senla.userservice.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class UserEvent {
     private String userName;
     private String email;

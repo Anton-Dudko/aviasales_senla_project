@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -39,7 +41,7 @@ class AuthServiceTest {
     private final String ROLE_ADMIN = Role.ROLE_ADMIN.name();
     private final String ROLE_USER = Role.ROLE_USER.name();
     private final String LANGUAGE = Language.EN.name();
-    private final String DATE_BIRTH = "2000-12-12";
+    private final LocalDate DATE_BIRTH = LocalDate.of(2000, 12, 12);
 
     UserRequest userRequest = UserRequest.builder()
             .username(USERNAME)
@@ -114,10 +116,7 @@ class AuthServiceTest {
     void givenLoginRequest_authenticateUser_returnAuthResponse() {
         authService.createUser(userRequest);
 
-        AuthResponse responce = authService.authenticateUser(LoginRequest.builder()
-                .email(EMAIL)
-                .password(PASSWORD)
-                .build());
+        AuthResponse responce = authService.authenticateUser(new LoginRequest(EMAIL, PASSWORD));
 
         Assertions.assertAll(
                 () -> assertNotNull(responce.getRefreshToken()),
@@ -127,10 +126,7 @@ class AuthServiceTest {
 
     @Test
     void givenLoginRequest_authenticateUserNotExistEmail_returnNotFoundException() {
-        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> authService.authenticateUser(LoginRequest.builder()
-                .email(EMAIL + "1")
-                .password(PASSWORD)
-                .build()));
+        Exception exception = Assertions.assertThrows(NotFoundException.class, () -> authService.authenticateUser(new LoginRequest(EMAIL + 1, PASSWORD)));
 
         String expectedMessage = ExceptionMessageConstants.USER_NOT_FOUND;
         String actualMessage = exception.getMessage();
@@ -141,10 +137,7 @@ class AuthServiceTest {
     @Test
     void givenLoginRequest_authenticateUserWrongPassword_returnAuthenticatException() {
         authService.createUser(userRequest);
-        Exception exception = Assertions.assertThrows(AuthenticatException.class, () -> authService.authenticateUser(LoginRequest.builder()
-                .email(EMAIL)
-                .password(PASSWORD + "1")
-                .build()));
+        Exception exception = Assertions.assertThrows(AuthenticatException.class, () -> authService.authenticateUser(new LoginRequest(EMAIL, PASSWORD)));
 
         String expectedMessage = ExceptionMessageConstants.INVALID_PASSWORD;
         String actualMessage = exception.getMessage();
