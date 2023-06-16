@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 import java.util.Map;
@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @Slf4j
 @RequiredArgsConstructor
-@Service
+@Component
 public class EmailKafkaListener {
 
     private final SendService sendService;
