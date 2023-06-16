@@ -24,16 +24,17 @@ import javax.validation.constraints.Pattern;
 public class CustomEmailRequest {
 
     private String userName;
+
     @NotEmpty
-    @Email(regexp = ".+[@].+[\\.].+", message = ExceptionMessageConstants.NOT_VALID_EMAIL)
+    @Email(regexp = ".+[@].+[\\.].+")
     private String email;
 
-    @NotEmpty(message = ExceptionMessageConstants.SUBJECT_CANT_BE_EMPTY)
+    @NotEmpty
     @Pattern(regexp = "^[\\pL\\d]+[\\pL\\pP\\pZ\\d]{4,100}$",
             message = ExceptionMessageConstants.SUBJECT_INCORRECT_LENGTH)
     private String subject;
 
-    @NotEmpty(message = ExceptionMessageConstants.BODY_CANT_BE_EMPTY)
+    @NotEmpty
     @Pattern(regexp = "^[\\pL\\d]+[\\pL\\pP\\pZ\\d]{4,1000}$",
             message = ExceptionMessageConstants.BODY_INCORRECT_LENGTH)
     private String body;
